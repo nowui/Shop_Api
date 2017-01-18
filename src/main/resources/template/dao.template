@@ -1,0 +1,64 @@
+package com.shanghaichuangshi.dao;
+
+import com.shanghaichuangshi.config.DynamicSQL;
+import com.shanghaichuangshi.model.${firstModelName};
+import com.shanghaichuangshi.util.DatabaseUtil;
+import com.shanghaichuangshi.util.Util;
+
+import java.util.List;
+
+public class ${firstModelName}Dao extends Dao {
+
+    public int count() {
+        DynamicSQL dynamicSQL = new DynamicSQL();
+
+        dynamicSQL.append("SELECT COUNT(*) FROM ").append(${firstModelName}.TABLE_${upperModelName}).append(" ");
+        dynamicSQL.append("WHERE ").append(${firstModelName}.TABLE_${upperModelName}).append(".").append(${firstModelName}.SYSTEM_STATUS).append(" = ? ", true);
+
+        return DatabaseUtil.count(dynamicSQL.getSql(), dynamicSQL.getParameterList());
+    }
+
+    public List<${firstModelName}> list(String ${lowerModelName}_name, Integer m, Integer n) {
+        DynamicSQL dynamicSQL = new DynamicSQL();
+
+        dynamicSQL.append("SELECT ");
+        dynamicSQL.append(${firstModelName}.TABLE_${upperModelName}).append(".").append(${firstModelName}.${upperModelName}_ID).append(", ");
+        dynamicSQL.append(${firstModelName}.TABLE_${upperModelName}).append(".").append(${firstModelName}.${upperModelName}_NAME).append(" ");
+        dynamicSQL.append("FROM ").append(${firstModelName}.TABLE_${upperModelName}).append(" ");
+        dynamicSQL.append("WHERE ").append(${firstModelName}.TABLE_${upperModelName}).append(".").append(${firstModelName}.SYSTEM_STATUS).append(" = ? ", true);
+        if (!Util.isNullOrEmpty(${lowerModelName}_name)) {
+            dynamicSQL.append("AND ").append(${firstModelName}.TABLE_${upperModelName}).append(".").append(${firstModelName}.${upperModelName}_NAME).append(" LIKE ? ", "%" + ${lowerModelName}_name + "%");
+        }
+        dynamicSQL.append("ORDER BY ").append(${firstModelName}.TABLE_${upperModelName}).append(".").append(${firstModelName}.SYSTEM_CREATE_TIME).append(" DESC ");
+        dynamicSQL.append("LIMIT ?, ? ", m, n);
+
+        return (List<${firstModelName}>) DatabaseUtil.list(dynamicSQL.getSql(), dynamicSQL.getParameterList(), ${firstModelName}.class);
+    }
+
+    public ${firstModelName} find(String ${lowerModelName}_id) {
+        DynamicSQL dynamicSQL = new DynamicSQL();
+
+        dynamicSQL.append("SELECT ");
+        dynamicSQL.append(${firstModelName}.TABLE_${upperModelName}).append(".* ");
+        dynamicSQL.append("FROM ").append(${firstModelName}.TABLE_${upperModelName}).append(" ");
+        dynamicSQL.append("WHERE ").append(${firstModelName}.TABLE_${upperModelName}).append(".").append(${firstModelName}.SYSTEM_STATUS).append(" = ? ", true);
+        dynamicSQL.append("AND ").append(${firstModelName}.TABLE_${upperModelName}).append(".").append(${firstModelName}.${upperModelName}_ID).append(" = ? ", ${lowerModelName}_id);
+
+        return (${firstModelName}) DatabaseUtil.find(dynamicSQL.getSql(), dynamicSQL.getParameterList(), ${firstModelName}.class);
+    }
+
+    public boolean save(${firstModelName} ${lowerModelName}) {
+        ${lowerModelName}.set${firstModelName}_id(Util.getRandomUUID());
+
+        return ${lowerModelName}.save();
+    }
+
+    public boolean update(${firstModelName} ${lowerModelName}) {
+        return ${lowerModelName}.update();
+    }
+
+    public boolean delete(${firstModelName} ${lowerModelName}) {
+        return ${lowerModelName}.delete();
+    }
+
+}

@@ -1,0 +1,95 @@
+package com.shanghaichuangshi.controller;
+
+import com.shanghaichuangshi.annotation.Path;
+import com.shanghaichuangshi.constant.Url;
+import com.shanghaichuangshi.model.${firstModelName};
+import com.shanghaichuangshi.service.${firstModelName}Service;
+
+import java.util.List;
+
+public class ${firstModelName}Controller extends Controller {
+
+    private final ${firstModelName}Service ${lowerModelName}Service = new ${firstModelName}Service();
+
+    @Path(Url.${upperModelName}_LIST)
+    public void list() {
+        ${firstModelName} ${lowerModelName}Model = getModel(${firstModelName}.class);
+
+        ${lowerModelName}Model.validate(${firstModelName}.${upperModelName}_NAME, ${firstModelName}.PAGE_INDEX, ${firstModelName}.PAGE_SIZE);
+
+        List<${firstModelName}> ${lowerModelName}List = ${lowerModelName}Service.list(${lowerModelName}Model);
+
+        renderJson(${lowerModelName}List);
+    }
+
+    @Path(Url.${upperModelName}_ADMIN_LIST)
+    public void adminList() {
+        ${firstModelName} ${lowerModelName}Model = getModel(${firstModelName}.class);
+
+        ${lowerModelName}Model.validate(${firstModelName}.PAGE_INDEX, ${firstModelName}.PAGE_SIZE);
+
+        int count = ${lowerModelName}Service.count(${lowerModelName}Model);
+
+        List<${firstModelName}> ${lowerModelName}List = ${lowerModelName}Service.list(${lowerModelName}Model);
+
+        renderJson(count, ${lowerModelName}List);
+    }
+
+    @Path(Url.${upperModelName}_FIND)
+    public void find() {
+        ${firstModelName} ${lowerModelName}Model = getModel(${firstModelName}.class);
+
+        ${lowerModelName}Model.validate(${firstModelName}.${upperModelName}_ID);
+
+        ${firstModelName} ${lowerModelName} = ${lowerModelName}Service.find(${lowerModelName}Model);
+
+        ${lowerModelName}.removeUnfindable();
+
+        renderJson(${lowerModelName});
+    }
+
+    @Path(Url.${upperModelName}_ADMIN_FIND)
+    public void adminFind() {
+        ${firstModelName} ${lowerModelName}Model = getModel(${firstModelName}.class);
+
+        ${lowerModelName}Model.validate(${firstModelName}.${upperModelName}_ID);
+
+        ${firstModelName} ${lowerModelName} = ${lowerModelName}Service.find(${lowerModelName}Model);
+
+        renderJson(${lowerModelName});
+    }
+
+    @Path(Url.${upperModelName}_SAVE)
+    public void save() {
+        ${firstModelName} ${lowerModelName}Model = getModel(${firstModelName}.class);
+
+        ${lowerModelName}Model.validate(${firstModelName}.${upperModelName}_NAME);
+
+        ${lowerModelName}Service.save(${lowerModelName}Model);
+
+        renderJson("");
+    }
+
+    @Path(Url.${upperModelName}L_UPDATE)
+    public void update() {
+        ${firstModelName} ${lowerModelName}Model = getModel(${firstModelName}.class);
+
+        ${lowerModelName}Model.validate(${firstModelName}.${upperModelName}_ID, ${firstModelName}.${upperModelName}_NAME);
+
+        ${lowerModelName}Service.update(${lowerModelName}Model);
+
+        renderJson("");
+    }
+
+    @Path(Url.${upperModelName}_DELETE)
+    public void delete() {
+        ${firstModelName} ${lowerModelName}Model = getModel(${firstModelName}.class);
+
+        ${lowerModelName}Model.validate(${firstModelName}.${upperModelName}_ID);
+
+        ${lowerModelName}Service.delete(${lowerModelName}Model);
+
+        renderJson("");
+    }
+
+}

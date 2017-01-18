@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<web-app>
+    <display-name>Archetype Created Web Application</display-name>
+
+    <filter>
+        <filter-name>ChuangShi</filter-name>
+        <filter-class>com.shanghaichuangshi.filter.Filter</filter-class>
+        <init-param>
+            <param-name>WebConfig</param-name>
+            <param-value>com.shanghaichuangshi.shop.WebConfig</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>ChuangShi</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+</web-app>

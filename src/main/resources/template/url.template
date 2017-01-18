@@ -1,0 +1,7 @@
+public static final String ${upperModelName}_LIST = "/${lowerModelName}/list";
+public static final String ${upperModelName}_ADMIN_LIST = "/${lowerModelName}/admin/list";
+public static final String ${upperModelName}_FIND = "/${lowerModelName}/find";
+public static final String ${upperModelName}_ADMIN_FIND = "/${lowerModelName}/admin/find";
+public static final String ${upperModelName}_SAVE = "/${lowerModelName}/save";
+public static final String ${upperModelName}L_UPDATE = "/${lowerModelName}/update";
+public static final String ${upperModelName}_DELETE = "/${lowerModelName}/delete";

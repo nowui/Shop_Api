@@ -1,0 +1,36 @@
+package com.shanghaichuangshi.service;
+
+import com.shanghaichuangshi.dao.${firstModelName}Dao;
+import com.shanghaichuangshi.model.${firstModelName};
+
+import java.util.List;
+
+public class ${firstModelName}Service extends Service {
+
+    private final ${firstModelName}Dao ${lowerModelName}Dao = new ${firstModelName}Dao();
+
+    public int count(${firstModelName} ${lowerModelName}) {
+        return ${lowerModelName}Dao.count();
+    }
+
+    public List<${firstModelName}> list(${firstModelName} ${lowerModelName}) {
+        return ${lowerModelName}Dao.list(${lowerModelName}.get${firstModelName}_name(), ${lowerModelName}.getM(), ${lowerModelName}.getN());
+    }
+
+    public ${firstModelName} find(${firstModelName} ${lowerModelName}) {
+        return ${lowerModelName}Dao.find(${lowerModelName}.get${firstModelName}_id());
+    }
+
+    public void save(${firstModelName} ${lowerModelName}) {
+        ${lowerModelName}Dao.save(${lowerModelName});
+    }
+
+    public void update(${firstModelName} ${lowerModelName}) {
+        ${lowerModelName}Dao.update(${lowerModelName});
+    }
+
+    public void delete(${firstModelName} ${lowerModelName}) {
+        ${lowerModelName}Dao.delete(${lowerModelName});
+    }
+
+}
