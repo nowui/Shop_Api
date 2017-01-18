@@ -1,9 +1,10 @@
-package com.shanghaichuangshi.controller;
+package com.shanghaichuangshi.shop.controller;
 
 import com.shanghaichuangshi.annotation.Path;
-import com.shanghaichuangshi.constant.Url;
-import com.shanghaichuangshi.model.${firstModelName};
-import com.shanghaichuangshi.service.${firstModelName}Service;
+import com.shanghaichuangshi.shop.constant.Url;
+import com.shanghaichuangshi.controller.Controller;
+import com.shanghaichuangshi.shop.model.${firstModelName};
+import com.shanghaichuangshi.shop.service.${firstModelName}Service;
 
 import java.util.List;
 

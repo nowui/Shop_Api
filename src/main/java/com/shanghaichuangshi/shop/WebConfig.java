@@ -5,6 +5,9 @@ import com.shanghaichuangshi.config.Config;
 
 import com.shanghaichuangshi.constant.Url;
 import com.shanghaichuangshi.route.RouteMatcher;
+import com.shanghaichuangshi.shop.controller.BrandController;
+import com.shanghaichuangshi.shop.controller.ProductController;
+import com.shanghaichuangshi.shop.controller.ShopController;
 
 import java.util.List;
 
@@ -16,11 +19,13 @@ public class WebConfig extends Config {
     }
 
     public void configRouteMatcher(RouteMatcher routeMatcher) {
-
+        routeMatcher.add("/shop", ShopController.class);
+        routeMatcher.add("/brand", BrandController.class);
+        routeMatcher.add("/product", ProductController.class);
     }
 
     public void configUncheckTokenUrl(List<String> uncheckTokenUrlList) {
-        uncheckTokenUrlList.add(Url.ADMIN_LOGIN);
+
     }
 
     public void configUncheckRequestUrl(List<String> uncheckRequestUrlList) {

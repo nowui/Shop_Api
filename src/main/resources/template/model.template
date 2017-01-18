@@ -1,8 +1,9 @@
-package com.shanghaichuangshi.model;
+package com.shanghaichuangshi.shop.model;
 
 import com.shanghaichuangshi.annotation.Column;
 import com.shanghaichuangshi.annotation.Id;
 import com.shanghaichuangshi.annotation.Table;
+import com.shanghaichuangshi.model.Model;
 import com.shanghaichuangshi.type.ColumnType;
 
 public class ${firstModelName} extends Model<${firstModelName}> {
@@ -32,6 +33,17 @@ public class ${firstModelName} extends Model<${firstModelName}> {
     }
 
     public void set${column.first_column_name}(Integer ${column.column_name}) {
+        set(${strutil.toUpperCase(column.column_name)}, ${column.column_name});
+    }
+      <%
+      break;
+    case 'tinyint':
+      %>
+    public Boolean get${column.first_column_name}() {
+        return getBoolean(${strutil.toUpperCase(column.column_name)});
+    }
+
+    public void set${column.first_column_name}(Boolean ${column.column_name}) {
         set(${strutil.toUpperCase(column.column_name)}, ${column.column_name});
     }
       <%

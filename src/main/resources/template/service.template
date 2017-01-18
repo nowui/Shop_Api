@@ -1,7 +1,8 @@
-package com.shanghaichuangshi.service;
+package com.shanghaichuangshi.shop.service;
 
-import com.shanghaichuangshi.dao.${firstModelName}Dao;
-import com.shanghaichuangshi.model.${firstModelName};
+import com.shanghaichuangshi.service.Service;
+import com.shanghaichuangshi.shop.dao.${firstModelName}Dao;
+import com.shanghaichuangshi.shop.model.${firstModelName};
 
 import java.util.List;
 

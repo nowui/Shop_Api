@@ -1,7 +1,8 @@
-package com.shanghaichuangshi.dao;
+package com.shanghaichuangshi.shop.dao;
 
 import com.shanghaichuangshi.config.DynamicSQL;
-import com.shanghaichuangshi.model.${firstModelName};
+import com.shanghaichuangshi.dao.Dao;
+import com.shanghaichuangshi.shop.model.${firstModelName};
 import com.shanghaichuangshi.util.DatabaseUtil;
 import com.shanghaichuangshi.util.Util;
 
