@@ -18,9 +18,6 @@ public class Product extends Model<Product> {
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "分类编号")
     public static final String CATEGORY_ID = "category_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "店铺编号")
-    public static final String SHOP_ID = "shop_id";
-
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "品牌编号")
     public static final String BRAND_ID = "brand_id";
 
@@ -71,14 +68,6 @@ public class Product extends Model<Product> {
 
     public void setCategory_id(String category_id) {
         set(CATEGORY_ID, category_id);
-    }
-
-    public String getShop_id() {
-        return getString(SHOP_ID);
-    }
-
-    public void setShop_id(String shop_id) {
-        set(SHOP_ID, shop_id);
     }
 
     public String getBrand_id() {

@@ -32,4 +32,8 @@ public class WebConfig extends Config {
 
     }
 
+    public void configUncheckLogUrl(List<String> uncheckLogUrlList) {
+
+    }
+
 }
