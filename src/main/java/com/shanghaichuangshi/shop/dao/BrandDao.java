@@ -31,7 +31,9 @@ public class BrandDao extends Dao {
             dynamicSQL.append("AND ").append(Brand.TABLE_BRAND).append(".").append(Brand.BRAND_NAME).append(" LIKE ? ", "%" + brand_name + "%");
         }
         dynamicSQL.append("ORDER BY ").append(Brand.TABLE_BRAND).append(".").append(Brand.SYSTEM_CREATE_TIME).append(" DESC ");
-        dynamicSQL.append("LIMIT ?, ? ", m, n);
+        if (n > 0) {
+            dynamicSQL.append("LIMIT ?, ? ", m, n);
+        }
 
         return (List<Brand>) DatabaseUtil.list(dynamicSQL.getSql(), dynamicSQL.getParameterList(), Brand.class);
     }

@@ -31,7 +31,9 @@ public class ShopDao extends Dao {
             dynamicSQL.append("AND ").append(Shop.TABLE_SHOP).append(".").append(Shop.SHOP_NAME).append(" LIKE ? ", "%" + shop_name + "%");
         }
         dynamicSQL.append("ORDER BY ").append(Shop.TABLE_SHOP).append(".").append(Shop.SYSTEM_CREATE_TIME).append(" DESC ");
-        dynamicSQL.append("LIMIT ?, ? ", m, n);
+        if (n > 0) {
+            dynamicSQL.append("LIMIT ?, ? ", m, n);
+        }
 
         return (List<Shop>) DatabaseUtil.list(dynamicSQL.getSql(), dynamicSQL.getParameterList(), Shop.class);
     }

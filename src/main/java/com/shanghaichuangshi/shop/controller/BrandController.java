@@ -1,22 +1,27 @@
 package com.shanghaichuangshi.shop.controller;
 
 import com.shanghaichuangshi.annotation.Path;
+import com.shanghaichuangshi.constant.Key;
+import com.shanghaichuangshi.model.Category;
+import com.shanghaichuangshi.service.CategoryService;
 import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.controller.Controller;
 import com.shanghaichuangshi.shop.model.Brand;
 import com.shanghaichuangshi.shop.service.BrandService;
+import com.shanghaichuangshi.type.CategoryType;
 
 import java.util.List;
 
 public class BrandController extends Controller {
 
     private final BrandService brandService = new BrandService();
+    private final CategoryService categoryService = new CategoryService();
 
     @Path(Url.BRAND_LIST)
     public void list() {
         Brand brandModel = getModel(Brand.class);
 
-        brandModel.validate(Brand.BRAND_NAME, Brand.PAGE_INDEX, Brand.PAGE_SIZE);
+        brandModel.validate(Brand.PAGE_INDEX, Brand.PAGE_SIZE);
 
         List<Brand> brandList = brandService.list(brandModel);
 
@@ -27,13 +32,20 @@ public class BrandController extends Controller {
     public void adminList() {
         Brand brandModel = getModel(Brand.class);
 
-        brandModel.validate(Brand.PAGE_INDEX, Brand.PAGE_SIZE);
+        brandModel.validate(Brand.BRAND_NAME, Brand.PAGE_INDEX, Brand.PAGE_SIZE);
 
         int count = brandService.count(brandModel);
 
         List<Brand> brandList = brandService.list(brandModel);
 
         renderJson(count, brandList);
+    }
+
+    @Path(Url.BRAND_CATEGORY_LIST)
+    public void categoryList() {
+        List<Category> categoryList = categoryService.listByCategory_key("BRAND");
+
+        renderJson(categoryList);
     }
 
     @Path(Url.BRAND_FIND)

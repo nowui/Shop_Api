@@ -31,7 +31,9 @@ public class ProductDao extends Dao {
             dynamicSQL.append("AND ").append(Product.TABLE_PRODUCT).append(".").append(Product.PRODUCT_NAME).append(" LIKE ? ", "%" + product_name + "%");
         }
         dynamicSQL.append("ORDER BY ").append(Product.TABLE_PRODUCT).append(".").append(Product.SYSTEM_CREATE_TIME).append(" DESC ");
-        dynamicSQL.append("LIMIT ?, ? ", m, n);
+        if (n > 0) {
+            dynamicSQL.append("LIMIT ?, ? ", m, n);
+        }
 
         return (List<Product>) DatabaseUtil.list(dynamicSQL.getSql(), dynamicSQL.getParameterList(), Product.class);
     }

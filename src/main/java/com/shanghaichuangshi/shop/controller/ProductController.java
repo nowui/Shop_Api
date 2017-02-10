@@ -1,6 +1,8 @@
 package com.shanghaichuangshi.shop.controller;
 
 import com.shanghaichuangshi.annotation.Path;
+import com.shanghaichuangshi.model.Category;
+import com.shanghaichuangshi.service.CategoryService;
 import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.controller.Controller;
 import com.shanghaichuangshi.shop.model.Product;
@@ -11,6 +13,7 @@ import java.util.List;
 public class ProductController extends Controller {
 
     private final ProductService productService = new ProductService();
+    private final CategoryService categoryService = new CategoryService();
 
     @Path(Url.PRODUCT_LIST)
     public void list() {
@@ -34,6 +37,13 @@ public class ProductController extends Controller {
         List<Product> productList = productService.list(productModel);
 
         renderJson(count, productList);
+    }
+
+    @Path(Url.PRODUCT_CATEGORY_LIST)
+    public void categoryList() {
+        List<Category> categoryList = categoryService.listByCategory_key("PRODUCT");
+
+        renderJson(categoryList);
     }
 
     @Path(Url.PRODUCT_FIND)
