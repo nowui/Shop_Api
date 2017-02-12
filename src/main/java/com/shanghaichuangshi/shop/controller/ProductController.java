@@ -19,7 +19,7 @@ public class ProductController extends Controller {
     public void list() {
         Product productModel = getModel(Product.class);
 
-        productModel.validate(Product.PRODUCT_NAME, Product.PAGE_INDEX, Product.PAGE_SIZE);
+        productModel.validate(Product.PAGE_INDEX, Product.PAGE_SIZE);
 
         List<Product> productList = productService.list(productModel);
 
@@ -30,7 +30,7 @@ public class ProductController extends Controller {
     public void adminList() {
         Product productModel = getModel(Product.class);
 
-        productModel.validate(Product.PAGE_INDEX, Product.PAGE_SIZE);
+        productModel.validate(Product.PRODUCT_NAME, Product.PAGE_INDEX, Product.PAGE_SIZE);
 
         int count = productService.count(productModel);
 

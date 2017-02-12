@@ -24,7 +24,9 @@ public class ProductDao extends Dao {
 
         dynamicSQL.append("SELECT ");
         dynamicSQL.append(Product.TABLE_PRODUCT).append(".").append(Product.PRODUCT_ID).append(", ");
-        dynamicSQL.append(Product.TABLE_PRODUCT).append(".").append(Product.PRODUCT_NAME).append(" ");
+        dynamicSQL.append(Product.TABLE_PRODUCT).append(".").append(Product.PRODUCT_NAME).append(", ");
+        dynamicSQL.append(Product.TABLE_PRODUCT).append(".").append(Product.PRODUCT_IMAGE).append(", ");
+        dynamicSQL.append(Product.TABLE_PRODUCT).append(".").append(Product.PRODUCT_PRICE).append(" ");
         dynamicSQL.append("FROM ").append(Product.TABLE_PRODUCT).append(" ");
         dynamicSQL.append("WHERE ").append(Product.TABLE_PRODUCT).append(".").append(Product.SYSTEM_STATUS).append(" = ? ", true);
         if (!Util.isNullOrEmpty(product_name)) {
