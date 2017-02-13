@@ -6,6 +6,7 @@ import com.shanghaichuangshi.config.Config;
 import com.shanghaichuangshi.constant.Url;
 import com.shanghaichuangshi.route.RouteMatcher;
 import com.shanghaichuangshi.shop.controller.BrandController;
+import com.shanghaichuangshi.shop.controller.DeliveryController;
 import com.shanghaichuangshi.shop.controller.ProductController;
 import com.shanghaichuangshi.shop.controller.ShopController;
 
@@ -22,6 +23,7 @@ public class WebConfig extends Config {
         routeMatcher.add("/shop", ShopController.class);
         routeMatcher.add("/brand", BrandController.class);
         routeMatcher.add("/product", ProductController.class);
+        routeMatcher.add("/delivery", DeliveryController.class);
     }
 
     public void configUncheckTokenUrl(List<String> uncheckTokenUrlList) {

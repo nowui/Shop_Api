@@ -1,10 +1,13 @@
 package com.shanghaichuangshi.shop.model;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.shanghaichuangshi.annotation.Column;
 import com.shanghaichuangshi.annotation.Id;
 import com.shanghaichuangshi.annotation.Table;
 import com.shanghaichuangshi.model.Model;
 import com.shanghaichuangshi.type.ColumnType;
+import com.shanghaichuangshi.util.Util;
 
 public class Product extends Model<Product> {
 
@@ -86,8 +89,14 @@ public class Product extends Model<Product> {
         set(PRODUCT_NAME, product_name);
     }
 
-    public String getProduct_image() {
-        return getString(PRODUCT_IMAGE);
+    public JSONArray getProduct_image() {
+        String product_image = getString(PRODUCT_IMAGE);
+
+        if (Util.isNullOrEmpty(product_image)) {
+            return new JSONArray();
+        }
+
+        return JSONArray.parseArray(product_image);
     }
 
     public void setProduct_image(String product_image) {

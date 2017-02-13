@@ -23,6 +23,10 @@ public class ProductController extends Controller {
 
         List<Product> productList = productService.list(productModel);
 
+        for (Product product : productList) {
+            product.set(Product.PRODUCT_IMAGE, product.getProduct_image());
+        }
+
         renderJson(productList);
     }
 
@@ -53,6 +57,8 @@ public class ProductController extends Controller {
         productModel.validate(Product.PRODUCT_ID);
 
         Product product = productService.find(productModel);
+
+        product.set(Product.PRODUCT_IMAGE, product.getProduct_image());
 
         product.removeUnfindable();
 

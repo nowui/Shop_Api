@@ -28,4 +28,12 @@ public class Url {
     public static final String PRODUCTL_UPDATE = "/product/update";
     public static final String PRODUCT_DELETE = "/product/delete";
 
+    public static final String DELIVERY_LIST = "/delivery/list";
+    public static final String DELIVERY_ADMIN_LIST = "/delivery/admin/list";
+    public static final String DELIVERY_FIND = "/delivery/find";
+    public static final String DELIVERY_ADMIN_FIND = "/delivery/admin/find";
+    public static final String DELIVERY_SAVE = "/delivery/save";
+    public static final String DELIVERYL_UPDATE = "/delivery/update";
+    public static final String DELIVERY_DELETE = "/delivery/delete";
+
 }
