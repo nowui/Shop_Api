@@ -1,4 +1,4 @@
-package com.shanghaichuangshi.school.model;
+package com.shanghaichuangshi.shop.model;
 
 import com.shanghaichuangshi.annotation.Column;
 import com.shanghaichuangshi.model.Model;

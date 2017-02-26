@@ -1,11 +1,11 @@
-package com.shanghaichuangshi.school.controller;
+package com.shanghaichuangshi.shop.controller;
 
 import com.jfinal.core.ActionKey;
 import com.shanghaichuangshi.constant.Constant;
-import com.shanghaichuangshi.school.constant.Url;
+import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.controller.Controller;
-import com.shanghaichuangshi.school.model.#(first_model_name);
-import com.shanghaichuangshi.school.service.#(first_model_name)Service;
+import com.shanghaichuangshi.shop.model.#(first_model_name);
+import com.shanghaichuangshi.shop.service.#(first_model_name)Service;
 
 import java.util.List;
 

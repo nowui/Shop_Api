@@ -2,14 +2,6 @@ package com.shanghaichuangshi.shop.constant;
 
 public class Url {
 
-    public static final String SHOP_LIST = "/shop/list";
-    public static final String SHOP_ADMIN_LIST = "/shop/admin/list";
-    public static final String SHOP_FIND = "/shop/find";
-    public static final String SHOP_ADMIN_FIND = "/shop/admin/find";
-    public static final String SHOP_SAVE = "/shop/save";
-    public static final String SHOPL_UPDATE = "/shop/update";
-    public static final String SHOP_DELETE = "/shop/delete";
-
     public static final String BRAND_LIST = "/brand/list";
     public static final String BRAND_ADMIN_LIST = "/brand/admin/list";
     public static final String BRAND_CATEGORY_LIST = "/brand/category/list";

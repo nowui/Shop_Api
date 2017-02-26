@@ -12,6 +12,8 @@ import com.jfinal.template.Engine;
 import com.shanghaichuangshi.controller.*;
 import com.shanghaichuangshi.interceptor.GlobalActionInterceptor;
 import com.shanghaichuangshi.model.*;
+import com.shanghaichuangshi.shop.controller.BrandController;
+import com.shanghaichuangshi.shop.model.Brand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,8 @@ public class WebConfig extends JFinalConfig {
         routes.add("/role", RoleController.class);
         routes.add("/upload", UploadController.class);
         routes.add("/file", FileController.class);
+
+        routes.add("/brand", BrandController.class);
 
     }
 
@@ -91,6 +95,8 @@ public class WebConfig extends JFinalConfig {
         activeRecordPlugin.addMapping("table_role", "role_id", Role.class);
         activeRecordPlugin.addSqlTemplate("Role.sql");
 
+        activeRecordPlugin.addMapping("table_brand", "brand_id", Brand.class);
+        activeRecordPlugin.addSqlTemplate("Brand.sql");
 
         plugins.add(activeRecordPlugin);
     }
