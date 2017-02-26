@@ -2,14 +2,14 @@ import constant from '../constant/constant';
 
 export default {
 
-  namespace: '${lowerModelName}',
+  namespace: '#(lower_model_name)',
 
   state: {
     is_load: false,
     is_detail: false,
     action: '',
-    ${lowerModelName}_id: '',
-    ${lowerModelName}_name: '',
+    #(lower_model_name)_id: '',
+    #(lower_model_name)_name: '',
     list: [],
     total: 0,
     page_index: 1,

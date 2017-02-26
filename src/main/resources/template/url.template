@@ -1,7 +1,7 @@
-public static final String ${upperModelName}_LIST = "/${lowerModelName}/list";
-public static final String ${upperModelName}_ADMIN_LIST = "/${lowerModelName}/admin/list";
-public static final String ${upperModelName}_FIND = "/${lowerModelName}/find";
-public static final String ${upperModelName}_ADMIN_FIND = "/${lowerModelName}/admin/find";
-public static final String ${upperModelName}_SAVE = "/${lowerModelName}/save";
-public static final String ${upperModelName}L_UPDATE = "/${lowerModelName}/update";
-public static final String ${upperModelName}_DELETE = "/${lowerModelName}/delete";
+public static final String #(upper_model_name)_LIST = "/#(lower_model_name)/list";
+public static final String #(upper_model_name)_ADMIN_LIST = "/#(lower_model_name)/admin/list";
+public static final String #(upper_model_name)_FIND = "/#(lower_model_name)/find";
+public static final String #(upper_model_name)_ADMIN_FIND = "/#(lower_model_name)/admin/find";
+public static final String #(upper_model_name)_SAVE = "/#(lower_model_name)/save";
+public static final String #(upper_model_name)L_UPDATE = "/#(lower_model_name)/update";
+public static final String #(upper_model_name)_DELETE = "/#(lower_model_name)/delete";

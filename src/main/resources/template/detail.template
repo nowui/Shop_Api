@@ -4,7 +4,7 @@ import {Modal, Form, Spin, Button, Input, InputNumber} from 'antd';
 import constant from '../../constant/constant';
 import style from '../style.css';
 
-class ${firstModelName}Detail extends Component {
+class #(first_model_name)Detail extends Component {
   constructor(props) {
     super(props);
 
@@ -53,66 +53,48 @@ class ${firstModelName}Detail extends Component {
              ]}
       >
         <Spin spinning={this.props.is_load}>
-            <%
-            for(column in columnList) {
-            %>
+            #for(column : columnList)
+            #if(column.column_name != lower_model_name + "_id")
             <FormItem hasFeedback {...constant.formItemLayoutDetail} className={style.formItem}
-                      style={{width: constant.detail_form_item_width}} label="${column.column_comment}">
+                      style={{width: constant.detail_form_item_width}} label="#(column.column_comment)">
               {
-                getFieldDecorator('${column.column_name}', {
+                getFieldDecorator('#(column.column_name)', {
                   rules: [{
                     required: true,
                     message: constant.required
                   }],
-              <%
-              switch(column.data_type) {
-                case 'int':
-                  %>
+                  #if(column.data_type == 'INT')
                   initialValue: 0
-                  <%
-                  break;
-                default:
-                  %>
+                  #else
                   initialValue: ''
-                  <%
-              }
-              %>
+                  #end
                 })(
-              <%
-              switch(column.data_type) {
-                case 'int':
-                  %>
-                  <InputNumber type="text" className={style.formItemInput} placeholder={constant.placeholder + '${column.column_comment}'}
+                  #if(column.data_type == 'INT')
+                  <InputNumber type="text" className={style.formItemInput} placeholder={constant.placeholder + '#(column.column_comment)'}
                              min={0} max={999}/>
-                  <%
-                  break;
-                default:
-                  %>
-                  <Input type="text" placeholder={constant.placeholder + '${column.column_comment}'}/>
-                  <%
-              }
-              %>
+                  #else
+                  <Input type="text" placeholder={constant.placeholder + '#(column.column_comment)'}/>
+                  #end
                 )
               }
             </FormItem>
-            <%
-            }
-            %>
+            #end
+            #end
         </Spin>
       </Modal>
     );
   }
 }
 
-${firstModelName}Detail.propTypes = {
+#(first_model_name)Detail.propTypes = {
   is_load: React.PropTypes.bool.isRequired,
   is_detail: React.PropTypes.bool.isRequired,
   handleSubmit: React.PropTypes.func.isRequired,
   handleCancel: React.PropTypes.func.isRequired
 };
 
-${firstModelName}Detail = Form.create({
+#(first_model_name)Detail = Form.create({
   withRef: true
-})(${firstModelName}Detail);
+})(#(first_model_name)Detail);
 
-export default ${firstModelName}Detail;
+export default #(first_model_name)Detail;

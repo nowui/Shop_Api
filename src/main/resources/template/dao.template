@@ -1,65 +1,81 @@
-package com.shanghaichuangshi.shop.dao;
+package com.shanghaichuangshi.school.dao;
 
-import com.shanghaichuangshi.config.DynamicSQL;
+import com.jfinal.kit.JMap;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
-import com.shanghaichuangshi.shop.model.${firstModelName};
-import com.shanghaichuangshi.util.DatabaseUtil;
+import com.shanghaichuangshi.model.Authorization;
+import com.shanghaichuangshi.school.model.#(first_model_name);
 import com.shanghaichuangshi.util.Util;
 
+import java.util.Date;
 import java.util.List;
 
-public class ${firstModelName}Dao extends Dao {
+public class #(first_model_name)Dao extends Dao {
 
-    public int count() {
-        DynamicSQL dynamicSQL = new DynamicSQL();
+    public int count(String #(lower_model_name)_name) {
+        JMap map = JMap.create();
+        map.put(#(first_model_name).#(upper_model_name)_NAME, #(lower_model_name)_name);
+        SqlPara sqlPara = Db.getSqlPara("#(lower_model_name).count", map);
 
-        dynamicSQL.append("SELECT COUNT(*) FROM ").append(${firstModelName}.TABLE_${upperModelName}).append(" ");
-        dynamicSQL.append("WHERE ").append(${firstModelName}.TABLE_${upperModelName}).append(".").append(${firstModelName}.SYSTEM_STATUS).append(" = ? ", true);
-
-        return DatabaseUtil.count(dynamicSQL.getSql(), dynamicSQL.getParameterList());
+        Number count = Db.queryFirst(sqlPara.getSql(), sqlPara.getPara());
+        return count.intValue();
     }
 
-    public List<${firstModelName}> list(String ${lowerModelName}_name, Integer m, Integer n) {
-        DynamicSQL dynamicSQL = new DynamicSQL();
+    public List<#(first_model_name)> list(String #(lower_model_name)_name, Integer m, Integer n) {
+        JMap map = JMap.create();
+        map.put(#(first_model_name).#(upper_model_name)_NAME, #(lower_model_name)_name);
+        map.put(Authorization.M, m);
+        map.put(Authorization.N, n);
+        SqlPara sqlPara = Db.getSqlPara("#(lower_model_name).list", map);
 
-        dynamicSQL.append("SELECT ");
-        dynamicSQL.append(${firstModelName}.TABLE_${upperModelName}).append(".").append(${firstModelName}.${upperModelName}_ID).append(", ");
-        dynamicSQL.append(${firstModelName}.TABLE_${upperModelName}).append(".").append(${firstModelName}.${upperModelName}_NAME).append(" ");
-        dynamicSQL.append("FROM ").append(${firstModelName}.TABLE_${upperModelName}).append(" ");
-        dynamicSQL.append("WHERE ").append(${firstModelName}.TABLE_${upperModelName}).append(".").append(${firstModelName}.SYSTEM_STATUS).append(" = ? ", true);
-        if (!Util.isNullOrEmpty(${lowerModelName}_name)) {
-            dynamicSQL.append("AND ").append(${firstModelName}.TABLE_${upperModelName}).append(".").append(${firstModelName}.${upperModelName}_NAME).append(" LIKE ? ", "%" + ${lowerModelName}_name + "%");
+        return new #(first_model_name)().find(sqlPara.getSql(), sqlPara.getPara());
+    }
+
+    public #(first_model_name) find(String #(lower_model_name)_id) {
+        JMap map = JMap.create();
+        map.put(#(first_model_name).#(upper_model_name)_ID, #(lower_model_name)_id);
+        SqlPara sqlPara = Db.getSqlPara("#(lower_model_name).find", map);
+
+        List<#(first_model_name)> #(lower_model_name)List = new #(first_model_name)().find(sqlPara.getSql(), sqlPara.getPara());
+        if (#(lower_model_name)List.size() == 0) {
+            return null;
+        } else {
+            return #(lower_model_name)List.get(0);
         }
-        dynamicSQL.append("ORDER BY ").append(${firstModelName}.TABLE_${upperModelName}).append(".").append(${firstModelName}.SYSTEM_CREATE_TIME).append(" DESC ");
-        dynamicSQL.append("LIMIT ?, ? ", m, n);
-
-        return (List<${firstModelName}>) DatabaseUtil.list(dynamicSQL.getSql(), dynamicSQL.getParameterList(), ${firstModelName}.class);
     }
 
-    public ${firstModelName} find(String ${lowerModelName}_id) {
-        DynamicSQL dynamicSQL = new DynamicSQL();
+    public #(first_model_name) save(#(first_model_name) #(lower_model_name), String request_user_id) {
+        #(lower_model_name).set#(first_model_name)_id(Util.getRandomUUID());
+        #(lower_model_name).setSystem_create_user_id(request_user_id);
+        #(lower_model_name).setSystem_create_time(new Date());
+        #(lower_model_name).setSystem_update_user_id(request_user_id);
+        #(lower_model_name).setSystem_update_time(new Date());
+        #(lower_model_name).setSystem_status(true);
 
-        dynamicSQL.append("SELECT ");
-        dynamicSQL.append(${firstModelName}.TABLE_${upperModelName}).append(".* ");
-        dynamicSQL.append("FROM ").append(${firstModelName}.TABLE_${upperModelName}).append(" ");
-        dynamicSQL.append("WHERE ").append(${firstModelName}.TABLE_${upperModelName}).append(".").append(${firstModelName}.SYSTEM_STATUS).append(" = ? ", true);
-        dynamicSQL.append("AND ").append(${firstModelName}.TABLE_${upperModelName}).append(".").append(${firstModelName}.${upperModelName}_ID).append(" = ? ", ${lowerModelName}_id);
+        #(lower_model_name).save();
 
-        return (${firstModelName}) DatabaseUtil.find(dynamicSQL.getSql(), dynamicSQL.getParameterList(), ${firstModelName}.class);
+        return #(lower_model_name);
     }
 
-    public boolean save(${firstModelName} ${lowerModelName}) {
-        ${lowerModelName}.set${firstModelName}_id(Util.getRandomUUID());
+    public boolean update(#(first_model_name) #(lower_model_name), String request_user_id) {
+        #(lower_model_name).remove(#(first_model_name).SYSTEM_CREATE_USER_ID);
+        #(lower_model_name).remove(#(first_model_name).SYSTEM_CREATE_TIME);
+        #(lower_model_name).setSystem_update_user_id(request_user_id);
+        #(lower_model_name).setSystem_update_time(new Date());
+        #(lower_model_name).remove(#(first_model_name).SYSTEM_STATUS);
 
-        return ${lowerModelName}.save();
+        return #(lower_model_name).update();
     }
 
-    public boolean update(${firstModelName} ${lowerModelName}) {
-        return ${lowerModelName}.update();
-    }
+    public boolean delete(String #(lower_model_name)_id, String request_user_id) {
+        JMap map = JMap.create();
+        map.put(#(first_model_name).#(upper_model_name)_ID, #(lower_model_name)_id);
+        map.put(#(first_model_name).SYSTEM_UPDATE_USER_ID, request_user_id);
+        map.put(#(first_model_name).SYSTEM_UPDATE_TIME, new Date());
+        SqlPara sqlPara = Db.getSqlPara("#(lower_model_name).delete", map);
 
-    public boolean delete(${firstModelName} ${lowerModelName}) {
-        return ${lowerModelName}.delete();
+        return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }
 
 }

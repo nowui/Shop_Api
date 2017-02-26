@@ -1,78 +1,23 @@
-package com.shanghaichuangshi.shop.model;
+package com.shanghaichuangshi.school.model;
 
 import com.shanghaichuangshi.annotation.Column;
-import com.shanghaichuangshi.annotation.Id;
-import com.shanghaichuangshi.annotation.Table;
 import com.shanghaichuangshi.model.Model;
 import com.shanghaichuangshi.type.ColumnType;
 
-public class ${firstModelName} extends Model<${firstModelName}> {
+public class #(first_model_name) extends Model<#(first_model_name)> {
 
-    @Table()
-    public static final String TABLE_${upperModelName} = "table_${lowerModelName}";
+    #for(column : columnList)
+    @Column(type = ColumnType.#(column.data_type), length = #(column.character_maximum_length), comment = "#(column.column_comment)")
+    public static final String #(column.upper_column_name) = "#(column.column_name)";
 
-    @Id
-    <%
-    for(column in columnList) {
-    %>
-    @Column(type = ColumnType.${strutil.toUpperCase(column.data_type)}, length = ${column.character_maximum_length}, comment = "${column.column_comment}")
-    public static final String ${strutil.toUpperCase(column.column_name)} = "${column.column_name}";
-
-    <%
-    }
-    %>
-    <%
-    for(column in columnList) {
-    %>
-    <%
-    switch(column.data_type) {
-    case 'int':
-      %>
-    public Integer get${column.first_column_name}() {
-        return getInteger(${strutil.toUpperCase(column.column_name)});
+    #end
+    #for(column : columnList)
+    public String get#(column.first_column_name)() {
+        return getStr(#(column.upper_column_name));
     }
 
-    public void set${column.first_column_name}(Integer ${column.column_name}) {
-        set(${strutil.toUpperCase(column.column_name)}, ${column.column_name});
+    public void set#(column.first_column_name)(String #(column.column_name)) {
+        set(#(column.upper_column_name), #(column.column_name));
     }
-      <%
-      break;
-    case 'tinyint':
-      %>
-    public Boolean get${column.first_column_name}() {
-        return getBoolean(${strutil.toUpperCase(column.column_name)});
-    }
-
-    public void set${column.first_column_name}(Boolean ${column.column_name}) {
-        set(${strutil.toUpperCase(column.column_name)}, ${column.column_name});
-    }
-      <%
-      break;
-    case 'datetime':
-      %>
-    public String get${column.first_column_name}() {
-        return DateUtil.getDateTimeString(getDate(${strutil.toUpperCase(column.column_name)}));
-    }
-
-    public void set${column.first_column_name}(Date ${column.column_name}) {
-        set(${strutil.toUpperCase(column.column_name)}, ${column.column_name});
-    }
-      <%
-      break;
-    default:
-      %>
-    public String get${column.first_column_name}() {
-        return getString(${strutil.toUpperCase(column.column_name)});
-    }
-
-    public void set${column.first_column_name}(String ${column.column_name}) {
-        set(${strutil.toUpperCase(column.column_name)}, ${column.column_name});
-    }
-      <%
-    }
-    %>
-
-    <%
-    }
-    %>
+    #end
 }

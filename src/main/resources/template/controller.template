@@ -1,96 +1,104 @@
-package com.shanghaichuangshi.shop.controller;
+package com.shanghaichuangshi.school.controller;
 
-import com.shanghaichuangshi.annotation.Path;
-import com.shanghaichuangshi.shop.constant.Url;
+import com.jfinal.core.ActionKey;
+import com.shanghaichuangshi.constant.Constant;
+import com.shanghaichuangshi.school.constant.Url;
 import com.shanghaichuangshi.controller.Controller;
-import com.shanghaichuangshi.shop.model.${firstModelName};
-import com.shanghaichuangshi.shop.service.${firstModelName}Service;
+import com.shanghaichuangshi.school.model.#(first_model_name);
+import com.shanghaichuangshi.school.service.#(first_model_name)Service;
 
 import java.util.List;
 
-public class ${firstModelName}Controller extends Controller {
+public class #(first_model_name)Controller extends Controller {
 
-    private final ${firstModelName}Service ${lowerModelName}Service = new ${firstModelName}Service();
+    private static final #(first_model_name)Service #(lower_model_name)Service = new #(first_model_name)Service();
 
-    @Path(Url.${upperModelName}_LIST)
+    @ActionKey(Url.#(upper_model_name)_LIST)
     public void list() {
-        ${firstModelName} ${lowerModelName}Model = getModel(${firstModelName}.class);
+        validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);
 
-        ${lowerModelName}Model.validate(${firstModelName}.${upperModelName}_NAME, ${firstModelName}.PAGE_INDEX, ${firstModelName}.PAGE_SIZE);
+        #(first_model_name) model = getParameter(#(first_model_name).class);
 
-        List<${firstModelName}> ${lowerModelName}List = ${lowerModelName}Service.list(${lowerModelName}Model);
+        model.validate(#(first_model_name).#(upper_model_name)_NAME);
 
-        renderJson(${lowerModelName}List);
+        List<#(first_model_name)> #(lower_model_name)List = #(lower_model_name)Service.list(model, getM(), getN());
+
+        renderSuccessJson(#(lower_model_name)List);
     }
 
-    @Path(Url.${upperModelName}_ADMIN_LIST)
+    @ActionKey(Url.#(upper_model_name)_ADMIN_LIST)
     public void adminList() {
-        ${firstModelName} ${lowerModelName}Model = getModel(${firstModelName}.class);
+        validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);
 
-        ${lowerModelName}Model.validate(${firstModelName}.PAGE_INDEX, ${firstModelName}.PAGE_SIZE);
+        #(first_model_name) model = getParameter(#(first_model_name).class);
 
-        int count = ${lowerModelName}Service.count(${lowerModelName}Model);
+        model.validate(#(first_model_name).#(upper_model_name)_NAME);
 
-        List<${firstModelName}> ${lowerModelName}List = ${lowerModelName}Service.list(${lowerModelName}Model);
+        int count = #(lower_model_name)Service.count(model);
 
-        renderJson(count, ${lowerModelName}List);
+        List<#(first_model_name)> #(lower_model_name)List = #(lower_model_name)Service.list(model, getM(), getN());
+
+        renderSuccessJson(count, #(lower_model_name)List);
     }
 
-    @Path(Url.${upperModelName}_FIND)
+    @ActionKey(Url.#(upper_model_name)_FIND)
     public void find() {
-        ${firstModelName} ${lowerModelName}Model = getModel(${firstModelName}.class);
+        #(first_model_name) model = getParameter(#(first_model_name).class);
 
-        ${lowerModelName}Model.validate(${firstModelName}.${upperModelName}_ID);
+        model.validate(#(first_model_name).#(upper_model_name)_ID);
 
-        ${firstModelName} ${lowerModelName} = ${lowerModelName}Service.find(${lowerModelName}Model);
+        #(first_model_name) #(lower_model_name) = #(lower_model_name)Service.find(model.get#(first_model_name)_id());
 
-        ${lowerModelName}.removeUnfindable();
+        #(lower_model_name).removeUnfindable();
 
-        renderJson(${lowerModelName});
+        renderSuccessJson(#(lower_model_name));
     }
 
-    @Path(Url.${upperModelName}_ADMIN_FIND)
+    @ActionKey(Url.#(upper_model_name)_ADMIN_FIND)
     public void adminFind() {
-        ${firstModelName} ${lowerModelName}Model = getModel(${firstModelName}.class);
+        #(first_model_name) model = getParameter(#(first_model_name).class);
 
-        ${lowerModelName}Model.validate(${firstModelName}.${upperModelName}_ID);
+        model.validate(#(first_model_name).#(upper_model_name)_ID);
 
-        ${firstModelName} ${lowerModelName} = ${lowerModelName}Service.find(${lowerModelName}Model);
+        #(first_model_name) #(lower_model_name) = #(lower_model_name)Service.find(model.get#(first_model_name)_id());
 
-        renderJson(${lowerModelName});
+        renderSuccessJson(#(lower_model_name));
     }
 
-    @Path(Url.${upperModelName}_SAVE)
+    @ActionKey(Url.#(upper_model_name)_SAVE)
     public void save() {
-        ${firstModelName} ${lowerModelName}Model = getModel(${firstModelName}.class);
+        #(first_model_name) model = getParameter(#(first_model_name).class);
+        String request_user_id = getRequest_user_id();
 
-        ${lowerModelName}Model.validate(${firstModelName}.${upperModelName}_NAME);
+        model.validate(#(first_model_name).#(upper_model_name)_NAME);
 
-        ${lowerModelName}Service.save(${lowerModelName}Model);
+        #(lower_model_name)Service.save(model, request_user_id);
 
-        renderJson("");
+        renderSuccessJson();
     }
 
-    @Path(Url.${upperModelName}L_UPDATE)
+    @ActionKey(Url.#(upper_model_name)L_UPDATE)
     public void update() {
-        ${firstModelName} ${lowerModelName}Model = getModel(${firstModelName}.class);
+        #(first_model_name) model = getParameter(#(first_model_name).class);
+        String request_user_id = getRequest_user_id();
 
-        ${lowerModelName}Model.validate(${firstModelName}.${upperModelName}_ID, ${firstModelName}.${upperModelName}_NAME);
+        model.validate(#(first_model_name).#(upper_model_name)_ID, #(first_model_name).#(upper_model_name)_NAME);
 
-        ${lowerModelName}Service.update(${lowerModelName}Model);
+        #(lower_model_name)Service.update(model, request_user_id);
 
-        renderJson("");
+        renderSuccessJson();
     }
 
-    @Path(Url.${upperModelName}_DELETE)
+    @ActionKey(Url.#(upper_model_name)_DELETE)
     public void delete() {
-        ${firstModelName} ${lowerModelName}Model = getModel(${firstModelName}.class);
+        #(first_model_name) model = getParameter(#(first_model_name).class);
+        String request_user_id = getRequest_user_id();
 
-        ${lowerModelName}Model.validate(${firstModelName}.${upperModelName}_ID);
+        model.validate(#(first_model_name).#(upper_model_name)_ID);
 
-        ${lowerModelName}Service.delete(${lowerModelName}Model);
+        #(lower_model_name)Service.delete(model, request_user_id);
 
-        renderJson("");
+        renderSuccessJson();
     }
 
 }

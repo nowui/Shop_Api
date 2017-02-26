@@ -1,1 +1,1 @@
-app.model(require('./model/${lowerModelName}'));
+app.model(require('./model/#(lower_model_name)'));

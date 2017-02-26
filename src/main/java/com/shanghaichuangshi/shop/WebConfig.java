@@ -1,40 +1,111 @@
 package com.shanghaichuangshi.shop;
 
-import com.shanghaichuangshi.config.Certificate;
-import com.shanghaichuangshi.config.Config;
+import com.alibaba.druid.filter.logging.Slf4jLogFilter;
+import com.jfinal.config.*;
+import com.jfinal.core.JFinal;
+import com.jfinal.kit.PathKit;
+import com.jfinal.kit.PropKit;
+import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
+import com.jfinal.plugin.druid.DruidPlugin;
+import com.jfinal.render.ViewType;
+import com.jfinal.template.Engine;
+import com.shanghaichuangshi.controller.*;
+import com.shanghaichuangshi.interceptor.GlobalActionInterceptor;
+import com.shanghaichuangshi.model.*;
 
-import com.shanghaichuangshi.constant.Url;
-import com.shanghaichuangshi.route.RouteMatcher;
-import com.shanghaichuangshi.shop.controller.BrandController;
-import com.shanghaichuangshi.shop.controller.DeliveryController;
-import com.shanghaichuangshi.shop.controller.ProductController;
-import com.shanghaichuangshi.shop.controller.ShopController;
-
+import java.util.ArrayList;
 import java.util.List;
 
-public class WebConfig extends Config {
+public class WebConfig extends JFinalConfig {
 
-    public void configCertificate(Certificate certificate) {
-        certificate.setPublic_key("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDRPXhY/P7lcADQHeKNj81FuHE78o+YuowCc90MmtjUMQfpCTeXVlWBUZjLOVKMAPXPzcolRzmMebZvwbVyxAqI54we0sq6Ki7wCweUdJFiDJvr6H/o2fA5rR74p8HsmJJl8ljZYMsN35lHKH3glfcIiRdTQC/24nxVNbPv+UhmSwIDAQAB");
-        certificate.setPrivate_key("MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBANE9eFj8/uVwANAd4o2PzUW4cTvyj5i6jAJz3Qya2NQxB+kJN5dWVYFRmMs5UowA9c/NyiVHOYx5tm/BtXLECojnjB7SyroqLvALB5R0kWIMm+vof+jZ8DmtHvinweyYkmXyWNlgyw3fmUcofeCV9wiJF1NAL/bifFU1s+/5SGZLAgMBAAECgYEAlCuMcq/NrRnwaXAQQ6DGgw3GmeX9y/CmPwJfUZLB4xlJebt+M1v+ttHaemcAToZLi7k14cobNZ/nEiLBZCDxN5O+dKdZyaWshRnWecACSRK7Wlp7WjgCLjieIn3+w3QXWq2IZFdYQSOIeuXT8m6FU72GvuOgziv8rgJcUi7kBHkCQQDnjmepwzLNUA5Ukbg5BFWROHPg42Uf25RjpeUstSV1HVgYHYf0KOUdIlS0+TFzZTcijeAeIfHaeM+kwiUA75hFAkEA51P94O+mNlEzN7v04E7K9I3uj+gVDc7z/MHxsYJ5VW3mohOiqwBiQBYlnK5KiiBCuFVixR633HhMkqiAgvvVTwJAUl6s7425d6Gfx2Oixd2N1r/fMMOTSHbi3WO5F2NE9NlAaiuvHiKiBfAdc9clSShbKZaQgAeRMidBrhlF8oRIhQJBAMHaWP6O1bLfCRTDpcnzPZEC/9AIpNwVedFulaQzuooktwlLex3iDHO4G3zZcg2eS0s+Aq89tsZC6ahdHJSnhXECQQDF64mfFVEx2XcruKCwDQ8K0ReEQN4r5kC/wnGIxkY4k6htrg6Im1b8iytTzV8BRxs8aukqgp1ggfBuxweAeiPC");
+    public static void main(String[] args) {
+        JFinal.start("WebRoot", 80, "/");
     }
 
-    public void configRouteMatcher(RouteMatcher routeMatcher) {
-        routeMatcher.add("/shop", ShopController.class);
-        routeMatcher.add("/brand", BrandController.class);
-        routeMatcher.add("/product", ProductController.class);
-        routeMatcher.add("/delivery", DeliveryController.class);
+    public void configConstant(Constants constants) {
+        constants.setDevMode(false);
+        constants.setViewType(ViewType.JSP);
+        constants.setError404View("/error.jsp");
     }
 
-    public void configUncheckTokenUrl(List<String> uncheckTokenUrlList) {
+    public void configRoute(Routes routes) {
+        routes.add("/admin", AdminController.class);
+        routes.add("/authorization", AuthorizationController.class);
+        routes.add("/log", LogController.class);
+        routes.add("/category", CategoryController.class);
+        routes.add("/code", CodeController.class);
+        routes.add("/attribute", AttributeController.class);
+        routes.add("/resource", ResourceController.class);
+        routes.add("/role", RoleController.class);
+        routes.add("/upload", UploadController.class);
+        routes.add("/file", FileController.class);
 
     }
 
-    public void configUncheckRequestUrl(List<String> uncheckRequestUrlList) {
+    public void configEngine(Engine engine) {
 
     }
 
-    public void configUncheckLogUrl(List<String> uncheckLogUrlList) {
+    public void configPlugin(Plugins plugins) {
+        PropKit.use("Jdbc.properties");
+
+        final String URL = PropKit.get("jdbcUrl");
+        final String USERNAME = PropKit.get("user");
+        final String PASSWORD = PropKit.get("password");
+        final Integer INITIALSIZE = PropKit.getInt("initialSize");
+        final Integer MIDIDLE = PropKit.getInt("minIdle");
+        final Integer MAXACTIVEE = PropKit.getInt("maxActivee");
+
+        DruidPlugin druidPlugin = new DruidPlugin(URL, USERNAME, PASSWORD);
+        druidPlugin.set(INITIALSIZE, MIDIDLE, MAXACTIVEE);
+        druidPlugin.setFilters("stat,wall");
+        plugins.add(druidPlugin);
+
+        Slf4jLogFilter sql_log_filter = new Slf4jLogFilter();
+        sql_log_filter.setConnectionLogEnabled(false);
+        sql_log_filter.setStatementLogEnabled(false);
+        sql_log_filter.setStatementExecutableSqlLogEnable(true);
+        sql_log_filter.setResultSetLogEnabled(false);
+        druidPlugin.addFilter(sql_log_filter);
+
+        ActiveRecordPlugin activeRecordPlugin = new ActiveRecordPlugin(druidPlugin);
+        activeRecordPlugin.setBaseSqlTemplatePath(PathKit.getRootClassPath() + "/sql/");
+        activeRecordPlugin.addSqlTemplate("Code.sql");
+
+        activeRecordPlugin.addMapping("table_admin", "admin_id", Admin.class);
+        activeRecordPlugin.addSqlTemplate("Admin.sql");
+        activeRecordPlugin.addMapping("table_authorization", "authorization_id", Authorization.class);
+        activeRecordPlugin.addSqlTemplate("Authorization.sql");
+        activeRecordPlugin.addMapping("table_category", "category_id", Category.class);
+        activeRecordPlugin.addSqlTemplate("Category.sql");
+        activeRecordPlugin.addMapping("table_log", "log_id", Log.class);
+        activeRecordPlugin.addSqlTemplate("Log.sql");
+        activeRecordPlugin.addMapping("table_user", "user_id", User.class);
+        activeRecordPlugin.addSqlTemplate("User.sql");
+        activeRecordPlugin.addMapping("table_file", "file_id", File.class);
+        activeRecordPlugin.addSqlTemplate("File.sql");
+        activeRecordPlugin.addMapping("table_attribute", "attribute_id", Attribute.class);
+        activeRecordPlugin.addSqlTemplate("Attribute.sql");
+        activeRecordPlugin.addMapping("table_resource", "resource_id", Resource.class);
+        activeRecordPlugin.addSqlTemplate("Resource.sql");
+        activeRecordPlugin.addMapping("table_role", "role_id", Role.class);
+        activeRecordPlugin.addSqlTemplate("Role.sql");
+
+
+        plugins.add(activeRecordPlugin);
+    }
+
+    public void configInterceptor(Interceptors interceptors) {
+        List<String> uncheckTokenUrlList = new ArrayList<String>();
+
+        List<String> uncheckParameterUrlList = new ArrayList<String>();
+
+        List<String> uncheckHeaderUrlList = new ArrayList<String>();
+
+        interceptors.addGlobalActionInterceptor(new GlobalActionInterceptor(uncheckTokenUrlList, uncheckParameterUrlList, uncheckHeaderUrlList));
+    }
+
+    public void configHandler(Handlers handlers) {
 
     }
 
