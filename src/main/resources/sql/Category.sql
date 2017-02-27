@@ -58,7 +58,7 @@
     category_name
     FROM table_category
     WHERE system_status = 1
-    AND category_path LIKE (SELECT CONCAT('%', category_id, '%') FROM table_category WHERE = #p(category_key) )
+    AND category_path LIKE (SELECT CONCAT('%', category_id, '%') FROM table_category WHERE category_key = #p(category_key) )
     ORDER BY category_sort, system_create_time ASC
   #end
 

@@ -41,6 +41,13 @@ public class BrandController extends Controller {
         renderSuccessJson(count, brandList);
     }
 
+    @ActionKey(Url.BRAND_CATEGORY_LIST)
+    public void categoryList() {
+        List<Brand> brandList = brandService.list(new Brand(), 0, 0);
+
+        renderSuccessJson(brandList);
+    }
+
     @ActionKey(Url.BRAND_FIND)
     public void find() {
         Brand model = getParameter(Brand.class);

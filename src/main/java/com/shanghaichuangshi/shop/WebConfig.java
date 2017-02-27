@@ -12,8 +12,11 @@ import com.jfinal.template.Engine;
 import com.shanghaichuangshi.controller.*;
 import com.shanghaichuangshi.interceptor.GlobalActionInterceptor;
 import com.shanghaichuangshi.model.*;
+import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.shop.controller.BrandController;
+import com.shanghaichuangshi.shop.controller.ProductController;
 import com.shanghaichuangshi.shop.model.Brand;
+import com.shanghaichuangshi.shop.model.Product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +46,7 @@ public class WebConfig extends JFinalConfig {
         routes.add("/file", FileController.class);
 
         routes.add("/brand", BrandController.class);
+        routes.add("/product", ProductController.class);
 
     }
 
@@ -97,12 +101,17 @@ public class WebConfig extends JFinalConfig {
 
         activeRecordPlugin.addMapping("table_brand", "brand_id", Brand.class);
         activeRecordPlugin.addSqlTemplate("Brand.sql");
+        activeRecordPlugin.addMapping("table_product", "product_id", Product.class);
+        activeRecordPlugin.addSqlTemplate("Product.sql");
 
         plugins.add(activeRecordPlugin);
     }
 
     public void configInterceptor(Interceptors interceptors) {
         List<String> uncheckTokenUrlList = new ArrayList<String>();
+        uncheckTokenUrlList.add(Url.PRODUCT_LIST);
+        uncheckTokenUrlList.add(Url.PRODUCT_FIND);
+        uncheckTokenUrlList.add(com.shanghaichuangshi.constant.Url.CATEGORY_CHINA_LIST);
 
         List<String> uncheckParameterUrlList = new ArrayList<String>();
 
