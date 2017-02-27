@@ -14,8 +14,10 @@ import com.shanghaichuangshi.interceptor.GlobalActionInterceptor;
 import com.shanghaichuangshi.model.*;
 import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.shop.controller.BrandController;
+import com.shanghaichuangshi.shop.controller.DeliveryController;
 import com.shanghaichuangshi.shop.controller.ProductController;
 import com.shanghaichuangshi.shop.model.Brand;
+import com.shanghaichuangshi.shop.model.Delivery;
 import com.shanghaichuangshi.shop.model.Product;
 
 import java.util.ArrayList;
@@ -47,6 +49,7 @@ public class WebConfig extends JFinalConfig {
 
         routes.add("/brand", BrandController.class);
         routes.add("/product", ProductController.class);
+        routes.add("/delivery", DeliveryController.class);
 
     }
 
@@ -103,6 +106,8 @@ public class WebConfig extends JFinalConfig {
         activeRecordPlugin.addSqlTemplate("Brand.sql");
         activeRecordPlugin.addMapping("table_product", "product_id", Product.class);
         activeRecordPlugin.addSqlTemplate("Product.sql");
+        activeRecordPlugin.addMapping("table_delivery", "delivery_id", Delivery.class);
+        activeRecordPlugin.addSqlTemplate("Delivery.sql");
 
         plugins.add(activeRecordPlugin);
     }
