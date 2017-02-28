@@ -15,9 +15,11 @@ import com.shanghaichuangshi.model.*;
 import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.shop.controller.BrandController;
 import com.shanghaichuangshi.shop.controller.DeliveryController;
+import com.shanghaichuangshi.shop.controller.MemberController;
 import com.shanghaichuangshi.shop.controller.ProductController;
 import com.shanghaichuangshi.shop.model.Brand;
 import com.shanghaichuangshi.shop.model.Delivery;
+import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.shop.model.Product;
 
 import java.util.ArrayList;
@@ -47,6 +49,7 @@ public class WebConfig extends JFinalConfig {
         routes.add("/upload", UploadController.class);
         routes.add("/file", FileController.class);
 
+        routes.add("/member", MemberController.class);
         routes.add("/brand", BrandController.class);
         routes.add("/product", ProductController.class);
         routes.add("/delivery", DeliveryController.class);
@@ -102,6 +105,8 @@ public class WebConfig extends JFinalConfig {
         activeRecordPlugin.addMapping("table_role", "role_id", Role.class);
         activeRecordPlugin.addSqlTemplate("Role.sql");
 
+        activeRecordPlugin.addMapping("table_member", "member_id", Member.class);
+        activeRecordPlugin.addSqlTemplate("Member.sql");
         activeRecordPlugin.addMapping("table_brand", "brand_id", Brand.class);
         activeRecordPlugin.addSqlTemplate("Brand.sql");
         activeRecordPlugin.addMapping("table_product", "product_id", Product.class);

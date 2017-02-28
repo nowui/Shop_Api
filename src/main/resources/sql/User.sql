@@ -9,6 +9,15 @@
     AND user_account = #p(user_account)
   #end
 
+  #sql("countByObject_idAndUser_phone")
+    SELECT COUNT(*) FROM table_user
+    WHERE system_status = 1
+    #if(object_id)
+      AND object_id != #p(object_id)
+    #end
+    AND user_phone = #p(user_phone)
+  #end
+
   #sql("findByUser_accountAndUser_passwordAndUser_type")
     SELECT
     *
