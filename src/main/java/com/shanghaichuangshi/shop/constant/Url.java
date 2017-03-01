@@ -9,6 +9,7 @@ public class Url {
     public static final String MEMBER_SAVE = "/member/save";
     public static final String MEMBERL_UPDATE = "/member/update";
     public static final String MEMBER_DELETE = "/member/delete";
+    public static final String MEMBER_LOGIN = "/member/login";
 
     public static final String BRAND_LIST = "/brand/list";
     public static final String BRAND_ADMIN_LIST = "/brand/admin/list";

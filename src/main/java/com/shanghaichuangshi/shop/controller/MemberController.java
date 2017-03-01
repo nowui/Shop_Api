@@ -9,6 +9,7 @@ import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.shop.service.MemberService;
 
 import java.util.List;
+import java.util.Map;
 
 public class MemberController extends Controller {
 
@@ -101,6 +102,16 @@ public class MemberController extends Controller {
         memberService.delete(model, request_user_id);
 
         renderSuccessJson();
+    }
+
+    @ActionKey(Url.MEMBER_LOGIN)
+    public void login() {
+        User model = getParameter(User.class);
+        String request_user_id = getRequest_user_id();
+
+        Map<String, Object> resultMap = memberService.login(model, getPlatform(), getVersion(), getIp_address(), request_user_id);
+
+        renderSuccessJson(resultMap);
     }
 
 }

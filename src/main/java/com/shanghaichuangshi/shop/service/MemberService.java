@@ -1,19 +1,24 @@
 package com.shanghaichuangshi.shop.service;
 
+import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.model.User;
+import com.shanghaichuangshi.service.AuthorizationService;
 import com.shanghaichuangshi.service.UserService;
 import com.shanghaichuangshi.shop.dao.MemberDao;
 import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.type.UserType;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MemberService extends Service {
 
     private static final MemberDao memberDao = new MemberDao();
 
     private static final UserService userService = new UserService();
+    private final AuthorizationService authorizationService = new AuthorizationService();
 
     public int count(Member member) {
         return memberDao.count(member.getMember_name());
@@ -45,6 +50,17 @@ public class MemberService extends Service {
 
     public boolean delete(Member member, String request_user_id) {
         return memberDao.delete(member.getMember_id(), request_user_id);
+    }
+
+    public Map<String, Object> login(User user, String platform, String version, String ip_address, String request_user_id) {
+        User u = userService.findByUser_accountAndUser_passwordAndUser_type(user.getUser_phone(), user.getUser_password(), UserType.ADMIN.getKey());
+
+        String token = authorizationService.saveByUser_id(u.getUser_id(), platform, version, ip_address, request_user_id);
+
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put(Constant.TOKEN.toLowerCase(), token);
+
+        return resultMap;
     }
 
 }

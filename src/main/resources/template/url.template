@@ -1,7 +1,0 @@
-public static final String #(upper_model_name)_LIST = "/#(lower_model_name)/list";
-public static final String #(upper_model_name)_ADMIN_LIST = "/#(lower_model_name)/admin/list";
-public static final String #(upper_model_name)_FIND = "/#(lower_model_name)/find";
-public static final String #(upper_model_name)_ADMIN_FIND = "/#(lower_model_name)/admin/find";
-public static final String #(upper_model_name)_SAVE = "/#(lower_model_name)/save";
-public static final String #(upper_model_name)L_UPDATE = "/#(lower_model_name)/update";
-public static final String #(upper_model_name)_DELETE = "/#(lower_model_name)/delete";

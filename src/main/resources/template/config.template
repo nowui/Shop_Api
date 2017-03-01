@@ -1,4 +1,0 @@
-routes.add("/#(lower_model_name)", #(first_model_name)Controller.class);
-
-activeRecordPlugin.addMapping("table_#(lower_model_name)", "#(lower_model_name)_id", #(first_model_name).class);
-activeRecordPlugin.addSqlTemplate("#(first_model_name).sql");

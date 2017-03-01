@@ -18,11 +18,7 @@ public class DeliveryController extends Controller {
         validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);
         String request_user_id = getRequest_user_id();
 
-        Delivery model = getParameter(Delivery.class);
-
-        model.validate(Delivery.DELIVERY_NAME);
-
-        List<Delivery> deliveryList = deliveryService.list(model, request_user_id, getM(), getN());
+        List<Delivery> deliveryList = deliveryService.list(new Delivery(), request_user_id, getM(), getN());
 
         renderSuccessJson(deliveryList);
     }

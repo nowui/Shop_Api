@@ -2,7 +2,6 @@ package com.shanghaichuangshi.shop;
 
 import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.jfinal.config.*;
-import com.jfinal.core.JFinal;
 import com.jfinal.kit.PathKit;
 import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
@@ -26,10 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WebConfig extends JFinalConfig {
-
-    public static void main(String[] args) {
-        JFinal.start("WebRoot", 80, "/");
-    }
 
     public void configConstant(Constants constants) {
         constants.setDevMode(false);
@@ -83,7 +78,7 @@ public class WebConfig extends JFinalConfig {
         druidPlugin.addFilter(sql_log_filter);
 
         ActiveRecordPlugin activeRecordPlugin = new ActiveRecordPlugin(druidPlugin);
-        activeRecordPlugin.setBaseSqlTemplatePath(PathKit.getRootClassPath() + "/sql/");
+        activeRecordPlugin.setBaseSqlTemplatePath(PathKit.getWebRootPath() + "/WEB-INF/sql/");
         activeRecordPlugin.addSqlTemplate("Code.sql");
 
         activeRecordPlugin.addMapping("table_admin", "admin_id", Admin.class);
@@ -121,7 +116,7 @@ public class WebConfig extends JFinalConfig {
         List<String> uncheckTokenUrlList = new ArrayList<String>();
         uncheckTokenUrlList.add(Url.PRODUCT_LIST);
         uncheckTokenUrlList.add(Url.PRODUCT_FIND);
-        uncheckTokenUrlList.add(com.shanghaichuangshi.constant.Url.CATEGORY_CHINA_LIST);
+        uncheckTokenUrlList.add(Url.MEMBER_LOGIN);
 
         List<String> uncheckParameterUrlList = new ArrayList<String>();
 

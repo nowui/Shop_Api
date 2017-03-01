@@ -1,4 +1,0 @@
-import #(first_model_name)Index from './view/#(lower_model_name)/#(first_model_name)Index';
-
-
-<Route path="#(lower_model_name)/index" component={#(first_model_name)Index}/>
