@@ -77,37 +77,32 @@ public class WebConfig extends JFinalConfig {
         sql_log_filter.setResultSetLogEnabled(false);
         druidPlugin.addFilter(sql_log_filter);
 
+        String baseSqlTemplatePath = PathKit.getWebRootPath() + "/WEB-INF/sql/";
+
         ActiveRecordPlugin activeRecordPlugin = new ActiveRecordPlugin(druidPlugin);
-        activeRecordPlugin.setBaseSqlTemplatePath(PathKit.getWebRootPath() + "/WEB-INF/sql/");
-        activeRecordPlugin.addSqlTemplate("Code.sql");
+        activeRecordPlugin.setBaseSqlTemplatePath(baseSqlTemplatePath);
+
+        java.io.File[] files = new java.io.File(baseSqlTemplatePath).listFiles();
+        for (java.io.File file : files) {
+            if (file.isFile() || file.getName().endsWith(".sql")) {
+                activeRecordPlugin.addSqlTemplate(file.getName());
+            }
+        }
 
         activeRecordPlugin.addMapping("table_admin", "admin_id", Admin.class);
-        activeRecordPlugin.addSqlTemplate("Admin.sql");
         activeRecordPlugin.addMapping("table_authorization", "authorization_id", Authorization.class);
-        activeRecordPlugin.addSqlTemplate("Authorization.sql");
         activeRecordPlugin.addMapping("table_category", "category_id", Category.class);
-        activeRecordPlugin.addSqlTemplate("Category.sql");
         activeRecordPlugin.addMapping("table_log", "log_id", Log.class);
-        activeRecordPlugin.addSqlTemplate("Log.sql");
         activeRecordPlugin.addMapping("table_user", "user_id", User.class);
-        activeRecordPlugin.addSqlTemplate("User.sql");
         activeRecordPlugin.addMapping("table_file", "file_id", File.class);
-        activeRecordPlugin.addSqlTemplate("File.sql");
         activeRecordPlugin.addMapping("table_attribute", "attribute_id", Attribute.class);
-        activeRecordPlugin.addSqlTemplate("Attribute.sql");
         activeRecordPlugin.addMapping("table_resource", "resource_id", Resource.class);
-        activeRecordPlugin.addSqlTemplate("Resource.sql");
         activeRecordPlugin.addMapping("table_role", "role_id", Role.class);
-        activeRecordPlugin.addSqlTemplate("Role.sql");
 
         activeRecordPlugin.addMapping("table_member", "member_id", Member.class);
-        activeRecordPlugin.addSqlTemplate("Member.sql");
         activeRecordPlugin.addMapping("table_brand", "brand_id", Brand.class);
-        activeRecordPlugin.addSqlTemplate("Brand.sql");
         activeRecordPlugin.addMapping("table_product", "product_id", Product.class);
-        activeRecordPlugin.addSqlTemplate("Product.sql");
         activeRecordPlugin.addMapping("table_delivery", "delivery_id", Delivery.class);
-        activeRecordPlugin.addSqlTemplate("Delivery.sql");
 
         plugins.add(activeRecordPlugin);
     }
