@@ -74,7 +74,7 @@ public class MemberDao extends Dao {
         map.put(Member.USER_ID, user_id);
         map.put(Member.SYSTEM_UPDATE_USER_ID, request_user_id);
         map.put(Member.SYSTEM_UPDATE_TIME, new Date());
-        SqlPara sqlPara = Db.getSqlPara("admin.updateByAdmin_idAndUser_id", map);
+        SqlPara sqlPara = Db.getSqlPara("member.updateByMember_idAndUser_id", map);
 
         return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }

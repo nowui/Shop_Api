@@ -83,11 +83,12 @@ public class MemberController extends Controller {
     @ActionKey(Url.MEMBERL_UPDATE)
     public void update() {
         Member model = getParameter(Member.class);
+        User userModel = getParameter(User.class);
         String request_user_id = getRequest_user_id();
 
         model.validate(Member.MEMBER_ID, Member.MEMBER_NAME);
 
-        memberService.update(model, request_user_id);
+        memberService.update(model, userModel, request_user_id);
 
         renderSuccessJson();
     }

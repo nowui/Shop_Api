@@ -33,7 +33,9 @@ public class Delivery extends Model<Delivery> {
     @Column(type = ColumnType.VARCHAR, length = 250, comment = "详细地址")
     public static final String DELIVERY_ADDRESS = "delivery_address";
 
-    
+    @Column(type = ColumnType.TINYINT, length = 1, comment = "默认地址")
+    public static final String DELIVERY_IS_DEFAULT = "delivery_is_default";
+
     public String getDelivery_id() {
         return getStr(DELIVERY_ID);
     }
@@ -105,4 +107,13 @@ public class Delivery extends Model<Delivery> {
     public void setDelivery_address(String delivery_address) {
         set(DELIVERY_ADDRESS, delivery_address);
     }
+
+    public Boolean getDelivery_is_default() {
+        return getBoolean(DELIVERY_IS_DEFAULT);
+    }
+
+    public void setDelivery_is_default(Boolean delivery_is_default) {
+        set(DELIVERY_IS_DEFAULT, delivery_is_default);
+    }
+
 }

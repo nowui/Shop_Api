@@ -27,10 +27,20 @@
 
   #sql("find")
     SELECT
-    *
+    table_member.*,
+    table_user.user_phone
     FROM table_member
-    WHERE system_status = 1
-    AND member_id = #p(member_id)
+    LEFT JOIN table_user ON table_user.user_id = table_member.user_id
+    WHERE table_member.system_status = 1
+    AND table_member.member_id = #p(member_id)
+  #end
+
+  #sql("updateByMember_idAndUser_id")
+    UPDATE table_member SET
+    user_id = #p(user_id),
+    system_update_user_id = #p(system_update_user_id),
+    system_update_time = #p(system_update_time)
+    WHERE member_id = #p(member_id)
   #end
 
   #sql("delete")

@@ -49,6 +49,7 @@ public class DeliveryDao extends Dao {
 
     public Delivery save(Delivery delivery, String request_user_id) {
         delivery.setDelivery_id(Util.getRandomUUID());
+        delivery.setUser_id(request_user_id);
         delivery.setSystem_create_user_id(request_user_id);
         delivery.setSystem_create_time(new Date());
         delivery.setSystem_update_user_id(request_user_id);

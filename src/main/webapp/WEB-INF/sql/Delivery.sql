@@ -13,7 +13,9 @@
   #sql("list")
     SELECT
     delivery_id,
-    delivery_name
+    delivery_name,
+    delivery_phone,
+    delivery_address
     FROM table_delivery
     WHERE system_status = 1
     #if(delivery_name)
