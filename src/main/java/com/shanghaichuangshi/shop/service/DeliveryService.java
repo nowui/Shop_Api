@@ -1,5 +1,7 @@
 package com.shanghaichuangshi.shop.service;
 
+import com.shanghaichuangshi.model.Category;
+import com.shanghaichuangshi.service.CategoryService;
 import com.shanghaichuangshi.shop.dao.DeliveryDao;
 import com.shanghaichuangshi.shop.model.Delivery;
 import com.shanghaichuangshi.service.Service;
@@ -9,6 +11,8 @@ import java.util.List;
 public class DeliveryService extends Service {
 
     private static final DeliveryDao deliveryDao = new DeliveryDao();
+
+    private static final CategoryService categoryService = new CategoryService();
 
     public int count(Delivery delivery, String request_user_id) {
         return deliveryDao.count(delivery.getDelivery_name(), request_user_id);
@@ -23,10 +27,26 @@ public class DeliveryService extends Service {
     }
 
     public Delivery save(Delivery delivery, String request_user_id) {
+        Category province = categoryService.find(delivery.getDelivery_province());
+        Category city = categoryService.find(delivery.getDelivery_city());
+        Category area = categoryService.find(delivery.getDelivery_area());
+
+        delivery.setDelivery_address(province.getCategory_name() + city.getCategory_name() + area.getCategory_name() + delivery.getDelivery_street());
+
+        deliveryDao.updateIsDefault("", request_user_id);
+
         return deliveryDao.save(delivery, request_user_id);
     }
 
     public boolean update(Delivery delivery, String request_user_id) {
+        Category province = categoryService.find(delivery.getDelivery_province());
+        Category city = categoryService.find(delivery.getDelivery_city());
+        Category area = categoryService.find(delivery.getDelivery_area());
+
+        delivery.setDelivery_address(province.getCategory_name() + city.getCategory_name() + area.getCategory_name() + delivery.getDelivery_street());
+
+        deliveryDao.updateIsDefault(delivery.getDelivery_id(), request_user_id);
+
         return deliveryDao.update(delivery, request_user_id);
     }
 

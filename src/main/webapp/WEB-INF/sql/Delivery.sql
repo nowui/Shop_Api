@@ -37,6 +37,15 @@
     AND delivery_id = #p(delivery_id)
   #end
 
+  #sql("updateIsDefault")
+    UPDATE table_delivery SET
+    system_update_user_id = #p(system_update_user_id),
+    system_update_time = #p(system_update_time),
+    delivery_is_default = 0
+    WHERE user_id = #p(user_id)
+    AND delivery_id != #p(delivery_id)
+  #end
+
   #sql("delete")
     UPDATE table_delivery SET
     system_update_user_id = #p(system_update_user_id),

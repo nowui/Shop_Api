@@ -71,6 +71,17 @@ public class DeliveryDao extends Dao {
         return delivery.update();
     }
 
+    public boolean updateIsDefault(String delivery_id, String request_user_id) {
+        JMap map = JMap.create();
+        map.put(Delivery.DELIVERY_ID, delivery_id);
+        map.put(Delivery.SYSTEM_UPDATE_USER_ID, request_user_id);
+        map.put(Delivery.SYSTEM_UPDATE_TIME, new Date());
+        map.put(Delivery.USER_ID, request_user_id);
+        SqlPara sqlPara = Db.getSqlPara("delivery.updateIsDefault", map);
+
+        return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
+    }
+
     public boolean delete(String delivery_id, String request_user_id) {
         JMap map = JMap.create();
         map.put(Delivery.DELIVERY_ID, delivery_id);
