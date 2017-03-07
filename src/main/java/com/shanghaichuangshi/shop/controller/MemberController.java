@@ -6,6 +6,8 @@ import com.shanghaichuangshi.model.User;
 import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.controller.Controller;
 import com.shanghaichuangshi.shop.model.Member;
+import com.shanghaichuangshi.shop.model.MemberLevel;
+import com.shanghaichuangshi.shop.service.MemberLevelService;
 import com.shanghaichuangshi.shop.service.MemberService;
 
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.Map;
 public class MemberController extends Controller {
 
     private static final MemberService memberService = new MemberService();
+    private static final MemberLevelService memberLevelService = new MemberLevelService();
 
     @ActionKey(Url.MEMBER_LIST)
     public void list() {
@@ -113,6 +116,68 @@ public class MemberController extends Controller {
         Map<String, Object> resultMap = memberService.login(model, getPlatform(), getVersion(), getIp_address(), request_user_id);
 
         renderSuccessJson(resultMap);
+    }
+
+    @ActionKey(Url.MEMBER_LEVEL_ADMIN_LIST)
+    public void levelAdminList() {
+        validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);
+
+        MemberLevel model = getParameter(MemberLevel.class);
+
+        model.validate(MemberLevel.MEMBER_LEVEL_NAME);
+
+        int count = memberLevelService.count(model);
+
+        List<MemberLevel> memberLevelListvice = memberLevelService.list(model, getM(), getN());
+
+        renderSuccessJson(count, memberLevelListvice);
+    }
+
+    @ActionKey(Url.MEMBER_LEVEL_ADMIN_FIND)
+    public void levelAdminFind() {
+        MemberLevel model = getParameter(MemberLevel.class);
+
+        model.validate(MemberLevel.MEMBER_LEVEL_ID);
+
+        MemberLevel member_level = memberLevelService.find(model.getMember_level_id());
+
+        renderSuccessJson(member_level);
+    }
+
+    @ActionKey(Url.MEMBER_LEVEL_SAVE)
+    public void levelSave() {
+        MemberLevel model = getParameter(MemberLevel.class);
+        String request_user_id = getRequest_user_id();
+
+        model.validate(MemberLevel.MEMBER_LEVEL_NAME);
+
+        memberLevelService.save(model, request_user_id);
+
+        renderSuccessJson();
+    }
+
+    @ActionKey(Url.MEMBER_LEVELL_UPDATE)
+    public void levelUpdate() {
+        MemberLevel model = getParameter(MemberLevel.class);
+        String request_user_id = getRequest_user_id();
+
+        model.validate(MemberLevel.MEMBER_LEVEL_ID, MemberLevel.MEMBER_LEVEL_NAME);
+
+        memberLevelService.update(model, request_user_id);
+
+        renderSuccessJson();
+    }
+
+    @ActionKey(Url.MEMBER_LEVEL_DELETE)
+    public void levelDelete() {
+        MemberLevel model = getParameter(MemberLevel.class);
+        String request_user_id = getRequest_user_id();
+
+        model.validate(MemberLevel.MEMBER_LEVEL_ID);
+
+        memberLevelService.delete(model, request_user_id);
+
+        renderSuccessJson();
     }
 
 }
