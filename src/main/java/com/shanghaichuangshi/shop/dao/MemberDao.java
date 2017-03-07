@@ -4,7 +4,6 @@ import com.jfinal.kit.JMap;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
-import com.shanghaichuangshi.model.Authorization;
 import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.util.Util;
 
@@ -25,8 +24,8 @@ public class MemberDao extends Dao {
     public List<Member> list(String member_name, Integer m, Integer n) {
         JMap map = JMap.create();
         map.put(Member.MEMBER_NAME, member_name);
-        map.put(Authorization.M, m);
-        map.put(Authorization.N, n);
+        map.put(Member.M, m);
+        map.put(Member.N, n);
         SqlPara sqlPara = Db.getSqlPara("member.list", map);
 
         return new Member().find(sqlPara.getSql(), sqlPara.getPara());

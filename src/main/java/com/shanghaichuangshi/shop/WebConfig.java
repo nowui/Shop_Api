@@ -16,10 +16,7 @@ import com.shanghaichuangshi.shop.controller.BrandController;
 import com.shanghaichuangshi.shop.controller.DeliveryController;
 import com.shanghaichuangshi.shop.controller.MemberController;
 import com.shanghaichuangshi.shop.controller.ProductController;
-import com.shanghaichuangshi.shop.model.Brand;
-import com.shanghaichuangshi.shop.model.Delivery;
-import com.shanghaichuangshi.shop.model.Member;
-import com.shanghaichuangshi.shop.model.Product;
+import com.shanghaichuangshi.shop.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,9 +97,11 @@ public class WebConfig extends JFinalConfig {
         activeRecordPlugin.addMapping("table_role", "role_id", Role.class);
 
         activeRecordPlugin.addMapping("table_member", "member_id", Member.class);
+        activeRecordPlugin.addMapping("table_member_level", "member_level_id", MemberLevel.class);
         activeRecordPlugin.addMapping("table_brand", "brand_id", Brand.class);
         activeRecordPlugin.addMapping("table_product", "product_id", Product.class);
         activeRecordPlugin.addMapping("table_delivery", "delivery_id", Delivery.class);
+        activeRecordPlugin.addMapping("table_sku", "sku_id", Sku.class);
 
         plugins.add(activeRecordPlugin);
     }

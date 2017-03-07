@@ -4,7 +4,6 @@ import com.jfinal.kit.JMap;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
-import com.shanghaichuangshi.model.Authorization;
 import com.shanghaichuangshi.shop.model.Brand;
 import com.shanghaichuangshi.util.Util;
 
@@ -25,8 +24,8 @@ public class BrandDao extends Dao {
     public List<Brand> list(String brand_name, Integer m, Integer n) {
         JMap map = JMap.create();
         map.put(Brand.BRAND_NAME, brand_name);
-        map.put(Authorization.M, m);
-        map.put(Authorization.N, n);
+        map.put(Brand.M, m);
+        map.put(Brand.N, n);
         SqlPara sqlPara = Db.getSqlPara("brand.list", map);
 
         return new Brand().find(sqlPara.getSql(), sqlPara.getPara());

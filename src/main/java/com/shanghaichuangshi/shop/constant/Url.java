@@ -11,6 +11,14 @@ public class Url {
     public static final String MEMBER_DELETE = "/member/delete";
     public static final String MEMBER_LOGIN = "/member/login";
 
+    public static final String MEMBER_LEVEL_LIST = "/member/level/list";
+    public static final String MEMBER_LEVEL_ADMIN_LIST = "/member/level/admin/list";
+    public static final String MEMBER_LEVEL_FIND = "/member/level/find";
+    public static final String MEMBER_LEVEL_ADMIN_FIND = "/member/level/admin/find";
+    public static final String MEMBER_LEVEL_SAVE = "/member/level/save";
+    public static final String MEMBER_LEVELL_UPDATE = "/member/level/update";
+    public static final String MEMBER_LEVEL_DELETE = "/member/level/delete";
+
     public static final String BRAND_LIST = "/brand/list";
     public static final String BRAND_ADMIN_LIST = "/brand/admin/list";
     public static final String BRAND_CATEGORY_LIST = "/brand/category/list";

@@ -4,7 +4,6 @@ import com.jfinal.kit.JMap;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
-import com.shanghaichuangshi.model.Authorization;
 import com.shanghaichuangshi.shop.model.Delivery;
 import com.shanghaichuangshi.util.Util;
 
@@ -27,8 +26,8 @@ public class DeliveryDao extends Dao {
         JMap map = JMap.create();
         map.put(Delivery.DELIVERY_NAME, delivery_name);
         map.put(Delivery.USER_ID, user_id);
-        map.put(Authorization.M, m);
-        map.put(Authorization.N, n);
+        map.put(Delivery.M, m);
+        map.put(Delivery.N, n);
         SqlPara sqlPara = Db.getSqlPara("delivery.list", map);
 
         return new Delivery().find(sqlPara.getSql(), sqlPara.getPara());
