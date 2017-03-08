@@ -23,6 +23,9 @@ public class Product extends Model<Product> {
     @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品图片")
     public static final String PRODUCT_IMAGE = "product_image";
 
+    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品图片")
+    public static final String PRODUCT_IMAGE_LIST = "product_image_list";
+
     @Column(type = ColumnType.DECIMAL, length = 0, comment = "商品价格")
     public static final String PRODUCT_PRICE = "product_price";
 
@@ -86,6 +89,14 @@ public class Product extends Model<Product> {
 
     public void setProduct_image(String product_image) {
         set(PRODUCT_IMAGE, product_image);
+    }
+
+    public String getProduct_image_list() {
+        return getStr(PRODUCT_IMAGE_LIST);
+    }
+
+    public void setProduct_image_list(String product_image_list) {
+        set(PRODUCT_IMAGE_LIST, product_image_list);
     }
 
     public BigDecimal getProduct_price() {

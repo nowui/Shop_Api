@@ -1,5 +1,6 @@
 package com.shanghaichuangshi.shop.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jfinal.core.ActionKey;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.model.Category;
@@ -52,10 +53,11 @@ public class ProductController extends Controller {
     @ActionKey(Url.PRODUCT_FIND)
     public void find() {
         Product model = getParameter(Product.class);
+        String request_user_id = getRequest_user_id();
 
         model.validate(Product.PRODUCT_ID);
 
-        Product product = productService.find(model.getProduct_id());
+        Product product = productService.find(model.getProduct_id(), request_user_id);
 
         product.removeUnfindable();
 
@@ -68,7 +70,7 @@ public class ProductController extends Controller {
 
         model.validate(Product.PRODUCT_ID);
 
-        Product product = productService.find(model.getProduct_id());
+        Product product = productService.adminFind(model.getProduct_id());
 
         renderSuccessJson(product);
     }
@@ -80,7 +82,7 @@ public class ProductController extends Controller {
 
         model.validate(Product.PRODUCT_NAME);
 
-        productService.save(model, request_user_id);
+        productService.save(model, getAttr(Constant.REQUEST_PARAMETER), request_user_id);
 
         renderSuccessJson();
     }
@@ -92,7 +94,7 @@ public class ProductController extends Controller {
 
         model.validate(Product.PRODUCT_ID, Product.PRODUCT_NAME);
 
-        productService.update(model, request_user_id);
+        productService.update(model, getAttr(Constant.REQUEST_PARAMETER), request_user_id);
 
         renderSuccessJson();
     }

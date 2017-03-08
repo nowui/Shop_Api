@@ -8,6 +8,7 @@ import com.shanghaichuangshi.shop.dao.MemberDao;
 import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.type.UserType;
+import com.shanghaichuangshi.util.Util;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,12 @@ public class MemberService extends Service {
 
     public Member find(String member_id) {
         return memberDao.find(member_id);
+    }
+
+    public Member findByUser_id(String user_id) {
+        User user = userService.find(user_id);
+
+        return memberDao.find(user.getObject_id());
     }
 
     public Member save(Member member, User user, String request_user_id) {
@@ -65,7 +72,9 @@ public class MemberService extends Service {
     public Map<String, Object> login(User user, String platform, String version, String ip_address, String request_user_id) {
         User u = userService.findByUser_phoneAndUser_passwordAndUser_type(user.getUser_phone(), user.getUser_password(), UserType.MEMBER.getKey());
 
-        String token = authorizationService.saveByUser_id(u.getUser_id(), platform, version, ip_address, request_user_id);
+        Member member = memberDao.find(u.getObject_id());
+
+        String token = authorizationService.saveByUser_id(u.getUser_id(), member.getMember_id(), platform, version, ip_address, request_user_id);
 
         Map<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put(Constant.TOKEN.toLowerCase(), token);

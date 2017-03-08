@@ -19,7 +19,7 @@
       #set(member_level_name = "%" + member_level_name + "%")
       AND member_level_name LIKE #p(member_level_name)
     #end
-    ORDER BY system_create_time DESC
+    ORDER BY member_level_sort, system_create_time DESC
     #if(n > 0)
       LIMIT #p(m), #p(n)
     #end

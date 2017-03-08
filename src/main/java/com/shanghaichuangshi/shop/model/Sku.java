@@ -18,11 +18,10 @@ public class Sku extends Model<Sku> {
     @Column(type = ColumnType.DECIMAL, length = 0, comment = "商品价格")
     public static final String PRODUCT_PRICE = "product_price";
 
-    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "会员等级价格")
-    public static final String MEMBER_LEVEL_PRICE = "member_level_price";
-
     @Column(type = ColumnType.INT, length = 11, comment = "商品库存")
     public static final String PRODUCT_STOCK = "product_stock";
+
+    public static final String SKU_LIST = "sku_list";
 
     
     public String getSku_id() {
@@ -57,19 +56,11 @@ public class Sku extends Model<Sku> {
         set(PRODUCT_PRICE, product_price);
     }
 
-    public String getMember_level_price() {
-        return getStr(MEMBER_LEVEL_PRICE);
+    public Integer getProduct_stock() {
+        return getInt(PRODUCT_STOCK);
     }
 
-    public void setMember_level_price(String member_level_price) {
-        set(MEMBER_LEVEL_PRICE, member_level_price);
-    }
-
-    public String getProduct_stock() {
-        return getStr(PRODUCT_STOCK);
-    }
-
-    public void setProduct_stock(String product_stock) {
+    public void setProduct_stock(Integer product_stock) {
         set(PRODUCT_STOCK, product_stock);
     }
 }

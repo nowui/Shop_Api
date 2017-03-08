@@ -133,6 +133,14 @@ public class MemberController extends Controller {
         renderSuccessJson(count, memberLevelListvice);
     }
 
+    @ActionKey(Url.MEMBER_LEVEL_CATEGORY_LIST)
+    public void levelCategoryList() {
+
+        List<MemberLevel> memberLevelListvice = memberLevelService.list(new MemberLevel(), 0, 0);
+
+        renderSuccessJson(memberLevelListvice);
+    }
+
     @ActionKey(Url.MEMBER_LEVEL_ADMIN_FIND)
     public void levelAdminFind() {
         MemberLevel model = getParameter(MemberLevel.class);

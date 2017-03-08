@@ -4,6 +4,7 @@ import com.jfinal.kit.JMap;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
+import com.shanghaichuangshi.shop.cache.MemberCache;
 import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.util.Util;
 
@@ -11,6 +12,8 @@ import java.util.Date;
 import java.util.List;
 
 public class MemberDao extends Dao {
+
+    private static final MemberCache memberCache = new MemberCache();
 
     public int count(String member_name) {
         JMap map = JMap.create();
@@ -32,16 +35,24 @@ public class MemberDao extends Dao {
     }
 
     public Member find(String member_id) {
-        JMap map = JMap.create();
-        map.put(Member.MEMBER_ID, member_id);
-        SqlPara sqlPara = Db.getSqlPara("member.find", map);
+        Member member = memberCache.getMemberByMember_id(member_id);
 
-        List<Member> memberList = new Member().find(sqlPara.getSql(), sqlPara.getPara());
-        if (memberList.size() == 0) {
-            return null;
-        } else {
-            return memberList.get(0);
+        if (member == null) {
+            JMap map = JMap.create();
+            map.put(Member.MEMBER_ID, member_id);
+            SqlPara sqlPara = Db.getSqlPara("member.find", map);
+
+            List<Member> memberList = new Member().find(sqlPara.getSql(), sqlPara.getPara());
+            if (memberList.size() == 0) {
+                member = null;
+            } else {
+                member = memberList.get(0);
+            }
+
+            memberCache.setMemberByMember_id(member, member_id);
         }
+
+        return member;
     }
 
     public Member save(Member member, String request_user_id) {
@@ -58,6 +69,8 @@ public class MemberDao extends Dao {
     }
 
     public boolean update(Member member, String request_user_id) {
+        memberCache.removeMemberByMember_id(member.getMember_id());
+
         member.remove(Member.SYSTEM_CREATE_USER_ID);
         member.remove(Member.SYSTEM_CREATE_TIME);
         member.setSystem_update_user_id(request_user_id);
@@ -79,6 +92,8 @@ public class MemberDao extends Dao {
     }
 
     public boolean delete(String member_id, String request_user_id) {
+        memberCache.removeMemberByMember_id(member_id);
+
         JMap map = JMap.create();
         map.put(Member.MEMBER_ID, member_id);
         map.put(Member.SYSTEM_UPDATE_USER_ID, request_user_id);
