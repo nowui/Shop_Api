@@ -46,6 +46,19 @@ public class DeliveryDao extends Dao {
         }
     }
 
+    public Delivery findDefaultByUser_id(String user_id) {
+        JMap map = JMap.create();
+        map.put(Delivery.USER_ID, user_id);
+        SqlPara sqlPara = Db.getSqlPara("delivery.findDefaultByUser_id", map);
+
+        List<Delivery> deliveryList = new Delivery().find(sqlPara.getSql(), sqlPara.getPara());
+        if (deliveryList.size() == 0) {
+            return null;
+        } else {
+            return deliveryList.get(0);
+        }
+    }
+
     public Delivery save(Delivery delivery, String request_user_id) {
         delivery.setDelivery_id(Util.getRandomUUID());
         delivery.setUser_id(request_user_id);

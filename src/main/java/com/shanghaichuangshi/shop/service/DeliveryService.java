@@ -26,6 +26,10 @@ public class DeliveryService extends Service {
         return deliveryDao.find(delivery_id);
     }
 
+    public Delivery findDefaultByUser_id(String user_id) {
+        return deliveryDao.findDefaultByUser_id(user_id);
+    }
+
     public Delivery save(Delivery delivery, String request_user_id) {
         Category province = categoryService.find(delivery.getDelivery_province());
         Category city = categoryService.find(delivery.getDelivery_city());

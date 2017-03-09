@@ -37,6 +37,15 @@
     AND delivery_id = #p(delivery_id)
   #end
 
+  #sql("findDefaultByUser_id")
+    SELECT
+    *
+    FROM table_delivery
+    WHERE system_status = 1
+    AND delivery_is_default = 1
+    AND user_id = #p(user_id)
+  #end
+
   #sql("updateIsDefault")
     UPDATE table_delivery SET
     system_update_user_id = #p(system_update_user_id),

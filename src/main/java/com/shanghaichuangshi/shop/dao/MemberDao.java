@@ -47,9 +47,9 @@ public class MemberDao extends Dao {
                 member = null;
             } else {
                 member = memberList.get(0);
-            }
 
-            memberCache.setMemberByMember_id(member, member_id);
+                memberCache.setMemberByMember_id(member, member_id);
+            }
         }
 
         return member;

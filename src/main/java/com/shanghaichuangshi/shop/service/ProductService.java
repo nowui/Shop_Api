@@ -40,7 +40,12 @@ public class ProductService extends Service {
     public Product find(String product_id, String request_user_id) {
         Product product = productDao.find(product_id);
 
+        String member_level_id = "";
+
         Member member = memberService.findByUser_id(request_user_id);
+        if (member != null) {
+            member_level_id = member.getMember_level_id();
+        }
 
         List<Sku> skuList = skuService.list(product.getProduct_id());
 
@@ -52,7 +57,7 @@ public class ProductService extends Service {
             for (int i = 0; i < jsonArray.size(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                if (Util.isNullOrEmpty(jsonObject.getString(MemberLevel.MEMBER_LEVEL_ID)) || jsonObject.getString(MemberLevel.MEMBER_LEVEL_ID).equals(member.getMember_level_id())) {
+                if (Util.isNullOrEmpty(jsonObject.getString(MemberLevel.MEMBER_LEVEL_ID)) || jsonObject.getString(MemberLevel.MEMBER_LEVEL_ID).equals(member_level_id)) {
                     priceArray.add(jsonObject);
                 }
             }

@@ -1,10 +1,12 @@
 package com.shanghaichuangshi.shop.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.model.User;
 import com.shanghaichuangshi.service.AuthorizationService;
 import com.shanghaichuangshi.service.UserService;
 import com.shanghaichuangshi.shop.dao.MemberDao;
+import com.shanghaichuangshi.shop.model.Delivery;
 import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.type.UserType;
@@ -20,6 +22,7 @@ public class MemberService extends Service {
 
     private static final UserService userService = new UserService();
     private final AuthorizationService authorizationService = new AuthorizationService();
+    private final DeliveryService deliveryService = new DeliveryService();
 
     public int count(Member member) {
         return memberDao.count(member.getMember_name());
@@ -34,7 +37,15 @@ public class MemberService extends Service {
     }
 
     public Member findByUser_id(String user_id) {
+        if (Util.isNullOrEmpty(user_id)) {
+            return null;
+        }
+
         User user = userService.find(user_id);
+
+        if (user == null) {
+            return null;
+        }
 
         return memberDao.find(user.getObject_id());
     }
@@ -74,10 +85,21 @@ public class MemberService extends Service {
 
         Member member = memberDao.find(u.getObject_id());
 
-        String token = authorizationService.saveByUser_id(u.getUser_id(), member.getMember_id(), platform, version, ip_address, request_user_id);
+        Delivery delivery = deliveryService.findDefaultByUser_id(u.getUser_id());
+
+        String token = authorizationService.saveByUser_id(u.getUser_id(), platform, version, ip_address, request_user_id);
 
         Map<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put(Constant.TOKEN.toLowerCase(), token);
+        resultMap.put(Member.MEMBER_LEVEL_ID, member.getMember_level_id());
+
+        if (delivery == null) {
+            resultMap.put("delivery", new JSONObject());
+        } else {
+            delivery.removeUnfindable();
+
+            resultMap.put("delivery", delivery);
+        }
 
         return resultMap;
     }

@@ -9,7 +9,7 @@ public class Delivery extends Model<Delivery> {
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "快递编号")
     public static final String DELIVERY_ID = "delivery_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "用户编号")
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "用户编号", findable = false)
     public static final String USER_ID = "user_id";
 
     @Column(type = ColumnType.VARCHAR, length = 10, comment = "收货人")
@@ -18,22 +18,22 @@ public class Delivery extends Model<Delivery> {
     @Column(type = ColumnType.VARCHAR, length = 20, comment = "手机号码")
     public static final String DELIVERY_PHONE = "delivery_phone";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "省份")
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "省份", findable = false)
     public static final String DELIVERY_PROVINCE = "delivery_province";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "城市")
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "城市", findable = false)
     public static final String DELIVERY_CITY = "delivery_city";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "区域")
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "区域", findable = false)
     public static final String DELIVERY_AREA = "delivery_area";
 
-    @Column(type = ColumnType.VARCHAR, length = 100, comment = "街道")
+    @Column(type = ColumnType.VARCHAR, length = 100, comment = "街道", findable = false)
     public static final String DELIVERY_STREET = "delivery_street";
 
     @Column(type = ColumnType.VARCHAR, length = 250, comment = "详细地址")
     public static final String DELIVERY_ADDRESS = "delivery_address";
 
-    @Column(type = ColumnType.TINYINT, length = 1, comment = "默认地址")
+    @Column(type = ColumnType.TINYINT, length = 1, comment = "默认地址", findable = false)
     public static final String DELIVERY_IS_DEFAULT = "delivery_is_default";
 
     public String getDelivery_id() {
