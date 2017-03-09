@@ -1,6 +1,5 @@
 package com.shanghaichuangshi.shop.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.jfinal.core.ActionKey;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.model.Category;

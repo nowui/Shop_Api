@@ -45,4 +45,12 @@ public class Url {
     public static final String DELIVERYL_UPDATE = "/delivery/update";
     public static final String DELIVERY_DELETE = "/delivery/delete";
 
+    public static final String ORDER_LIST = "/order/list";
+    public static final String ORDER_ADMIN_LIST = "/order/admin/list";
+    public static final String ORDER_FIND = "/order/find";
+    public static final String ORDER_ADMIN_FIND = "/order/admin/find";
+    public static final String ORDER_SAVE = "/order/save";
+    public static final String ORDERL_UPDATE = "/order/update";
+    public static final String ORDER_DELETE = "/order/delete";
+
 }

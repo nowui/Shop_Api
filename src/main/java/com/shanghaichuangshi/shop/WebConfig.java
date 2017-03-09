@@ -12,10 +12,7 @@ import com.shanghaichuangshi.controller.*;
 import com.shanghaichuangshi.interceptor.GlobalActionInterceptor;
 import com.shanghaichuangshi.model.*;
 import com.shanghaichuangshi.shop.constant.Url;
-import com.shanghaichuangshi.shop.controller.BrandController;
-import com.shanghaichuangshi.shop.controller.DeliveryController;
-import com.shanghaichuangshi.shop.controller.MemberController;
-import com.shanghaichuangshi.shop.controller.ProductController;
+import com.shanghaichuangshi.shop.controller.*;
 import com.shanghaichuangshi.shop.model.*;
 
 import java.util.ArrayList;
@@ -45,6 +42,7 @@ public class WebConfig extends JFinalConfig {
         routes.add("/brand", BrandController.class);
         routes.add("/product", ProductController.class);
         routes.add("/delivery", DeliveryController.class);
+        routes.add("/order", OrderController.class);
 
     }
 
@@ -102,6 +100,8 @@ public class WebConfig extends JFinalConfig {
         activeRecordPlugin.addMapping("table_product", "product_id", Product.class);
         activeRecordPlugin.addMapping("table_delivery", "delivery_id", Delivery.class);
         activeRecordPlugin.addMapping("table_sku", "sku_id", Sku.class);
+        activeRecordPlugin.addMapping("table_order", "order_id", Order.class);
+        activeRecordPlugin.addMapping("table_order_product", "order_product_id", OrderProduct.class);
 
         plugins.add(activeRecordPlugin);
     }
