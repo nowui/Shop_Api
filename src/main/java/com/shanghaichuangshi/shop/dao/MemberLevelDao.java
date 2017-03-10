@@ -4,6 +4,7 @@ import com.jfinal.kit.JMap;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
+import com.shanghaichuangshi.shop.cache.MemberLevelCache;
 import com.shanghaichuangshi.shop.model.MemberLevel;
 import com.shanghaichuangshi.util.Util;
 
@@ -11,6 +12,8 @@ import java.util.Date;
 import java.util.List;
 
 public class MemberLevelDao extends Dao {
+
+    private static final MemberLevelCache memberLevelCache = new MemberLevelCache();
 
     public int count(String member_level_name) {
         JMap map = JMap.create();
@@ -32,16 +35,24 @@ public class MemberLevelDao extends Dao {
     }
 
     public MemberLevel find(String member_level_id) {
-        JMap map = JMap.create();
-        map.put(MemberLevel.MEMBER_LEVEL_ID, member_level_id);
-        SqlPara sqlPara = Db.getSqlPara("member_level.find", map);
+        MemberLevel memberLevel = memberLevelCache.getMemberLevelByMember_level_id(member_level_id);
 
-        List<MemberLevel> member_levelList = new MemberLevel().find(sqlPara.getSql(), sqlPara.getPara());
-        if (member_levelList.size() == 0) {
-            return null;
-        } else {
-            return member_levelList.get(0);
+        if (memberLevel == null) {
+            JMap map = JMap.create();
+            map.put(MemberLevel.MEMBER_LEVEL_ID, member_level_id);
+            SqlPara sqlPara = Db.getSqlPara("member_level.find", map);
+
+            List<MemberLevel> member_levelList = new MemberLevel().find(sqlPara.getSql(), sqlPara.getPara());
+            if (member_levelList.size() == 0) {
+                memberLevel = null;
+            } else {
+                memberLevel = member_levelList.get(0);
+
+                memberLevelCache.setMemberLevelByMember_level_id(memberLevel, member_level_id);
+            }
         }
+
+        return memberLevel;
     }
 
     public MemberLevel save(MemberLevel member_level, String request_user_id) {
@@ -58,6 +69,8 @@ public class MemberLevelDao extends Dao {
     }
 
     public boolean update(MemberLevel member_level, String request_user_id) {
+        memberLevelCache.removeMemberLevelByMember_level_id(member_level.getMember_level_id());
+
         member_level.remove(MemberLevel.SYSTEM_CREATE_USER_ID);
         member_level.remove(MemberLevel.SYSTEM_CREATE_TIME);
         member_level.setSystem_update_user_id(request_user_id);
@@ -68,6 +81,8 @@ public class MemberLevelDao extends Dao {
     }
 
     public boolean delete(String member_level_id, String request_user_id) {
+        memberLevelCache.removeMemberLevelByMember_level_id(member_level_id);
+
         JMap map = JMap.create();
         map.put(MemberLevel.MEMBER_LEVEL_ID, member_level_id);
         map.put(MemberLevel.SYSTEM_UPDATE_USER_ID, request_user_id);

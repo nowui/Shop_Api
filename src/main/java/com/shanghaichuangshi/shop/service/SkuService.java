@@ -1,14 +1,21 @@
 package com.shanghaichuangshi.shop.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.shanghaichuangshi.shop.dao.SkuDao;
+import com.shanghaichuangshi.shop.model.MemberLevel;
 import com.shanghaichuangshi.shop.model.Sku;
 import com.shanghaichuangshi.service.Service;
+import com.shanghaichuangshi.util.Util;
 
 import java.util.List;
 
 public class SkuService extends Service {
 
     private static final SkuDao skuDao = new SkuDao();
+
+    private static final MemberService memberService = new MemberService();
 
     public List<Sku> list(String product_id) {
         return skuDao.list(product_id);
@@ -34,6 +41,29 @@ public class SkuService extends Service {
         if (skuList.size() > 0) {
             skuDao.delete(skuList, product_id, request_user_id);
         }
+    }
+
+    public JSONObject getProduct_price(Sku sku, String member_level_id) {
+        JSONArray jsonArray = JSON.parseArray(sku.getProduct_price());
+
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+            if (jsonObject.getString(MemberLevel.MEMBER_LEVEL_ID).equals(member_level_id)) {
+                return jsonObject;
+            }
+        }
+
+        //如果没有匹配的会员等级价格就设置为默认价格
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+            if (Util.isNullOrEmpty(jsonObject.getString(MemberLevel.MEMBER_LEVEL_ID))) {
+                return jsonObject;
+            }
+        }
+
+        throw new RuntimeException("找不到价格");
     }
 
 }

@@ -8,6 +8,7 @@ import com.shanghaichuangshi.shop.model.Order;
 import com.shanghaichuangshi.util.DateUtil;
 import com.shanghaichuangshi.util.Util;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -78,6 +79,13 @@ public class OrderDao extends Dao {
         order.setOrder_id(Util.getRandomUUID());
         order.setUser_id(request_user_id);
         order.setOrder_number(order_number);
+        order.setOrder_receive_amount(BigDecimal.valueOf(0));
+        order.setOrder_is_pay(false);
+        order.setOrder_pay_type("");
+        order.setOrder_pay_number("");
+        order.setOrder_pay_account("");
+        order.setOrder_pay_time("");
+        order.setOrder_pay_result("");
         order.setSystem_create_user_id(request_user_id);
         order.setSystem_create_time(new Date());
         order.setSystem_update_user_id(request_user_id);

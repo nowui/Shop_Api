@@ -4,6 +4,8 @@ import com.shanghaichuangshi.annotation.Column;
 import com.shanghaichuangshi.model.Model;
 import com.shanghaichuangshi.type.ColumnType;
 
+import java.math.BigDecimal;
+
 public class Order extends Model<Order> {
 
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "订单编号")
@@ -131,27 +133,27 @@ public class Order extends Model<Order> {
         set(ORDER_PRODUCT_NUMBER, order_product_number);
     }
 
-    public String getOrder_receivable_amount() {
-        return getStr(ORDER_RECEIVABLE_AMOUNT);
+    public BigDecimal getOrder_receivable_amount() {
+        return getBigDecimal(ORDER_RECEIVABLE_AMOUNT);
     }
 
-    public void setOrder_receivable_amount(String order_receivable_amount) {
+    public void setOrder_receivable_amount(BigDecimal order_receivable_amount) {
         set(ORDER_RECEIVABLE_AMOUNT, order_receivable_amount);
     }
 
-    public String getOrder_receive_amount() {
-        return getStr(ORDER_RECEIVE_AMOUNT);
+    public BigDecimal getOrder_receive_amount() {
+        return getBigDecimal(ORDER_RECEIVE_AMOUNT);
     }
 
-    public void setOrder_receive_amount(String order_receive_amount) {
+    public void setOrder_receive_amount(BigDecimal order_receive_amount) {
         set(ORDER_RECEIVE_AMOUNT, order_receive_amount);
     }
 
-    public String getOrder_is_pay() {
-        return getStr(ORDER_IS_PAY);
+    public Boolean getOrder_is_pay() {
+        return getBoolean(ORDER_IS_PAY);
     }
 
-    public void setOrder_is_pay(String order_is_pay) {
+    public void setOrder_is_pay(Boolean order_is_pay) {
         set(ORDER_IS_PAY, order_is_pay);
     }
 
@@ -211,11 +213,11 @@ public class Order extends Model<Order> {
         set(MEMBER_LEVEL_NAME, member_level_name);
     }
 
-    public String getMember_level_value() {
-        return getStr(MEMBER_LEVEL_VALUE);
+    public Integer getMember_level_value() {
+        return getInt(MEMBER_LEVEL_VALUE);
     }
 
-    public void setMember_level_value(String member_level_value) {
+    public void setMember_level_value(Integer member_level_value) {
         set(MEMBER_LEVEL_VALUE, member_level_value);
     }
 

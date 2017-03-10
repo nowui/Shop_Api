@@ -1,13 +1,11 @@
 package com.shanghaichuangshi.shop.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.shanghaichuangshi.shop.dao.OrderDao;
-import com.shanghaichuangshi.shop.model.Order;
+import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.service.Service;
-import com.shanghaichuangshi.shop.model.OrderProduct;
-import com.shanghaichuangshi.shop.model.Product;
-import com.shanghaichuangshi.shop.model.Sku;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,6 +17,7 @@ public class OrderService extends Service {
     private static final SkuService skuService = new SkuService();
     private static final ProductService productService = new ProductService();
     private static final MemberService memberService = new MemberService();
+    private static final MemberLevelService memberLevelService = new MemberLevelService();
 
     public int count(Order order) {
         return orderDao.count(order.getOrder_number());
@@ -42,6 +41,7 @@ public class OrderService extends Service {
         Integer order_product_number = 0;
         BigDecimal order_receivable_amount = BigDecimal.valueOf(0);
         String member_level_id = memberService.findMember_lever_idByUser_id(request_user_id);
+        MemberLevel memberLevel = memberLevelService.find(member_level_id);
 
         for (int i = 0; i < productJSONArray.size(); i++) {
             JSONObject productJSONObject = productJSONArray.getJSONObject(i);
@@ -65,10 +65,17 @@ public class OrderService extends Service {
             order_product_number += product_number;
 
             //更新订单应付价格
+            JSONObject productPriceJSONObject = skuService.getProduct_price(sku, member_level_id);
+            BigDecimal product_price = productPriceJSONObject.getBigDecimal(Product.PRODUCT_PRICE);
 
+            order_receivable_amount = order_receivable_amount.add(product_price.multiply(BigDecimal.valueOf(product_number)));
         }
 
         order.setOrder_product_number(order_product_number);
+        order.setOrder_receivable_amount(order_receivable_amount);
+        order.setMember_level_id(memberLevel.getMember_level_id());
+        order.setMember_level_name(memberLevel.getMember_level_name());
+        order.setMember_level_value(memberLevel.getMember_level_value());
 
         return orderDao.save(order, request_user_id);
     }
