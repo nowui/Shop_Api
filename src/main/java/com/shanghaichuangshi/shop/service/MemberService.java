@@ -50,6 +50,17 @@ public class MemberService extends Service {
         return memberDao.find(user.getObject_id());
     }
 
+    public String findMember_lever_idByUser_id(String user_id) {
+        String member_level_id = "";
+
+        Member member = findByUser_id(user_id);
+        if (member != null) {
+            member_level_id = member.getMember_level_id();
+        }
+
+        return member_level_id;
+    }
+
     public Member save(Member member, User user, String request_user_id) {
         Member m = memberDao.save(member, request_user_id);
 

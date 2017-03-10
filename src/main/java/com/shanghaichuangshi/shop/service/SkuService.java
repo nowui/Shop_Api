@@ -24,15 +24,15 @@ public class SkuService extends Service {
         }
     }
 
-    public void updateProduct_stock(List<Sku> skuList, String request_user_id) {
+    public void updateProduct_stock(List<Sku> skuList, String product_id, String request_user_id) {
         if (skuList.size() > 0) {
-            skuDao.updateProduct_stock(skuList, request_user_id);
+            skuDao.updateProduct_stock(skuList, product_id, request_user_id);
         }
     }
 
-    public void delete(List<Sku> skuList, String request_user_id) {
+    public void delete(List<Sku> skuList, String product_id, String request_user_id) {
         if (skuList.size() > 0) {
-            skuDao.delete(skuList, request_user_id);
+            skuDao.delete(skuList, product_id, request_user_id);
         }
     }
 

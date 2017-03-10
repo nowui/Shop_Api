@@ -5,6 +5,7 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.dao.Dao;
+import com.shanghaichuangshi.shop.cache.SkuCache;
 import com.shanghaichuangshi.shop.model.Sku;
 import com.shanghaichuangshi.util.Util;
 
@@ -14,25 +15,45 @@ import java.util.List;
 
 public class SkuDao extends Dao {
 
-    public List<Sku> list(String product_id) {
-        JMap map = JMap.create();
-        map.put(Sku.PRODUCT_ID, product_id);
-        SqlPara sqlPara = Db.getSqlPara("sku.list", map);
+    private static final SkuCache skuCache = new SkuCache();
 
-        return new Sku().find(sqlPara.getSql(), sqlPara.getPara());
+    public List<Sku> list(String product_id) {
+        List<Sku> skuList = skuCache.getSkuListByProduct_id(product_id);
+
+        if (skuList == null) {
+            JMap map = JMap.create();
+            map.put(Sku.PRODUCT_ID, product_id);
+            SqlPara sqlPara = Db.getSqlPara("sku.list", map);
+
+            skuList = new Sku().find(sqlPara.getSql(), sqlPara.getPara());
+
+            if (skuList != null) {
+                skuCache.setSkuListByProduct_id(skuList, product_id);
+            }
+        }
+
+        return skuList;
     }
 
     public Sku find(String sku_id) {
-        JMap map = JMap.create();
-        map.put(Sku.SKU_ID, sku_id);
-        SqlPara sqlPara = Db.getSqlPara("sku.find", map);
+        Sku sku = skuCache.getSkuBySku_id(sku_id);
 
-        List<Sku> skuList = new Sku().find(sqlPara.getSql(), sqlPara.getPara());
-        if (skuList.size() == 0) {
-            return null;
-        } else {
-            return skuList.get(0);
+        if (sku == null) {
+            JMap map = JMap.create();
+            map.put(Sku.SKU_ID, sku_id);
+            SqlPara sqlPara = Db.getSqlPara("sku.find", map);
+
+            List<Sku> skuList = new Sku().find(sqlPara.getSql(), sqlPara.getPara());
+            if (skuList.size() == 0) {
+                sku = null;
+            } else {
+                sku = skuList.get(0);
+
+                skuCache.setSkuBySku_id(sku, sku_id);
+            }
         }
+
+        return sku;
     }
 
     public void save(List<Sku> skuList, String request_user_id) {
@@ -64,7 +85,13 @@ public class SkuDao extends Dao {
         }
     }
 
-    public void updateProduct_stock(List<Sku> skuList, String request_user_id) {
+    public void updateProduct_stock(List<Sku> skuList, String product_id, String request_user_id) {
+        for(Sku sku : skuList) {
+            skuCache.removeSkuBySku_id(sku.getSku_id());
+        }
+
+        skuCache.removeSkuListByProduct_id(product_id);
+
         JMap map = JMap.create();
         SqlPara sqlPara = Db.getSqlPara("sku.updateProduct_stock", map);
 
@@ -74,6 +101,7 @@ public class SkuDao extends Dao {
             objectList.add(sku.getProduct_stock());
             objectList.add(request_user_id);
             objectList.add(new Date());
+            objectList.add(sku.getSku_id());
             parameterList.add(objectList.toArray());
         }
 
@@ -86,7 +114,13 @@ public class SkuDao extends Dao {
         }
     }
 
-    public void delete(List<Sku> skuList, String request_user_id) {
+    public void delete(List<Sku> skuList, String product_id, String request_user_id) {
+        for(Sku sku : skuList) {
+            skuCache.removeSkuBySku_id(sku.getSku_id());
+        }
+
+        skuCache.removeSkuListByProduct_id(product_id);
+
         JMap map = JMap.create();
         SqlPara sqlPara = Db.getSqlPara("sku.delete", map);
 

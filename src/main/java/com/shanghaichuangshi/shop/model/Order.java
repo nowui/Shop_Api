@@ -123,11 +123,11 @@ public class Order extends Model<Order> {
         set(ORDER_MESSAGE, order_message);
     }
 
-    public String getOrder_product_number() {
-        return getStr(ORDER_PRODUCT_NUMBER);
+    public Integer getOrder_product_number() {
+        return getInt(ORDER_PRODUCT_NUMBER);
     }
 
-    public void setOrder_product_number(String order_product_number) {
+    public void setOrder_product_number(Integer order_product_number) {
         set(ORDER_PRODUCT_NUMBER, order_product_number);
     }
 

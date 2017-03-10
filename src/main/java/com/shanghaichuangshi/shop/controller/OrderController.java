@@ -70,9 +70,9 @@ public class OrderController extends Controller {
         Order model = getParameter(Order.class);
         String request_user_id = getRequest_user_id();
 
-        model.validate(Order.ORDER_NUMBER);
+        model.validate(Order.ORDER_DELIVERY_NAME, Order.ORDER_DELIVERY_PHONE, Order.ORDER_DELIVERY_ADDRESS, Order.ORDER_MESSAGE, Order.ORDER_PAY_TYPE);
 
-        orderService.save(model, request_user_id);
+        orderService.save(model, getAttr(Constant.REQUEST_PARAMETER), request_user_id);
 
         renderSuccessJson();
     }

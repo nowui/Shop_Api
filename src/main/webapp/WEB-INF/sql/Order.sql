@@ -9,6 +9,12 @@
     #end
   #end
 
+  #sql("countByOrder_number")
+    SELECT COUNT(*) FROM table_order
+    WHERE system_status = 1
+    AND order_number = #p(order_number)
+  #end
+
   #sql("list")
     SELECT
     order_id,

@@ -36,12 +36,6 @@ public class OrderProduct extends Model<OrderProduct> {
     @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品图片")
     public static final String PRODUCT_IMAGE_LIST = "product_image_list";
 
-    @Column(type = ColumnType.DECIMAL, length = 0, comment = "商品价格")
-    public static final String PRODUCT_PRICE = "product_price";
-
-    @Column(type = ColumnType.TINYINT, length = 1, comment = "商品库存")
-    public static final String PRODUCT_STOCK = "product_stock";
-
     @Column(type = ColumnType.TINYINT, length = 1, comment = "是否新品")
     public static final String PRODUCT_IS_NEW = "product_is_new";
 
@@ -59,6 +53,24 @@ public class OrderProduct extends Model<OrderProduct> {
 
     @Column(type = ColumnType.LONGTEXT, length = 0, comment = "商品介绍")
     public static final String PRODUCT_CONTENT = "product_content";
+
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "SKU编号")
+    public static final String SKU_ID = "sku_id";
+
+    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品属性")
+    public static final String PRODUCT_ATTRIBUTE = "product_attribute";
+
+    @Column(type = ColumnType.DECIMAL, length = 0, comment = "市场价格")
+    public static final String PRODUCT_MARKET_PRICE = "product_market_price";
+
+    @Column(type = ColumnType.DECIMAL, length = 0, comment = "商品价格")
+    public static final String PRODUCT_PRICE = "product_price";
+
+    @Column(type = ColumnType.INT, length = 11, comment = "商品库存")
+    public static final String PRODUCT_STOCK = "product_stock";
+
+    @Column(type = ColumnType.INT, length = 11, comment = "商品数量")
+    public static final String PRODUCT_NUMBER = "product_number";
 
     
     public String getOrder_product_id() {
@@ -141,22 +153,6 @@ public class OrderProduct extends Model<OrderProduct> {
         set(PRODUCT_IMAGE_LIST, product_image_list);
     }
 
-    public String getProduct_price() {
-        return getStr(PRODUCT_PRICE);
-    }
-
-    public void setProduct_price(String product_price) {
-        set(PRODUCT_PRICE, product_price);
-    }
-
-    public String getProduct_stock() {
-        return getStr(PRODUCT_STOCK);
-    }
-
-    public void setProduct_stock(String product_stock) {
-        set(PRODUCT_STOCK, product_stock);
-    }
-
     public String getProduct_is_new() {
         return getStr(PRODUCT_IS_NEW);
     }
@@ -203,5 +199,53 @@ public class OrderProduct extends Model<OrderProduct> {
 
     public void setProduct_content(String product_content) {
         set(PRODUCT_CONTENT, product_content);
+    }
+
+    public String getSku_id() {
+        return getStr(SKU_ID);
+    }
+
+    public void setSku_id(String sku_id) {
+        set(SKU_ID, sku_id);
+    }
+
+    public String getProduct_attribute() {
+        return getStr(PRODUCT_ATTRIBUTE);
+    }
+
+    public void setProduct_attribute(String product_attribute) {
+        set(PRODUCT_ATTRIBUTE, product_attribute);
+    }
+
+    public String getProduct_market_price() {
+        return getStr(PRODUCT_MARKET_PRICE);
+    }
+
+    public void setProduct_market_price(String product_market_price) {
+        set(PRODUCT_MARKET_PRICE, product_market_price);
+    }
+
+    public String getProduct_price() {
+        return getStr(PRODUCT_PRICE);
+    }
+
+    public void setProduct_price(String product_price) {
+        set(PRODUCT_PRICE, product_price);
+    }
+
+    public String getProduct_stock() {
+        return getStr(PRODUCT_STOCK);
+    }
+
+    public void setProduct_stock(String product_stock) {
+        set(PRODUCT_STOCK, product_stock);
+    }
+
+    public String getProduct_number() {
+        return getStr(PRODUCT_NUMBER);
+    }
+
+    public void setProduct_number(String product_number) {
+        set(PRODUCT_NUMBER, product_number);
     }
 }

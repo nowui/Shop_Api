@@ -48,10 +48,10 @@
 
   #sql("updateProduct_stock")
     UPDATE table_sku SET
-    product_stock = #p(product_stock),
-    system_update_user_id = #p(system_update_user_id),
-    system_update_time = #p(system_update_time)
-    WHERE sku_id = #p(sku_id)
+    product_stock = ?,
+    system_update_user_id = ?,
+    system_update_time = ?
+    WHERE sku_id = ?
   #end
 
   #sql("delete")

@@ -5,6 +5,7 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.model.Order;
+import com.shanghaichuangshi.util.DateUtil;
 import com.shanghaichuangshi.util.Util;
 
 import java.util.Date;
@@ -16,6 +17,15 @@ public class OrderDao extends Dao {
         JMap map = JMap.create();
         map.put(Order.ORDER_NUMBER, order_number);
         SqlPara sqlPara = Db.getSqlPara("order.count", map);
+
+        Number count = Db.queryFirst(sqlPara.getSql(), sqlPara.getPara());
+        return count.intValue();
+    }
+
+    public int countByOrder_number(String order_number) {
+        JMap map = JMap.create();
+        map.put(Order.ORDER_NUMBER, order_number);
+        SqlPara sqlPara = Db.getSqlPara("order.countByOrder_number", map);
 
         Number count = Db.queryFirst(sqlPara.getSql(), sqlPara.getPara());
         return count.intValue();
@@ -44,8 +54,30 @@ public class OrderDao extends Dao {
         }
     }
 
+    private String getOrder_number() {
+        return "E" + DateUtil.getDateString(new Date()).replaceAll("-", "") + Util.getFixLenthString(6);
+    }
+
     public Order save(Order order, String request_user_id) {
+        String order_number = getOrder_number();
+
+        boolean isExit = true;
+
+        while (isExit) {
+            int count = countByOrder_number(order_number);
+
+            if (count == 0) {
+                isExit = false;
+
+                break;
+            } else {
+                order_number = getOrder_number();
+            }
+        }
+
         order.setOrder_id(Util.getRandomUUID());
+        order.setUser_id(request_user_id);
+        order.setOrder_number(order_number);
         order.setSystem_create_user_id(request_user_id);
         order.setSystem_create_time(new Date());
         order.setSystem_update_user_id(request_user_id);

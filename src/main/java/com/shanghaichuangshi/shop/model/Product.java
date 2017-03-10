@@ -26,6 +26,9 @@ public class Product extends Model<Product> {
     @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品图片")
     public static final String PRODUCT_IMAGE_LIST = "product_image_list";
 
+    @Column(type = ColumnType.DECIMAL, length = 0, comment = "市场价格")
+    public static final String PRODUCT_MARKET_PRICE = "product_market_price";
+
     @Column(type = ColumnType.DECIMAL, length = 0, comment = "商品价格", findable = false)
     public static final String PRODUCT_PRICE = "product_price";
 
@@ -49,6 +52,8 @@ public class Product extends Model<Product> {
 
     @Column(type = ColumnType.LONGTEXT, length = 0, comment = "商品介绍")
     public static final String PRODUCT_CONTENT = "product_content";
+
+    public static final String PRODUCT_LIST = "product_list";
 
     
     public String getProduct_id() {
@@ -99,11 +104,19 @@ public class Product extends Model<Product> {
         set(PRODUCT_IMAGE_LIST, product_image_list);
     }
 
+    public BigDecimal getProduct_market_price() {
+        return getBigDecimal(PRODUCT_MARKET_PRICE);
+    }
+
+    public void setProduct_market_price(BigDecimal product_market_price) {
+        set(PRODUCT_MARKET_PRICE, product_market_price);
+    }
+
     public BigDecimal getProduct_price() {
         return getBigDecimal(PRODUCT_PRICE);
     }
 
-    public void setProduct_price(String product_price) {
+    public void setProduct_price(BigDecimal product_price) {
         set(PRODUCT_PRICE, product_price);
     }
 
