@@ -9,12 +9,6 @@
     #end
   #end
 
-  #sql("countByOrder_number")
-    SELECT COUNT(*) FROM table_order
-    WHERE system_status = 1
-    AND order_number = #p(order_number)
-  #end
-
   #sql("list")
     SELECT
     order_id,
@@ -29,6 +23,14 @@
     #if(n > 0)
       LIMIT #p(m), #p(n)
     #end
+  #end
+
+  #sql("listOrderNumber")
+    SELECT
+    order_number
+    FROM table_order
+    #set(order_number = "%" + order_number + "%")
+    WHERE order_number LIKE #p(order_number)
   #end
 
   #sql("find")

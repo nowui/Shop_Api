@@ -4,29 +4,24 @@ import com.jfinal.kit.JMap;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
+import com.shanghaichuangshi.shop.cache.OrderCache;
 import com.shanghaichuangshi.shop.model.Order;
 import com.shanghaichuangshi.util.DateUtil;
 import com.shanghaichuangshi.util.Util;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class OrderDao extends Dao {
 
+    private static final OrderCache orderCache = new OrderCache();
+
     public int count(String order_number) {
         JMap map = JMap.create();
         map.put(Order.ORDER_NUMBER, order_number);
         SqlPara sqlPara = Db.getSqlPara("order.count", map);
-
-        Number count = Db.queryFirst(sqlPara.getSql(), sqlPara.getPara());
-        return count.intValue();
-    }
-
-    public int countByOrder_number(String order_number) {
-        JMap map = JMap.create();
-        map.put(Order.ORDER_NUMBER, order_number);
-        SqlPara sqlPara = Db.getSqlPara("order.countByOrder_number", map);
 
         Number count = Db.queryFirst(sqlPara.getSql(), sqlPara.getPara());
         return count.intValue();
@@ -42,6 +37,40 @@ public class OrderDao extends Dao {
         return new Order().find(sqlPara.getSql(), sqlPara.getPara());
     }
 
+    public List<String> listOrderNumber(String day) {
+        List<String> resultList = orderCache.getOrderNumberListByDay(day);
+
+        if (resultList == null) {
+            JMap map = JMap.create();
+            map.put(Order.ORDER_NUMBER, day);
+            SqlPara sqlPara = Db.getSqlPara("order.listOrderNumber", map);
+
+            List<Order> orderList = new Order().find(sqlPara.getSql(), sqlPara.getPara());
+
+            resultList = new ArrayList<>();
+
+            if (orderList.size() > 0) {
+                for(Order order : orderList) {
+                    resultList.add(order.getOrder_number());
+                }
+
+                orderCache.setOrderNumberListByDay(resultList, day);
+            }
+        }
+
+        return resultList;
+    }
+
+    public void addOrderNumber(String order_number, String day) {
+        String today = DateUtil.getDateString(new Date()).replaceAll("-", "");
+
+        List<String> resultList = listOrderNumber(day);
+
+        resultList.add(order_number);
+
+        orderCache.setOrderNumberListByDay(resultList, day);
+    }
+
     public Order find(String order_id) {
         JMap map = JMap.create();
         map.put(Order.ORDER_ID, order_id);
@@ -55,24 +84,26 @@ public class OrderDao extends Dao {
         }
     }
 
-    private String getOrder_number() {
-        return "E" + DateUtil.getDateString(new Date()).replaceAll("-", "") + Util.getFixLenthString(6);
+    private String getOrder_number(String day) {
+        return "E" + day + Util.getFixLenthString(6);
     }
 
     public Order save(Order order, String request_user_id) {
-        String order_number = getOrder_number();
+        String today = DateUtil.getDateString(new Date()).replaceAll("-", "");
+
+        String order_number = getOrder_number(today);
+
+        List orderNumberList = listOrderNumber(today);
 
         boolean isExit = true;
 
         while (isExit) {
-            int count = countByOrder_number(order_number);
+            if (orderNumberList.contains(order_number)) {
+                order_number = getOrder_number(today);
 
-            if (count == 0) {
-                isExit = false;
-
-                break;
+                addOrderNumber(order_number, today);
             } else {
-                order_number = getOrder_number();
+                isExit = false;
             }
         }
 
