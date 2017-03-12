@@ -17,11 +17,9 @@ public class OrderController extends Controller {
     public void list() {
         validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);
 
-        Order model = getParameter(Order.class);
+        String request_user_id = getRequest_user_id();
 
-        model.validate(Order.ORDER_NUMBER);
-
-        List<Order> orderListvice = orderService.list(model, getM(), getN());
+        List<Order> orderListvice = orderService.listByUser_id(request_user_id, getM(), getN());
 
         renderSuccessJson(orderListvice);
     }
@@ -72,9 +70,9 @@ public class OrderController extends Controller {
 
         model.validate(Order.ORDER_DELIVERY_NAME, Order.ORDER_DELIVERY_PHONE, Order.ORDER_DELIVERY_ADDRESS, Order.ORDER_MESSAGE, Order.ORDER_PAY_TYPE);
 
-        orderService.save(model, getAttr(Constant.REQUEST_PARAMETER), request_user_id);
+        Order order = orderService.save(model, getAttr(Constant.REQUEST_PARAMETER), request_user_id);
 
-        renderSuccessJson();
+        renderSuccessJson(order.getOrder_receivable_amount());
     }
 
     @ActionKey(Url.ORDERL_UPDATE)

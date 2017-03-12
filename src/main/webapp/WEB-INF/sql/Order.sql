@@ -25,6 +25,19 @@
     #end
   #end
 
+  #sql("listByUser_id")
+    SELECT
+    order_id,
+    order_number
+    FROM table_order
+    WHERE system_status = 1
+    AND user_id LIKE #p(user_id)
+    ORDER BY system_create_time DESC
+    #if(n > 0)
+      LIMIT #p(m), #p(n)
+    #end
+  #end
+
   #sql("listOrderNumber")
     SELECT
     order_number

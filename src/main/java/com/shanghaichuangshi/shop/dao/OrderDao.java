@@ -37,6 +37,16 @@ public class OrderDao extends Dao {
         return new Order().find(sqlPara.getSql(), sqlPara.getPara());
     }
 
+    public List<Order> listByUser_id(String user_id, Integer m, Integer n) {
+        JMap map = JMap.create();
+        map.put(Order.USER_ID, user_id);
+        map.put(Order.M, m);
+        map.put(Order.N, n);
+        SqlPara sqlPara = Db.getSqlPara("order.listByUser_id", map);
+
+        return new Order().find(sqlPara.getSql(), sqlPara.getPara());
+    }
+
     public List<String> listOrderNumber(String day) {
         List<String> resultList = orderCache.getOrderNumberListByDay(day);
 

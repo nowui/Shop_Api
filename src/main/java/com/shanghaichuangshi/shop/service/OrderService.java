@@ -24,7 +24,11 @@ public class OrderService extends Service {
     }
 
     public List<Order> list(Order order, int m, int n) {
-        return orderDao.list(order.getOrder_number(), m, n);
+        return orderDao.list("", m, n);
+    }
+
+    public List<Order> listByUser_id(String user_id, Integer m, Integer n) {
+        return orderDao.listByUser_id(user_id, m, n);
     }
 
     public Order find(String order_id) {
