@@ -56,9 +56,7 @@ public class BrandController extends Controller {
 
         Brand brand = brandService.find(model.getBrand_id());
 
-        brand.removeUnfindable();
-
-        renderSuccessJson(brand);
+        renderSuccessJson(brand.format());
     }
 
     @ActionKey(Url.BRAND_ADMIN_FIND)

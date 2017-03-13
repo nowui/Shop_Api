@@ -31,6 +31,7 @@ public class Url {
     public static final String PRODUCT_LIST = "/product/list";
     public static final String PRODUCT_ADMIN_LIST = "/product/admin/list";
     public static final String PRODUCT_CATEGORY_LIST = "/product/category/list";
+    public static final String PRODUCT_ALL_LIST = "/product/all/list";
     public static final String PRODUCT_FIND = "/product/find";
     public static final String PRODUCT_ADMIN_FIND = "/product/admin/find";
     public static final String PRODUCT_SAVE = "/product/save";

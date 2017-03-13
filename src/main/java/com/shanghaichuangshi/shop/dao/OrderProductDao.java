@@ -3,10 +3,12 @@ package com.shanghaichuangshi.shop.dao;
 import com.jfinal.kit.JMap;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
+import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.model.OrderProduct;
 import com.shanghaichuangshi.util.Util;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,17 +27,50 @@ public class OrderProductDao extends Dao {
         }
     }
 
-    public OrderProduct save(OrderProduct order_product, String request_user_id) {
-        order_product.setOrder_product_id(Util.getRandomUUID());
-        order_product.setSystem_create_user_id(request_user_id);
-        order_product.setSystem_create_time(new Date());
-        order_product.setSystem_update_user_id(request_user_id);
-        order_product.setSystem_update_time(new Date());
-        order_product.setSystem_status(true);
+    public void save(List<OrderProduct> orderProductList, String request_user_id) {
+        JMap map = JMap.create();
+        SqlPara sqlPara = Db.getSqlPara("order_product.save", map);
 
-        order_product.save();
+        List<Object[]> parameterList = new ArrayList<Object[]>();
+        for(OrderProduct orderProduct : orderProductList) {
+            List<Object> objectList = new ArrayList<Object>();
+            objectList.add(Util.getRandomUUID());
+            objectList.add(orderProduct.getOrder_id());
+            objectList.add(orderProduct.getProduct_id());
+            objectList.add(orderProduct.getCategory_id());
+            objectList.add(orderProduct.getCategory_name());
+            objectList.add(orderProduct.getBrand_id());
+            objectList.add(orderProduct.getBrand_name());
+            objectList.add(orderProduct.getProduct_name());
+            objectList.add(orderProduct.getProduct_image());
+            objectList.add(orderProduct.getProduct_image_list());
+            objectList.add(orderProduct.getProduct_is_new());
+            objectList.add(orderProduct.getProduct_is_recommend());
+            objectList.add(orderProduct.getProduct_is_bargain());
+            objectList.add(orderProduct.getProduct_is_hot());
+            objectList.add(orderProduct.getProduct_is_sale());
+            objectList.add(orderProduct.getProduct_content());
+            objectList.add(orderProduct.getSku_id());
+            objectList.add(orderProduct.getProduct_attribute());
+            objectList.add(orderProduct.getProduct_market_price());
+            objectList.add(orderProduct.getProduct_price());
+            objectList.add(orderProduct.getProduct_stock());
+            objectList.add(orderProduct.getProduct_number());
+            objectList.add(request_user_id);
+            objectList.add(new Date());
+            objectList.add(request_user_id);
+            objectList.add(new Date());
+            objectList.add(true);
+            parameterList.add(objectList.toArray());
+        }
 
-        return order_product;
+        int[] result = Db.batch(sqlPara.getSql(), Util.getObjectArray(parameterList), Constant.BATCH_SIZE);
+
+        for (int i : result) {
+            if (i == 0) {
+                throw new RuntimeException("订单商品保存不成功");
+            }
+        }
     }
 
     public boolean update(OrderProduct order_product, String request_user_id) {

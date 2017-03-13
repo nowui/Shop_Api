@@ -27,6 +27,14 @@
     #end
   #end
 
+  #sql("listAll")
+    SELECT
+    *
+    FROM table_product
+    WHERE system_status = 1
+    ORDER BY system_create_time DESC
+  #end
+
   #sql("find")
     SELECT
     *

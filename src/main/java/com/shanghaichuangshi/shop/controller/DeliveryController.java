@@ -47,9 +47,7 @@ public class DeliveryController extends Controller {
 
         Delivery delivery = deliveryService.find(model.getDelivery_id());
 
-        delivery.removeUnfindable();
-
-        renderSuccessJson(delivery);
+        renderSuccessJson(delivery.format());
     }
 
     @ActionKey(Url.DELIVERY_ADMIN_FIND)

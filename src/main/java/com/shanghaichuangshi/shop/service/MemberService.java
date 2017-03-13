@@ -107,9 +107,7 @@ public class MemberService extends Service {
         if (delivery == null) {
             resultMap.put("delivery", new JSONObject());
         } else {
-            delivery.removeUnfindable();
-
-            resultMap.put("delivery", delivery);
+            resultMap.put("delivery", delivery.format());
         }
 
         return resultMap;

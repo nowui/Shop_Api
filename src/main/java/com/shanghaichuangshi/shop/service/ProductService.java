@@ -37,10 +37,18 @@ public class ProductService extends Service {
         return categoryService.listByCategory_key(CategoryType.PRODUCT.getKey());
     }
 
-    public Product find(String product_id, String request_user_id) {
-        Product product = productDao.find(product_id);
+    public List<Product> listAll() {
+        return productDao.listAll();
+    }
 
-        String member_level_id = memberService.findMember_lever_idByUser_id(request_user_id);
+    public Product find(String product_id) {
+        return productDao.find(product_id);
+    }
+
+    public Product findByUser_id(String product_id, String user_id) {
+        Product product = find(product_id);
+
+        String member_level_id = memberService.findMember_lever_idByUser_id(user_id);
 
         List<Sku> skuList = skuService.list(product.getProduct_id());
 
@@ -60,7 +68,7 @@ public class ProductService extends Service {
     }
 
     public Product adminFind(String product_id) {
-        Product product = productDao.find(product_id);
+        Product product = find(product_id);
 
         List<Sku> skuList = skuService.list(product.getProduct_id());
         product.put(Sku.SKU_LIST, skuList);

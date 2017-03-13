@@ -110,6 +110,7 @@ public class WebConfig extends JFinalConfig {
     public void configInterceptor(Interceptors interceptors) {
         List<String> uncheckTokenUrlList = new ArrayList<String>();
         uncheckTokenUrlList.add(Url.PRODUCT_LIST);
+        uncheckTokenUrlList.add(Url.PRODUCT_ALL_LIST);
 
         List<String> uncheckRequestUserIdUrlList = new ArrayList<String>();
         uncheckRequestUserIdUrlList.add(Url.PRODUCT_FIND);

@@ -3,11 +3,15 @@ package com.shanghaichuangshi.shop.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.shanghaichuangshi.model.Category;
+import com.shanghaichuangshi.service.CategoryService;
 import com.shanghaichuangshi.shop.dao.OrderDao;
 import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.service.Service;
+import com.shanghaichuangshi.shop.type.OrderStatusEnum;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderService extends Service {
@@ -18,6 +22,9 @@ public class OrderService extends Service {
     private static final ProductService productService = new ProductService();
     private static final MemberService memberService = new MemberService();
     private static final MemberLevelService memberLevelService = new MemberLevelService();
+    private static final CategoryService categoryService = new CategoryService();
+    private static final BrandService brandService = new BrandService();
+    private static final OrderProductService orderProductService = new OrderProductService();
 
     public int count(Order order) {
         return orderDao.count(order.getOrder_number());
@@ -46,6 +53,7 @@ public class OrderService extends Service {
         BigDecimal order_receivable_amount = BigDecimal.valueOf(0);
         String member_level_id = memberService.findMember_lever_idByUser_id(request_user_id);
         MemberLevel memberLevel = memberLevelService.find(member_level_id);
+        List<OrderProduct> orderProductList = new ArrayList<OrderProduct>();
 
         for (int i = 0; i < productJSONArray.size(); i++) {
             JSONObject productJSONObject = productJSONArray.getJSONObject(i);
@@ -59,9 +67,9 @@ public class OrderService extends Service {
                 throw new RuntimeException("SKU不存在:" + sku_id);
             }
 
-            if (product_number > sku.getProduct_stock()) {
-                Product product = productService.find(sku.getProduct_id(), request_user_id);
+            Product product = productService.find(sku.getProduct_id());
 
+            if (product_number > sku.getProduct_stock()) {
                 throw new RuntimeException("库存不足:" + product.getProduct_name());
             }
 
@@ -71,8 +79,35 @@ public class OrderService extends Service {
             //更新订单应付价格
             JSONObject productPriceJSONObject = skuService.getProduct_price(sku, member_level_id);
             BigDecimal product_price = productPriceJSONObject.getBigDecimal(Product.PRODUCT_PRICE);
-
             order_receivable_amount = order_receivable_amount.add(product_price.multiply(BigDecimal.valueOf(product_number)));
+
+            //订单的商品
+            Category category = categoryService.find(product.getCategory_id());
+            Brand brand = brandService.find(product.getBrand_id());
+
+            OrderProduct orderProduct = new OrderProduct();
+            orderProduct.setProduct_id(product.getProduct_id());
+            orderProduct.setCategory_id(category.getCategory_id());
+            orderProduct.setCategory_name(category.getCategory_name());
+            orderProduct.setBrand_id(brand.getBrand_id());
+            orderProduct.setBrand_name(brand.getBrand_name());
+            orderProduct.setProduct_name(product.getProduct_name());
+            orderProduct.setProduct_image(product.getProduct_image());
+            orderProduct.setProduct_image_list(product.getProduct_image_list());
+            orderProduct.setProduct_is_new(product.getProduct_is_new());
+            orderProduct.setProduct_is_recommend(product.getProduct_is_recommend());
+            orderProduct.setProduct_is_bargain(product.getProduct_is_bargain());
+            orderProduct.setProduct_is_hot(product.getProduct_is_hot());
+            orderProduct.setProduct_is_sale(product.getProduct_is_sale());
+            orderProduct.setProduct_content(product.getProduct_content());
+            orderProduct.setSku_id(sku.getSku_id());
+            orderProduct.setProduct_attribute(sku.getProduct_attribute());
+            orderProduct.setProduct_market_price(product.getProduct_market_price());
+            orderProduct.setProduct_price(product.getProduct_price());
+            orderProduct.setProduct_stock(product.getProduct_stock());
+            orderProduct.setProduct_number(product_number);
+            orderProductList.add(orderProduct);
+
         }
 
         order.setOrder_product_number(order_product_number);
@@ -80,8 +115,16 @@ public class OrderService extends Service {
         order.setMember_level_id(memberLevel.getMember_level_id());
         order.setMember_level_name(memberLevel.getMember_level_name());
         order.setMember_level_value(memberLevel.getMember_level_value());
+        order.setOrder_status(OrderStatusEnum.WAIT.getKey());
 
-        return orderDao.save(order, request_user_id);
+        Order o = orderDao.save(order, request_user_id);
+
+        for (OrderProduct orderProduct : orderProductList) {
+            orderProduct.setOrder_id(o.getOrder_id());
+        }
+        orderProductService.save(orderProductList, request_user_id);
+
+        return o;
     }
 
     public boolean update(Order order, String request_user_id) {

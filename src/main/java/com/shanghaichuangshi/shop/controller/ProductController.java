@@ -8,7 +8,7 @@ import com.shanghaichuangshi.controller.Controller;
 import com.shanghaichuangshi.shop.model.Product;
 import com.shanghaichuangshi.shop.service.ProductService;
 
-import java.util.List;
+import java.util.*;
 
 public class ProductController extends Controller {
 
@@ -49,6 +49,35 @@ public class ProductController extends Controller {
         renderSuccessJson(categoryList);
     }
 
+    @ActionKey(Url.PRODUCT_ALL_LIST)
+    public void allList() {
+        List<Category> categoryList = productService.categoryList();
+
+        List<Product> productList = productService.listAll();
+
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+        for (Category category : categoryList) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put(Category.CATEGORY_ID, category.getCategory_id());
+            map.put(Category.CATEGORY_NAME, category.getCategory_name());
+
+            List<Product> pList = new ArrayList<Product>();
+            for(Product product : productList) {
+                if (product.getCategory_id().equals(category.getCategory_id())) {
+                    product.keep(Product.PRODUCT_ID, Product.PRODUCT_NAME, Product.PRODUCT_IMAGE, Product.PRODUCT_PRICE, Product.CATEGORY_ID);
+
+                    pList.add(product);
+                }
+            }
+            map.put(Constant.CHILDREN, pList);
+
+            list.add(map);
+        }
+
+        renderSuccessJson(list);
+    }
+
     @ActionKey(Url.PRODUCT_FIND)
     public void find() {
         Product model = getParameter(Product.class);
@@ -56,11 +85,9 @@ public class ProductController extends Controller {
 
         model.validate(Product.PRODUCT_ID);
 
-        Product product = productService.find(model.getProduct_id(), request_user_id);
+        Product product = productService.findByUser_id(model.getProduct_id(), request_user_id);
 
-        product.removeUnfindable();
-
-        renderSuccessJson(product);
+        renderSuccessJson(product.format());
     }
 
     @ActionKey(Url.PRODUCT_ADMIN_FIND)

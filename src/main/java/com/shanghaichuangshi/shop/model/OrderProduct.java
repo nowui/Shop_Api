@@ -4,6 +4,8 @@ import com.shanghaichuangshi.annotation.Column;
 import com.shanghaichuangshi.model.Model;
 import com.shanghaichuangshi.type.ColumnType;
 
+import java.math.BigDecimal;
+
 public class OrderProduct extends Model<OrderProduct> {
 
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "订单商品编号")
@@ -153,43 +155,43 @@ public class OrderProduct extends Model<OrderProduct> {
         set(PRODUCT_IMAGE_LIST, product_image_list);
     }
 
-    public String getProduct_is_new() {
-        return getStr(PRODUCT_IS_NEW);
+    public Boolean getProduct_is_new() {
+        return getBoolean(PRODUCT_IS_NEW);
     }
 
-    public void setProduct_is_new(String product_is_new) {
+    public void setProduct_is_new(Boolean product_is_new) {
         set(PRODUCT_IS_NEW, product_is_new);
     }
 
-    public String getProduct_is_recommend() {
-        return getStr(PRODUCT_IS_RECOMMEND);
+    public Boolean getProduct_is_recommend() {
+        return getBoolean(PRODUCT_IS_RECOMMEND);
     }
 
-    public void setProduct_is_recommend(String product_is_recommend) {
+    public void setProduct_is_recommend(Boolean product_is_recommend) {
         set(PRODUCT_IS_RECOMMEND, product_is_recommend);
     }
 
-    public String getProduct_is_bargain() {
-        return getStr(PRODUCT_IS_BARGAIN);
+    public Boolean getProduct_is_bargain() {
+        return getBoolean(PRODUCT_IS_BARGAIN);
     }
 
-    public void setProduct_is_bargain(String product_is_bargain) {
+    public void setProduct_is_bargain(Boolean product_is_bargain) {
         set(PRODUCT_IS_BARGAIN, product_is_bargain);
     }
 
-    public String getProduct_is_hot() {
-        return getStr(PRODUCT_IS_HOT);
+    public Boolean getProduct_is_hot() {
+        return getBoolean(PRODUCT_IS_HOT);
     }
 
-    public void setProduct_is_hot(String product_is_hot) {
+    public void setProduct_is_hot(Boolean product_is_hot) {
         set(PRODUCT_IS_HOT, product_is_hot);
     }
 
-    public String getProduct_is_sale() {
-        return getStr(PRODUCT_IS_SALE);
+    public Boolean getProduct_is_sale() {
+        return getBoolean(PRODUCT_IS_SALE);
     }
 
-    public void setProduct_is_sale(String product_is_sale) {
+    public void setProduct_is_sale(Boolean product_is_sale) {
         set(PRODUCT_IS_SALE, product_is_sale);
     }
 
@@ -217,35 +219,35 @@ public class OrderProduct extends Model<OrderProduct> {
         set(PRODUCT_ATTRIBUTE, product_attribute);
     }
 
-    public String getProduct_market_price() {
-        return getStr(PRODUCT_MARKET_PRICE);
+    public BigDecimal getProduct_market_price() {
+        return getBigDecimal(PRODUCT_MARKET_PRICE);
     }
 
-    public void setProduct_market_price(String product_market_price) {
+    public void setProduct_market_price(BigDecimal product_market_price) {
         set(PRODUCT_MARKET_PRICE, product_market_price);
     }
 
-    public String getProduct_price() {
-        return getStr(PRODUCT_PRICE);
+    public BigDecimal getProduct_price() {
+        return getBigDecimal(PRODUCT_PRICE);
     }
 
-    public void setProduct_price(String product_price) {
+    public void setProduct_price(BigDecimal product_price) {
         set(PRODUCT_PRICE, product_price);
     }
 
-    public String getProduct_stock() {
-        return getStr(PRODUCT_STOCK);
+    public Integer getProduct_stock() {
+        return getInt(PRODUCT_STOCK);
     }
 
-    public void setProduct_stock(String product_stock) {
+    public void setProduct_stock(Integer product_stock) {
         set(PRODUCT_STOCK, product_stock);
     }
 
-    public String getProduct_number() {
-        return getStr(PRODUCT_NUMBER);
+    public Integer getProduct_number() {
+        return getInt(PRODUCT_NUMBER);
     }
 
-    public void setProduct_number(String product_number) {
+    public void setProduct_number(Integer product_number) {
         set(PRODUCT_NUMBER, product_number);
     }
 }

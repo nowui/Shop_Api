@@ -47,9 +47,7 @@ public class OrderController extends Controller {
 
         Order order = orderService.find(model.getOrder_id());
 
-        order.removeUnfindable();
-
-        renderSuccessJson(order);
+        renderSuccessJson(order.format());
     }
 
     @ActionKey(Url.ORDER_ADMIN_FIND)

@@ -34,6 +34,13 @@ public class ProductDao extends Dao {
         return new Product().find(sqlPara.getSql(), sqlPara.getPara());
     }
 
+    public List<Product> listAll() {
+        JMap map = JMap.create();
+        SqlPara sqlPara = Db.getSqlPara("product.listAll", map);
+
+        return new Product().find(sqlPara.getSql(), sqlPara.getPara());
+    }
+
     public Product find(String product_id) {
         Product product = productCache.getProductByProduct_id(product_id);
 

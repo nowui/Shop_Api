@@ -4,6 +4,7 @@ import com.jfinal.kit.JMap;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
+import com.shanghaichuangshi.shop.cache.BrandCache;
 import com.shanghaichuangshi.shop.model.Brand;
 import com.shanghaichuangshi.util.Util;
 
@@ -11,6 +12,8 @@ import java.util.Date;
 import java.util.List;
 
 public class BrandDao extends Dao {
+
+    private static final BrandCache brandCache = new BrandCache();
 
     public int count(String brand_name) {
         JMap map = JMap.create();
@@ -32,16 +35,24 @@ public class BrandDao extends Dao {
     }
 
     public Brand find(String brand_id) {
-        JMap map = JMap.create();
-        map.put(Brand.BRAND_ID, brand_id);
-        SqlPara sqlPara = Db.getSqlPara("brand.find", map);
+        Brand brand = brandCache.getBrandByBrand_id(brand_id);
 
-        List<Brand> brandList = new Brand().find(sqlPara.getSql(), sqlPara.getPara());
-        if (brandList.size() == 0) {
-            return null;
-        } else {
-            return brandList.get(0);
+        if (brand == null) {
+            JMap map = JMap.create();
+            map.put(Brand.BRAND_ID, brand_id);
+            SqlPara sqlPara = Db.getSqlPara("brand.find", map);
+
+            List<Brand> brandList = new Brand().find(sqlPara.getSql(), sqlPara.getPara());
+            if (brandList.size() == 0) {
+                brand = null;
+            } else {
+                brand = brandList.get(0);
+
+                brandCache.setBrandByBrand_id(brand, brand_id);
+            }
         }
+
+        return brand;
     }
 
     public Brand save(Brand brand, String request_user_id) {

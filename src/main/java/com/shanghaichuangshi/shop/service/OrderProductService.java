@@ -14,8 +14,8 @@ public class OrderProductService extends Service {
         return orderProductDao.find(order_product_id);
     }
 
-    public OrderProduct save(OrderProduct order_product, String request_user_id) {
-        return orderProductDao.save(order_product, request_user_id);
+    public void save(List<OrderProduct> orderProductList, String request_user_id) {
+        orderProductDao.save(orderProductList, request_user_id);
     }
 
     public boolean update(OrderProduct order_product, String request_user_id) {

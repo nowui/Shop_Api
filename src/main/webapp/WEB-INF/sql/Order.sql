@@ -28,7 +28,9 @@
   #sql("listByUser_id")
     SELECT
     order_id,
-    order_number
+    order_number,
+    order_receivable_amount,
+    order_status
     FROM table_order
     WHERE system_status = 1
     AND user_id LIKE #p(user_id)
