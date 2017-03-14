@@ -43,7 +43,8 @@ public class WebConfig extends JFinalConfig {
         routes.add("/product", ProductController.class);
         routes.add("/delivery", DeliveryController.class);
         routes.add("/order", OrderController.class);
-        routes.add("/weixin", WeixinApiController.class);
+        routes.add("/wechat/message", WeChatMsgController.class);
+        routes.add("/wechat/api", WeChatApiController.class);
 
     }
 

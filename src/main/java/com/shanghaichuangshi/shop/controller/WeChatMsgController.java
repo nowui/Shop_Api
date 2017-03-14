@@ -5,12 +5,20 @@ import com.jfinal.weixin.sdk.jfinal.MsgController;
 import com.jfinal.weixin.sdk.msg.in.*;
 import com.jfinal.weixin.sdk.msg.in.event.*;
 import com.jfinal.weixin.sdk.msg.in.speech_recognition.InSpeechRecognitionResults;
+import com.jfinal.weixin.sdk.msg.out.OutTextMsg;
 
-public class WeixinMsgController extends MsgController {
+public class WeChatMsgController extends MsgController {
 
     @Override
     public ApiConfig getApiConfig() {
-        return null;
+        ApiConfig apiConfig = new ApiConfig();
+        apiConfig.setAppId("wx26c8db6f1987e4e0");
+        apiConfig.setAppSecret("7e4c48df93424c2a8486e8ad100f734d");
+        apiConfig.setToken("ShanghaiStarChannel");
+        apiConfig.setEncryptMessage(false);
+        apiConfig.setEncodingAesKey("4ZXxqQuBd7B1nNGLLFBVyRGMvnqQslkKbUOuTrAlhac");
+
+        return apiConfig;
     }
 
     @Override
@@ -55,7 +63,9 @@ public class WeixinMsgController extends MsgController {
 
     @Override
     protected void processInFollowEvent(InFollowEvent inFollowEvent) {
-
+        OutTextMsg outMsg = new OutTextMsg(inFollowEvent);
+        outMsg.setContent("感谢关注 JFinal Weixin 极速开发，为您节约更多时间，去陪恋人、家人和朋友 :) \n\n\n ");
+        render(outMsg);
     }
 
     @Override

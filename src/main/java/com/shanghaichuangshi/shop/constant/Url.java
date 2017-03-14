@@ -2,6 +2,11 @@ package com.shanghaichuangshi.shop.constant;
 
 public class Url {
 
+    public static final String WECHAT_API_MENU = "/wechat/api/menu";
+    public static final String WECHAT_API_AUTH = "/wechat/api/auth";
+    public static final String WECHAT_API_ORCODE = "/wechat/api/orcode";
+    public static final String WECHAT_MESSAGE_MENU = "/wechat/message";
+
     public static final String MEMBER_LIST = "/member/list";
     public static final String MEMBER_ADMIN_LIST = "/member/admin/list";
     public static final String MEMBER_FIND = "/member/find";
