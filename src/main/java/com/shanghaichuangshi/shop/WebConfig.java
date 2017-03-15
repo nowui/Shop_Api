@@ -8,6 +8,7 @@ import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.render.ViewType;
 import com.jfinal.template.Engine;
+import com.shanghaichuangshi.constant.Jdbc;
 import com.shanghaichuangshi.controller.*;
 import com.shanghaichuangshi.interceptor.GlobalActionInterceptor;
 import com.shanghaichuangshi.model.*;
@@ -53,17 +54,8 @@ public class WebConfig extends JFinalConfig {
     }
 
     public void configPlugin(Plugins plugins) {
-        PropKit.use("Jdbc.properties");
-
-        final String URL = PropKit.get("jdbcUrl");
-        final String USERNAME = PropKit.get("user");
-        final String PASSWORD = PropKit.get("password");
-        final Integer INITIALSIZE = PropKit.getInt("initialSize");
-        final Integer MIDIDLE = PropKit.getInt("minIdle");
-        final Integer MAXACTIVEE = PropKit.getInt("maxActivee");
-
-        DruidPlugin druidPlugin = new DruidPlugin(URL, USERNAME, PASSWORD);
-        druidPlugin.set(INITIALSIZE, MIDIDLE, MAXACTIVEE);
+        DruidPlugin druidPlugin = new DruidPlugin(Jdbc.jdbc_url, Jdbc.user, Jdbc.password);
+        druidPlugin.set(Jdbc.initial_size, Jdbc.min_idle, Jdbc.max_activee);
         druidPlugin.setFilters("stat,wall");
         plugins.add(druidPlugin);
 
@@ -109,6 +101,12 @@ public class WebConfig extends JFinalConfig {
     }
 
     public void configInterceptor(Interceptors interceptors) {
+        List<String> uncheckUrlList = new ArrayList<String>();
+        uncheckUrlList.add(Url.WECHAT_API_MENU);
+        uncheckUrlList.add(Url.WECHAT_API_AUTH);
+        uncheckUrlList.add(Url.WECHAT_API_ORCODE);
+
+
         List<String> uncheckTokenUrlList = new ArrayList<String>();
         uncheckTokenUrlList.add(Url.PRODUCT_LIST);
         uncheckTokenUrlList.add(Url.PRODUCT_ALL_LIST);
@@ -121,7 +119,7 @@ public class WebConfig extends JFinalConfig {
 
         List<String> uncheckHeaderUrlList = new ArrayList<String>();
 
-        interceptors.addGlobalActionInterceptor(new GlobalActionInterceptor(uncheckTokenUrlList, uncheckRequestUserIdUrlList, uncheckParameterUrlList, uncheckHeaderUrlList));
+        interceptors.addGlobalActionInterceptor(new GlobalActionInterceptor(uncheckUrlList, uncheckTokenUrlList, uncheckRequestUserIdUrlList, uncheckParameterUrlList, uncheckHeaderUrlList));
     }
 
     public void configHandler(Handlers handlers) {

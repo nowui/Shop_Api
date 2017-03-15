@@ -5,13 +5,14 @@ public class Url {
     public static final String WECHAT_API_MENU = "/wechat/api/menu";
     public static final String WECHAT_API_AUTH = "/wechat/api/auth";
     public static final String WECHAT_API_ORCODE = "/wechat/api/orcode";
-    public static final String WECHAT_MESSAGE_MENU = "/wechat/message";
+    public static final String WECHAT_MESSAGE = "/wechat/message";
 
     public static final String MEMBER_LIST = "/member/list";
     public static final String MEMBER_ADMIN_LIST = "/member/admin/list";
     public static final String MEMBER_FIND = "/member/find";
     public static final String MEMBER_ADMIN_FIND = "/member/admin/find";
     public static final String MEMBER_SAVE = "/member/save";
+    public static final String MEMBER_WECHAT_SAVE = "/member/wechat/save";
     public static final String MEMBERL_UPDATE = "/member/update";
     public static final String MEMBER_DELETE = "/member/delete";
     public static final String MEMBER_LOGIN = "/member/login";

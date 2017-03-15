@@ -18,10 +18,6 @@ public class Member extends Model<Member> {
     @Column(type = ColumnType.VARCHAR, length = 20, comment = "会员名称")
     public static final String MEMBER_NAME = "member_name";
 
-    @Column(type = ColumnType.VARCHAR, length = 100, comment = "会员头像")
-    public static final String MEMBER_AVATAR = "member_avatar";
-
-    
     public String getMember_id() {
         return getStr(MEMBER_ID);
     }
@@ -54,11 +50,4 @@ public class Member extends Model<Member> {
         set(MEMBER_NAME, member_name);
     }
 
-    public String getMember_avatar() {
-        return getStr(MEMBER_AVATAR);
-    }
-
-    public void setMember_avatar(String member_avatar) {
-        set(MEMBER_AVATAR, member_avatar);
-    }
 }

@@ -94,13 +94,54 @@ public class MemberService extends Service {
     public Map<String, Object> login(User user, String platform, String version, String ip_address, String request_user_id) {
         User u = userService.findByUser_phoneAndUser_passwordAndUser_type(user.getUser_phone(), user.getUser_password(), UserType.MEMBER.getKey());
 
-        Member member = memberDao.find(u.getObject_id());
+//        Member member = memberDao.find(u.getObject_id());
+//
+//        Delivery delivery = deliveryService.findDefaultByUser_id(u.getUser_id());
+//
+//        String token = authorizationService.saveByUser_id(u.getUser_id(), platform, version, ip_address, request_user_id);
+//
+//        Map<String, Object> resultMap = new HashMap<String, Object>();
+//        resultMap.put(Constant.TOKEN.toLowerCase(), token);
+//        resultMap.put(Member.MEMBER_LEVEL_ID, member.getMember_level_id());
+//
+//        if (delivery == null) {
+//            resultMap.put("delivery", new JSONObject());
+//        } else {
+//            resultMap.put("delivery", delivery.format());
+//        }
+//
+//        return resultMap;
 
-        Delivery delivery = deliveryService.findDefaultByUser_id(u.getUser_id());
+        return getMember(user, platform, version, ip_address, request_user_id);
+    }
 
-        String token = authorizationService.saveByUser_id(u.getUser_id(), platform, version, ip_address, request_user_id);
+    public Map<String, Object> weChatLogin(String user_name, String user_avatar, String wechat_open_id, String platform, String version, String ip_address, String request_user_id) {
+        User user = userService.findByWechat_open_idAndUser_type(wechat_open_id, UserType.MEMBER.getKey());
 
+        if (user == null) {
+            Member member = new Member();
+            member.setMember_level_id("");
+            member.setMember_name(user_name);
+
+            Member m = memberDao.save(member, request_user_id);
+
+            user = userService.saveByUser_nameAndUser_avatarAndWechat_open_id(user_name, user_avatar, wechat_open_id, m.getMember_id(), UserType.MEMBER.getKey(), request_user_id);
+
+            memberDao.updateByMember_idAndUser_id(m.getMember_id(), user.getUser_id(), request_user_id);
+        }
+
+        return getMember(user, platform, version, ip_address, request_user_id);
+    }
+
+    private Map<String, Object> getMember(User user, String platform, String version, String ip_address, String request_user_id) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
+
+        Member member = memberDao.find(user.getObject_id());
+
+        Delivery delivery = deliveryService.findDefaultByUser_id(user.getUser_id());
+
+        String token = authorizationService.saveByUser_id(user.getUser_id(), platform, version, ip_address, request_user_id);
+
         resultMap.put(Constant.TOKEN.toLowerCase(), token);
         resultMap.put(Member.MEMBER_LEVEL_ID, member.getMember_level_id());
 

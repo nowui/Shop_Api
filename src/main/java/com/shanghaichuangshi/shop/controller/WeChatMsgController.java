@@ -1,22 +1,24 @@
 package com.shanghaichuangshi.shop.controller;
 
 import com.jfinal.weixin.sdk.api.ApiConfig;
+import com.jfinal.weixin.sdk.api.UserApi;
 import com.jfinal.weixin.sdk.jfinal.MsgController;
 import com.jfinal.weixin.sdk.msg.in.*;
 import com.jfinal.weixin.sdk.msg.in.event.*;
 import com.jfinal.weixin.sdk.msg.in.speech_recognition.InSpeechRecognitionResults;
 import com.jfinal.weixin.sdk.msg.out.OutTextMsg;
+import com.shanghaichuangshi.constant.WeChat;
 
 public class WeChatMsgController extends MsgController {
 
     @Override
     public ApiConfig getApiConfig() {
         ApiConfig apiConfig = new ApiConfig();
-        apiConfig.setAppId("wx26c8db6f1987e4e0");
-        apiConfig.setAppSecret("7e4c48df93424c2a8486e8ad100f734d");
-        apiConfig.setToken("ShanghaiStarChannel");
+        apiConfig.setAppId(WeChat.app_id);
+        apiConfig.setAppSecret(WeChat.app_secret);
+        apiConfig.setToken(WeChat.token);
         apiConfig.setEncryptMessage(false);
-        apiConfig.setEncodingAesKey("4ZXxqQuBd7B1nNGLLFBVyRGMvnqQslkKbUOuTrAlhac");
+        apiConfig.setEncodingAesKey(WeChat.rncoding_aes_key);
 
         return apiConfig;
     }
@@ -63,6 +65,10 @@ public class WeChatMsgController extends MsgController {
 
     @Override
     protected void processInFollowEvent(InFollowEvent inFollowEvent) {
+        System.out.println(inFollowEvent.getToUserName());
+        System.out.println(inFollowEvent.getFromUserName());
+        System.out.println(inFollowEvent.getCreateTime());
+        System.out.println(inFollowEvent.getMsgType());
         OutTextMsg outMsg = new OutTextMsg(inFollowEvent);
         outMsg.setContent("感谢关注 JFinal Weixin 极速开发，为您节约更多时间，去陪恋人、家人和朋友 :) \n\n\n ");
         render(outMsg);
@@ -70,7 +76,17 @@ public class WeChatMsgController extends MsgController {
 
     @Override
     protected void processInQrCodeEvent(InQrCodeEvent inQrCodeEvent) {
+        System.out.println(inQrCodeEvent.getToUserName());
+        System.out.println(inQrCodeEvent.getFromUserName());
+        System.out.println(inQrCodeEvent.getCreateTime());
+        System.out.println(inQrCodeEvent.getMsgType());
+        System.out.println(inQrCodeEvent.getEventKey());
+        OutTextMsg outMsg = new OutTextMsg(inQrCodeEvent);
 
+
+
+        outMsg.setContent("processInQrCodeEvent() 方法测试成功" + UserApi.getUserInfo(inQrCodeEvent.getToUserName()).getJson());
+        render(outMsg);
     }
 
     @Override
