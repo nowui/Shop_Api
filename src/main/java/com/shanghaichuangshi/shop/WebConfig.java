@@ -105,11 +105,13 @@ public class WebConfig extends JFinalConfig {
         uncheckUrlList.add(Url.WECHAT_API_MENU);
         uncheckUrlList.add(Url.WECHAT_API_AUTH);
         uncheckUrlList.add(Url.WECHAT_API_ORCODE);
+        uncheckUrlList.add(Url.WECHAT_MESSAGE);
 
 
         List<String> uncheckTokenUrlList = new ArrayList<String>();
         uncheckTokenUrlList.add(Url.PRODUCT_LIST);
         uncheckTokenUrlList.add(Url.PRODUCT_ALL_LIST);
+        uncheckTokenUrlList.add(Url.MEMBER_WECHAT_LOGIN);
 
         List<String> uncheckRequestUserIdUrlList = new ArrayList<String>();
         uncheckRequestUserIdUrlList.add(Url.PRODUCT_FIND);

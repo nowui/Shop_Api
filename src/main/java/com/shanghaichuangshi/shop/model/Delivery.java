@@ -18,22 +18,22 @@ public class Delivery extends Model<Delivery> {
     @Column(type = ColumnType.VARCHAR, length = 20, comment = "手机号码")
     public static final String DELIVERY_PHONE = "delivery_phone";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "省份", findable = false)
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "省份")
     public static final String DELIVERY_PROVINCE = "delivery_province";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "城市", findable = false)
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "城市")
     public static final String DELIVERY_CITY = "delivery_city";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "区域", findable = false)
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "区域")
     public static final String DELIVERY_AREA = "delivery_area";
 
-    @Column(type = ColumnType.VARCHAR, length = 100, comment = "街道", findable = false)
+    @Column(type = ColumnType.VARCHAR, length = 100, comment = "街道")
     public static final String DELIVERY_STREET = "delivery_street";
 
     @Column(type = ColumnType.VARCHAR, length = 250, comment = "详细地址")
     public static final String DELIVERY_ADDRESS = "delivery_address";
 
-    @Column(type = ColumnType.TINYINT, length = 1, comment = "默认地址", findable = false)
+    @Column(type = ColumnType.TINYINT, length = 1, comment = "默认地址")
     public static final String DELIVERY_IS_DEFAULT = "delivery_is_default";
 
     public String getDelivery_id() {

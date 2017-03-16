@@ -1,6 +1,7 @@
 package com.shanghaichuangshi.shop.controller;
 
 import com.jfinal.weixin.sdk.api.ApiConfig;
+import com.jfinal.weixin.sdk.api.ApiResult;
 import com.jfinal.weixin.sdk.api.UserApi;
 import com.jfinal.weixin.sdk.jfinal.MsgController;
 import com.jfinal.weixin.sdk.msg.in.*;
@@ -8,8 +9,15 @@ import com.jfinal.weixin.sdk.msg.in.event.*;
 import com.jfinal.weixin.sdk.msg.in.speech_recognition.InSpeechRecognitionResults;
 import com.jfinal.weixin.sdk.msg.out.OutTextMsg;
 import com.shanghaichuangshi.constant.WeChat;
+import com.shanghaichuangshi.model.User;
+import com.shanghaichuangshi.service.UserService;
+import com.shanghaichuangshi.shop.service.MemberService;
+import com.shanghaichuangshi.type.UserType;
 
 public class WeChatMsgController extends MsgController {
+
+    private static final MemberService memberService = new MemberService();
+    private static final UserService userService = new UserService();
 
     @Override
     public ApiConfig getApiConfig() {
@@ -65,12 +73,12 @@ public class WeChatMsgController extends MsgController {
 
     @Override
     protected void processInFollowEvent(InFollowEvent inFollowEvent) {
-        System.out.println(inFollowEvent.getToUserName());
-        System.out.println(inFollowEvent.getFromUserName());
-        System.out.println(inFollowEvent.getCreateTime());
-        System.out.println(inFollowEvent.getMsgType());
+        String wechat_open_id = inFollowEvent.getFromUserName();
+
+        memberService.saveByWechat_open_idAndUser_nameAndUser_avatar(wechat_open_id);
+
         OutTextMsg outMsg = new OutTextMsg(inFollowEvent);
-        outMsg.setContent("感谢关注 JFinal Weixin 极速开发，为您节约更多时间，去陪恋人、家人和朋友 :) \n\n\n ");
+        outMsg.setContent("感谢关注，这是一个测试的公众号！");
         render(outMsg);
     }
 

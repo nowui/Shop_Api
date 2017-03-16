@@ -42,13 +42,17 @@ public class WeChatApiController extends ApiController {
     public void auth() {
         String code = getPara("code");
 
-        SnsAccessToken snsAccessToken = SnsAccessTokenApi.getSnsAccessToken("wx26c8db6f1987e4e0", "7e4c48df93424c2a8486e8ad100f734d", code);
+        SnsAccessToken snsAccessToken = SnsAccessTokenApi.getSnsAccessToken(WeChat.app_id, WeChat.app_secret, code);
 
-        ApiResult apiResult = UserApi.getUserInfo(snsAccessToken.getOpenid());
+        String wechat_open_id = snsAccessToken.getOpenid();
 
-        System.out.println(apiResult.getJson());
+        redirect("http://h5.jiyiguan.nowui.com/#/auth/" + wechat_open_id);
 
-        renderText(apiResult.getJson());
+//        ApiResult apiResult = UserApi.getUserInfo(snsAccessToken.getOpenid());
+//
+//        System.out.println(apiResult.getJson());
+
+//        renderText(snsAccessToken.getOpenid());
     }
 
     @ActionKey(Url.WECHAT_API_ORCODE)

@@ -116,6 +116,15 @@ public class MemberController extends Controller {
         renderSuccessJson(resultMap);
     }
 
+    @ActionKey(Url.MEMBER_WECHAT_LOGIN)
+    public void weChatLogin() {
+        User model = getParameter(User.class);
+
+        Map<String, Object> resultMap = memberService.weChatLogin(model.getWechat_open_id());
+
+        renderSuccessJson(resultMap);
+    }
+
     @ActionKey(Url.MEMBER_LEVEL_ADMIN_LIST)
     public void levelAdminList() {
         validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);

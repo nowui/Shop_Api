@@ -1,5 +1,8 @@
 package com.shanghaichuangshi.shop.dao;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.JMap;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
@@ -70,9 +73,53 @@ public class ProductDao extends Dao {
         product.setSystem_update_time(new Date());
         product.setSystem_status(true);
 
+        setImage(product);
+
         product.save();
 
         return product;
+    }
+
+    private void setImage(Product product) {
+        JSONArray product_image_thumbnail = new JSONArray();
+        JSONArray thumbnailJsonArray = JSON.parseArray(product.getProduct_image());
+        for (int i = 0; i < thumbnailJsonArray.size(); i++) {
+            String url = (String) thumbnailJsonArray.get(i);
+            url = getImageUrl(url, "thumbnail");
+            product_image_thumbnail.add(url);
+        }
+        product.setProduct_image_thumbnail(product_image_thumbnail.toJSONString());
+
+        JSONArray product_image_original = new JSONArray();
+        JSONArray originalJsonArray = JSON.parseArray(product.getProduct_image());
+        for (int i = 0; i < originalJsonArray.size(); i++) {
+            String url = (String) originalJsonArray.get(i);
+            url = getImageUrl(url, "original");
+            product_image_original.add(url);
+        }
+        product.setProduct_image_original(product_image_original.toJSONString());
+
+        JSONArray product_image_list_thumbnail = new JSONArray();
+        JSONArray thumbnailListJsonArray = JSON.parseArray(product.getProduct_image_list());
+        for (int i = 0; i < thumbnailListJsonArray.size(); i++) {
+            String url = (String) thumbnailListJsonArray.get(i);
+            url = getImageUrl(url, "thumbnail");
+            product_image_list_thumbnail.add(url);
+        }
+        product.setProduct_image_list_thumbnail(product_image_list_thumbnail.toJSONString());
+
+        JSONArray product_image_list_original = new JSONArray();
+        JSONArray originalListJsonArray = JSON.parseArray(product.getProduct_image_list());
+        for (int i = 0; i < originalListJsonArray.size(); i++) {
+            String url = (String) originalListJsonArray.get(i);
+            url = getImageUrl(url, "original");
+            product_image_list_original.add(url);
+        }
+        product.setProduct_image_list_original(product_image_list_original.toJSONString());
+    }
+
+    private String getImageUrl(String url, String file) {
+        return url.substring(0, url.lastIndexOf("/")) + "/" + file + "/" + url.substring(url.lastIndexOf("/") + 1);
     }
 
     public boolean update(Product product, String request_user_id) {
@@ -83,6 +130,8 @@ public class ProductDao extends Dao {
         product.setSystem_update_user_id(request_user_id);
         product.setSystem_update_time(new Date());
         product.remove(Product.SYSTEM_STATUS);
+
+        setImage(product);
 
         return product.update();
     }

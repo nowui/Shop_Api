@@ -6,13 +6,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.shanghaichuangshi.model.Category;
 import com.shanghaichuangshi.service.CategoryService;
 import com.shanghaichuangshi.shop.dao.ProductDao;
-import com.shanghaichuangshi.shop.model.Member;
-import com.shanghaichuangshi.shop.model.MemberLevel;
 import com.shanghaichuangshi.shop.model.Product;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.shop.model.Sku;
 import com.shanghaichuangshi.type.CategoryType;
-import com.shanghaichuangshi.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,11 +93,13 @@ public class ProductService extends Service {
     }
 
     public Product save(Product product, JSONObject jsonObject, String request_user_id) {
-        List<Sku> skuSaveList = getSkuList(product.getProduct_id(), jsonObject);
+        Product p = productDao.save(product, request_user_id);
+
+        List<Sku> skuSaveList = getSkuList(p.getProduct_id(), jsonObject);
 
         skuService.save(skuSaveList, request_user_id);
 
-        return productDao.save(product, request_user_id);
+        return p;
     }
 
     public boolean update(Product product, JSONObject jsonObject, String request_user_id) {

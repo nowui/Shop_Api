@@ -9,6 +9,7 @@ import com.shanghaichuangshi.shop.dao.OrderDao;
 import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.shop.type.OrderStatusEnum;
+import com.shanghaichuangshi.util.Util;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -52,7 +53,15 @@ public class OrderService extends Service {
         Integer order_product_number = 0;
         BigDecimal order_receivable_amount = BigDecimal.valueOf(0);
         String member_level_id = memberService.findMember_lever_idByUser_id(request_user_id);
-        MemberLevel memberLevel = memberLevelService.find(member_level_id);
+        String member_level_name = "";
+        Integer member_level_value = 0;
+        if (!Util.isNullOrEmpty(member_level_id)) {
+            MemberLevel memberLevel = memberLevelService.find(member_level_id);
+            if (memberLevel != null) {
+                member_level_name = memberLevel.getMember_level_name();
+                member_level_value = memberLevel.getMember_level_value();
+            }
+        }
         List<OrderProduct> orderProductList = new ArrayList<OrderProduct>();
 
         for (int i = 0; i < productJSONArray.size(); i++) {
@@ -112,9 +121,9 @@ public class OrderService extends Service {
 
         order.setOrder_product_number(order_product_number);
         order.setOrder_receivable_amount(order_receivable_amount);
-        order.setMember_level_id(memberLevel.getMember_level_id());
-        order.setMember_level_name(memberLevel.getMember_level_name());
-        order.setMember_level_value(memberLevel.getMember_level_value());
+        order.setMember_level_id(member_level_id);
+        order.setMember_level_name(member_level_name);
+        order.setMember_level_value(member_level_value);
         order.setOrder_status(OrderStatusEnum.WAIT.getKey());
 
         Order o = orderDao.save(order, request_user_id);

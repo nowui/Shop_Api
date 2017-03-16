@@ -1,6 +1,8 @@
 package com.shanghaichuangshi.shop.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jfinal.weixin.sdk.api.ApiResult;
+import com.jfinal.weixin.sdk.api.UserApi;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.model.User;
 import com.shanghaichuangshi.service.AuthorizationService;
@@ -73,6 +75,27 @@ public class MemberService extends Service {
         return m;
     }
 
+    public void saveByWechat_open_idAndUser_nameAndUser_avatar(String wechat_open_id) {
+        User user = userService.findByWechat_open_idAndUser_type(wechat_open_id, UserType.MEMBER.getKey());
+        if (user == null) {
+            ApiResult apiResult = UserApi.getUserInfo(wechat_open_id);
+            String user_name = apiResult.getStr("nickname");
+            String user_avatar = apiResult.getStr("headimgurl");
+
+            Member member = new Member();
+            member.setMember_level_id("");
+            member.setMember_name(user_name);
+
+            String request_user_id = "";
+
+            Member m = memberDao.save(member, request_user_id);
+
+            user = userService.saveByUser_nameAndUser_avatarAndWechat_open_id(user_name, user_avatar, wechat_open_id, m.getMember_id(), UserType.MEMBER.getKey(), request_user_id);
+
+            memberDao.updateByMember_idAndUser_id(m.getMember_id(), user.getUser_id(), request_user_id);
+        }
+    }
+
     public boolean update(Member member, User user, String request_user_id) {
         boolean result = memberDao.update(member, request_user_id);
 
@@ -112,23 +135,18 @@ public class MemberService extends Service {
 //
 //        return resultMap;
 
-        return getMember(user, platform, version, ip_address, request_user_id);
+        return getMember(u, platform, version, ip_address, request_user_id);
     }
 
-    public Map<String, Object> weChatLogin(String user_name, String user_avatar, String wechat_open_id, String platform, String version, String ip_address, String request_user_id) {
+    public Map<String, Object> weChatLogin(String wechat_open_id) {
         User user = userService.findByWechat_open_idAndUser_type(wechat_open_id, UserType.MEMBER.getKey());
 
-        if (user == null) {
-            Member member = new Member();
-            member.setMember_level_id("");
-            member.setMember_name(user_name);
+        System.out.println("----" + wechat_open_id);
 
-            Member m = memberDao.save(member, request_user_id);
-
-            user = userService.saveByUser_nameAndUser_avatarAndWechat_open_id(user_name, user_avatar, wechat_open_id, m.getMember_id(), UserType.MEMBER.getKey(), request_user_id);
-
-            memberDao.updateByMember_idAndUser_id(m.getMember_id(), user.getUser_id(), request_user_id);
-        }
+        String request_user_id = "";
+        String platform = "";
+        String version = "";
+        String ip_address = "";
 
         return getMember(user, platform, version, ip_address, request_user_id);
     }
@@ -144,6 +162,8 @@ public class MemberService extends Service {
 
         resultMap.put(Constant.TOKEN.toLowerCase(), token);
         resultMap.put(Member.MEMBER_LEVEL_ID, member.getMember_level_id());
+        resultMap.put(User.USER_NAME, user.getUser_name());
+        resultMap.put(User.USER_AVATAR, user.getUser_avatar());
 
         if (delivery == null) {
             resultMap.put("delivery", new JSONObject());
