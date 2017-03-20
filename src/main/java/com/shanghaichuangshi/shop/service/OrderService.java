@@ -3,6 +3,11 @@ package com.shanghaichuangshi.shop.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.jfinal.kit.HashKit;
+import com.jfinal.kit.HttpKit;
+import com.jfinal.weixin.sdk.api.PaymentApi;
+import com.jfinal.weixin.sdk.kit.PaymentKit;
+import com.shanghaichuangshi.constant.WeChat;
 import com.shanghaichuangshi.model.Category;
 import com.shanghaichuangshi.service.CategoryService;
 import com.shanghaichuangshi.shop.dao.OrderDao;
@@ -12,8 +17,11 @@ import com.shanghaichuangshi.shop.type.OrderStatusEnum;
 import com.shanghaichuangshi.util.Util;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrderService extends Service {
 
@@ -43,7 +51,7 @@ public class OrderService extends Service {
         return orderDao.find(order_id);
     }
 
-    public Order save(Order order, JSONObject jsonObject, String request_user_id) {
+    public Map<String, String> save(Order order, JSONObject jsonObject, String request_user_id) {
         JSONArray productJSONArray = jsonObject.getJSONArray(Product.PRODUCT_LIST);
 
         if (productJSONArray.size() == 0) {
@@ -116,7 +124,6 @@ public class OrderService extends Service {
             orderProduct.setProduct_stock(product.getProduct_stock());
             orderProduct.setProduct_number(product_number);
             orderProductList.add(orderProduct);
-
         }
 
         order.setOrder_product_number(order_product_number);
@@ -133,7 +140,98 @@ public class OrderService extends Service {
         }
         orderProductService.save(orderProductList, request_user_id);
 
-        return o;
+        return unifiedorder(o);
+    }
+
+    public Map<String, String> unifiedorder(Order order) {
+        String nonce_str = Util.getRandomStringByLength(32);
+        String body = "上海星销信息技术有限公司";
+        String notify_url = "http://api.jiyiguan.nowui.com/wechat/api/notify";
+        String openid = "oqvzXv4c-FY2-cGh9U-RA4JIrZoc";
+        String out_trade_no = order.getOrder_number();
+        String spbill_create_ip = "0.0.0.0";
+        DecimalFormat format = new DecimalFormat("0");
+        String total_fee = format.format(order.getOrder_receivable_amount().multiply(BigDecimal.valueOf(100)));
+        String trade_type = "JSAPI";
+
+        String stringA = "appid=" + WeChat.app_id + "&body=" + body + "&mch_id=" + WeChat.mch_id + "&nonce_str=" + nonce_str + "&notify_url=" + notify_url + "&openid=" + openid + "&out_trade_no=" + out_trade_no + "&spbill_create_ip=" + spbill_create_ip + "&total_fee=" + total_fee + "&trade_type=" + trade_type;
+        String stringSignTemp = stringA + "&key=" + WeChat.mch_key;
+        String sign = HashKit.md5(stringSignTemp).toUpperCase();
+
+        StringBuffer bf = new StringBuffer();
+
+        bf.append("<xml>");
+
+        bf.append("<appid><![CDATA[");
+        bf.append(WeChat.app_id);
+        bf.append("]]></appid>");
+
+        bf.append("<body><![CDATA[");
+        bf.append(body);
+        bf.append("]]></body>");
+
+        bf.append("<mch_id><![CDATA[");
+        bf.append(WeChat.mch_id);
+        bf.append("]]></mch_id>");
+
+        bf.append("<nonce_str><![CDATA[");
+        bf.append(nonce_str);
+        bf.append("]]></nonce_str>");
+
+        bf.append("<notify_url><![CDATA[");
+        bf.append(notify_url);
+        bf.append("]]></notify_url>");
+
+        bf.append("<openid><![CDATA[");
+        bf.append(openid);
+        bf.append("]]></openid>");
+
+        bf.append("<out_trade_no><![CDATA[");
+        bf.append(out_trade_no);
+        bf.append("]]></out_trade_no>");
+
+        bf.append("<spbill_create_ip><![CDATA[");
+        bf.append(spbill_create_ip);
+        bf.append("]]></spbill_create_ip>");
+
+        bf.append("<total_fee><![CDATA[");
+        bf.append(total_fee);
+        bf.append("]]></total_fee>");
+
+        bf.append("<trade_type><![CDATA[");
+        bf.append(trade_type);
+        bf.append("]]></trade_type>");
+
+        bf.append("<sign><![CDATA[");
+        bf.append(sign);
+        bf.append("]]></sign>");
+
+        bf.append("</xml>");
+
+        String result = HttpKit.post("https://api.mch.weixin.qq.com/pay/unifiedorder", bf.toString());
+
+        Map<String, String> map = PaymentKit.xmlToMap(result);
+
+        String timestamp = String.valueOf(System.currentTimeMillis()).substring(0, 10);
+        String prepay_id = map.get("prepay_id");
+        String package_str = "prepay_id=" + prepay_id;
+        String signType = "MD5";
+
+        stringA = "appId=" + WeChat.app_id + "&nonceStr=" + nonce_str + "&package=" + package_str + "&signType=" + signType + "&timeStamp=" + timestamp;
+        stringSignTemp = stringA + "&key=" + WeChat.mch_key;
+        sign = HashKit.md5(stringSignTemp).toUpperCase();
+
+        Map<String, String> resultMap = new HashMap<String, String>();
+        resultMap.put("appId", WeChat.app_id);
+        resultMap.put("timeStamp", timestamp);
+        resultMap.put("nonceStr", nonce_str);
+        resultMap.put("package", package_str);
+        resultMap.put("signType", signType);
+        resultMap.put("paySign", sign);
+
+        System.out.println(JSONObject.toJSONString(resultMap));
+
+        return resultMap;
     }
 
     public boolean update(Order order, String request_user_id) {

@@ -8,6 +8,7 @@ import com.shanghaichuangshi.shop.model.Order;
 import com.shanghaichuangshi.shop.service.OrderService;
 
 import java.util.List;
+import java.util.Map;
 
 public class OrderController extends Controller {
 
@@ -68,9 +69,9 @@ public class OrderController extends Controller {
 
         model.validate(Order.ORDER_DELIVERY_NAME, Order.ORDER_DELIVERY_PHONE, Order.ORDER_DELIVERY_ADDRESS, Order.ORDER_MESSAGE, Order.ORDER_PAY_TYPE);
 
-        Order order = orderService.save(model, getAttr(Constant.REQUEST_PARAMETER), request_user_id);
+        Map<String, String> result = orderService.save(model, getAttr(Constant.REQUEST_PARAMETER), request_user_id);
 
-        renderSuccessJson(order.getOrder_receivable_amount());
+        renderSuccessJson(result);
     }
 
     @ActionKey(Url.ORDERL_UPDATE)

@@ -1,7 +1,6 @@
 package com.shanghaichuangshi.shop.controller;
 
 import com.jfinal.weixin.sdk.api.ApiConfig;
-import com.jfinal.weixin.sdk.api.ApiResult;
 import com.jfinal.weixin.sdk.api.UserApi;
 import com.jfinal.weixin.sdk.jfinal.MsgController;
 import com.jfinal.weixin.sdk.msg.in.*;
@@ -9,10 +8,8 @@ import com.jfinal.weixin.sdk.msg.in.event.*;
 import com.jfinal.weixin.sdk.msg.in.speech_recognition.InSpeechRecognitionResults;
 import com.jfinal.weixin.sdk.msg.out.OutTextMsg;
 import com.shanghaichuangshi.constant.WeChat;
-import com.shanghaichuangshi.model.User;
 import com.shanghaichuangshi.service.UserService;
 import com.shanghaichuangshi.shop.service.MemberService;
-import com.shanghaichuangshi.type.UserType;
 
 public class WeChatMsgController extends MsgController {
 

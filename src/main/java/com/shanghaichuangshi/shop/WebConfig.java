@@ -105,6 +105,7 @@ public class WebConfig extends JFinalConfig {
         uncheckUrlList.add(Url.WECHAT_API_MENU);
         uncheckUrlList.add(Url.WECHAT_API_AUTH);
         uncheckUrlList.add(Url.WECHAT_API_ORCODE);
+        uncheckUrlList.add(Url.WECHAT_API_NOTIFY);
         uncheckUrlList.add(Url.WECHAT_MESSAGE);
 
 
