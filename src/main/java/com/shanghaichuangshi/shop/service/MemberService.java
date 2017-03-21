@@ -35,7 +35,13 @@ public class MemberService extends Service {
     }
 
     public Member find(String member_id) {
-        return memberDao.find(member_id);
+        Member member = memberDao.find(member_id);
+
+        User user = userService.find(member.getUser_id());
+
+        member.put(User.USER_AVATAR, user.getUser_avatar());
+
+        return member;
     }
 
     public Member findByUser_id(String user_id) {
