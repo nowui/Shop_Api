@@ -1,11 +1,8 @@
 package com.shanghaichuangshi.shop.service;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.jfinal.kit.HashKit;
 import com.jfinal.kit.HttpKit;
-import com.jfinal.weixin.sdk.api.PaymentApi;
 import com.jfinal.weixin.sdk.kit.PaymentKit;
 import com.shanghaichuangshi.constant.WeChat;
 import com.shanghaichuangshi.model.Category;
@@ -18,10 +15,7 @@ import com.shanghaichuangshi.util.Util;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class OrderService extends Service {
 
@@ -154,61 +148,20 @@ public class OrderService extends Service {
         String total_fee = format.format(order.getOrder_receivable_amount().multiply(BigDecimal.valueOf(100)));
         String trade_type = "JSAPI";
 
-        String stringA = "appid=" + WeChat.app_id + "&body=" + body + "&mch_id=" + WeChat.mch_id + "&nonce_str=" + nonce_str + "&notify_url=" + notify_url + "&openid=" + openid + "&out_trade_no=" + out_trade_no + "&spbill_create_ip=" + spbill_create_ip + "&total_fee=" + total_fee + "&trade_type=" + trade_type;
-        String stringSignTemp = stringA + "&key=" + WeChat.mch_key;
-        String sign = HashKit.md5(stringSignTemp).toUpperCase();
+        SortedMap<String, String> parameter = new TreeMap<String, String>();
+        parameter.put("appid", WeChat.app_id);
+        parameter.put("body", body);
+        parameter.put("mch_id", WeChat.mch_id);
+        parameter.put("nonce_str", nonce_str);
+        parameter.put("notify_url", notify_url);
+        parameter.put("openid", openid);
+        parameter.put("out_trade_no", out_trade_no);
+        parameter.put("spbill_create_ip", spbill_create_ip);
+        parameter.put("total_fee", total_fee);
+        parameter.put("trade_type", trade_type);
+        parameter.put("sign", PaymentKit.createSign(parameter, WeChat.mch_key));
 
-        StringBuffer bf = new StringBuffer();
-
-        bf.append("<xml>");
-
-        bf.append("<appid><![CDATA[");
-        bf.append(WeChat.app_id);
-        bf.append("]]></appid>");
-
-        bf.append("<body><![CDATA[");
-        bf.append(body);
-        bf.append("]]></body>");
-
-        bf.append("<mch_id><![CDATA[");
-        bf.append(WeChat.mch_id);
-        bf.append("]]></mch_id>");
-
-        bf.append("<nonce_str><![CDATA[");
-        bf.append(nonce_str);
-        bf.append("]]></nonce_str>");
-
-        bf.append("<notify_url><![CDATA[");
-        bf.append(notify_url);
-        bf.append("]]></notify_url>");
-
-        bf.append("<openid><![CDATA[");
-        bf.append(openid);
-        bf.append("]]></openid>");
-
-        bf.append("<out_trade_no><![CDATA[");
-        bf.append(out_trade_no);
-        bf.append("]]></out_trade_no>");
-
-        bf.append("<spbill_create_ip><![CDATA[");
-        bf.append(spbill_create_ip);
-        bf.append("]]></spbill_create_ip>");
-
-        bf.append("<total_fee><![CDATA[");
-        bf.append(total_fee);
-        bf.append("]]></total_fee>");
-
-        bf.append("<trade_type><![CDATA[");
-        bf.append(trade_type);
-        bf.append("]]></trade_type>");
-
-        bf.append("<sign><![CDATA[");
-        bf.append(sign);
-        bf.append("]]></sign>");
-
-        bf.append("</xml>");
-
-        String result = HttpKit.post("https://api.mch.weixin.qq.com/pay/unifiedorder", bf.toString());
+        String result = HttpKit.post("https://api.mch.weixin.qq.com/pay/unifiedorder", PaymentKit.toXml(parameter));
 
         Map<String, String> map = PaymentKit.xmlToMap(result);
 
@@ -217,25 +170,24 @@ public class OrderService extends Service {
         String package_str = "prepay_id=" + prepay_id;
         String signType = "MD5";
 
-        stringA = "appId=" + WeChat.app_id + "&nonceStr=" + nonce_str + "&package=" + package_str + "&signType=" + signType + "&timeStamp=" + timestamp;
-        stringSignTemp = stringA + "&key=" + WeChat.mch_key;
-        sign = HashKit.md5(stringSignTemp).toUpperCase();
+        SortedMap<String, String> parameter2 = new TreeMap<String, String>();
+        parameter2.put("appId", WeChat.app_id);
+        parameter2.put("timeStamp", timestamp);
+        parameter2.put("nonceStr", nonce_str);
+        parameter2.put("package", package_str);
+        parameter2.put("signType", signType);
+        parameter2.put("paySign", PaymentKit.createSign(parameter2, WeChat.mch_key));
+        parameter2.put("outTradeNo", out_trade_no);
 
-        Map<String, String> resultMap = new HashMap<String, String>();
-        resultMap.put("appId", WeChat.app_id);
-        resultMap.put("timeStamp", timestamp);
-        resultMap.put("nonceStr", nonce_str);
-        resultMap.put("package", package_str);
-        resultMap.put("signType", signType);
-        resultMap.put("paySign", sign);
-
-        System.out.println(JSONObject.toJSONString(resultMap));
-
-        return resultMap;
+        return parameter2;
     }
 
     public boolean update(Order order, String request_user_id) {
         return orderDao.update(order, request_user_id);
+    }
+
+    public boolean updateByOrder_numberAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(String order_number, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result) {
+        return orderDao.updateByOrder_numberAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(order_number, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result);
     }
 
     public boolean delete(Order order, String request_user_id) {

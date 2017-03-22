@@ -56,6 +56,18 @@
     AND order_id = #p(order_id)
   #end
 
+  #sql("updateByOrder_numberAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result")
+    UPDATE table_order SET
+    order_is_pay = 1,
+    order_pay_type = #p(order_pay_type),
+    order_pay_number = #p(order_pay_number),
+    order_pay_account = #p(order_pay_account),
+    order_pay_time = #p(order_pay_time),
+    order_pay_result = #p(order_pay_result),
+    system_update_time = #p(system_update_time)
+    WHERE order_number = #p(order_number)
+  #end
+
   #sql("delete")
     UPDATE table_order SET
     system_update_user_id = #p(system_update_user_id),

@@ -1,15 +1,27 @@
 package com.shanghaichuangshi.shop.controller;
 
 import com.jfinal.core.ActionKey;
+import com.jfinal.kit.HttpKit;
 import com.jfinal.weixin.sdk.api.*;
 import com.jfinal.weixin.sdk.jfinal.ApiController;
+import com.jfinal.weixin.sdk.kit.PaymentKit;
 import com.shanghaichuangshi.constant.WeChat;
 import com.shanghaichuangshi.shop.constant.Url;
+import com.shanghaichuangshi.shop.service.OrderService;
+import com.shanghaichuangshi.shop.type.PayTypeEnum;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class WeChatApiController extends ApiController {
+
+    private static final OrderService orderService = new OrderService();
 
     public ApiConfig getApiConfig() {
         ApiConfig apiConfig = new ApiConfig();
@@ -22,10 +34,62 @@ public class WeChatApiController extends ApiController {
         return apiConfig;
     }
 
-
     @ActionKey(Url.WECHAT_API_NOTIFY)
     public void notifyUrl() {
-        renderText("<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>");
+        String result = HttpKit.readData(getRequest());
+
+        Map<String, String> map = PaymentKit.xmlToMap(result);
+
+        String appid = (String) map.get("appid");
+        String bank_type = (String) map.get("bank_type");
+        String cash_fee = (String) map.get("cash_fee");
+        String fee_type = (String) map.get("fee_type");
+        String is_subscribe = (String) map.get("is_subscribe");
+        String mch_id = (String) map.get("mch_id");
+        String nonce_str = (String) map.get("nonce_str");
+        String openid = (String) map.get("openid");
+        String out_trade_no = (String) map.get("out_trade_no");
+        String result_code = (String) map.get("result_code");
+        String return_code = (String) map.get("return_code");
+        String sign = (String) map.get("sign");
+        String time_end = (String) map.get("time_end");
+        String total_fee = (String) map.get("total_fee");
+        String trade_type = (String) map.get("trade_type");
+        String transaction_id = (String) map.get("transaction_id");
+
+        SortedMap<String, String> parameter = new TreeMap<String, String>();
+        parameter.put("appid", appid);
+        parameter.put("bank_type", bank_type);
+        parameter.put("cash_fee", cash_fee);
+        parameter.put("fee_type", fee_type);
+        parameter.put("is_subscribe", is_subscribe);
+        parameter.put("mch_id", mch_id);
+        parameter.put("nonce_str", nonce_str);
+        parameter.put("openid", openid);
+        parameter.put("out_trade_no", out_trade_no);
+        parameter.put("result_code", result_code);
+        parameter.put("return_code", return_code);
+        parameter.put("time_end", time_end);
+        parameter.put("total_fee", total_fee);
+        parameter.put("trade_type", trade_type);
+        parameter.put("transaction_id", transaction_id);
+
+        String endsign = PaymentKit.createSign(parameter, WeChat.mch_key);
+
+        if (sign.equals(endsign)) {
+            String order_number = out_trade_no;
+            String order_pay_type = PayTypeEnum.WECHAT.getKey();
+            String order_pay_number = transaction_id;
+            String order_pay_account = openid;
+            String order_pay_time = time_end;
+            String order_pay_result = result;
+
+            orderService.updateByOrder_numberAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(order_number, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result);
+
+            renderText("<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>");
+        } else {
+            renderText("<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[]]></return_msg></xml>");
+        }
     }
 
 

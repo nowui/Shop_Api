@@ -2,8 +2,8 @@ package com.shanghaichuangshi.shop.type;
 
 public enum PayTypeEnum {
 
-    ALI_PAY("ALI_PAY"),
-    WECHAT_PAY("WECHAT_PAY");
+    ALIPAY("ALIPAY"),
+    WECHAT("WECHAT");
 
     private String key;
 

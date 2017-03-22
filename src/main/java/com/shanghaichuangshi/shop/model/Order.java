@@ -53,7 +53,7 @@ public class Order extends Model<Order> {
     @Column(type = ColumnType.VARCHAR, length = 19, comment = "支付时间")
     public static final String ORDER_PAY_TIME = "order_pay_time";
 
-    @Column(type = ColumnType.VARCHAR, length = 500, comment = "支付结果")
+    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "支付结果")
     public static final String ORDER_PAY_RESULT = "order_pay_result";
 
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "会员等级编号")
