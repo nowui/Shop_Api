@@ -8,7 +8,7 @@ import java.util.List;
 
 public class BrandService extends Service {
 
-    private static final BrandDao brandDao = new BrandDao();
+    private final BrandDao brandDao = new BrandDao();
 
     public int count(Brand brand) {
         return brandDao.count(brand.getBrand_name());

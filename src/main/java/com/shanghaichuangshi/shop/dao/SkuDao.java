@@ -15,7 +15,7 @@ import java.util.List;
 
 public class SkuDao extends Dao {
 
-    private static final SkuCache skuCache = new SkuCache();
+    private final SkuCache skuCache = new SkuCache();
 
     public List<Sku> list(String product_id) {
         List<Sku> skuList = skuCache.getSkuListByProduct_id(product_id);

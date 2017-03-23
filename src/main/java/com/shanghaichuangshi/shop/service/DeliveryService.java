@@ -10,9 +10,9 @@ import java.util.List;
 
 public class DeliveryService extends Service {
 
-    private static final DeliveryDao deliveryDao = new DeliveryDao();
+    private final DeliveryDao deliveryDao = new DeliveryDao();
 
-    private static final CategoryService categoryService = new CategoryService();
+    private final CategoryService categoryService = new CategoryService();
 
     public int count(Delivery delivery, String request_user_id) {
         return deliveryDao.count(delivery.getDelivery_name(), request_user_id);

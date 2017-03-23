@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MemberLevelService extends Service {
 
-    private static final MemberLevelDao memberLevelDao = new MemberLevelDao();
+    private final MemberLevelDao memberLevelDao = new MemberLevelDao();
 
     public int count(MemberLevel member_level) {
         return memberLevelDao.count(member_level.getMember_level_name());

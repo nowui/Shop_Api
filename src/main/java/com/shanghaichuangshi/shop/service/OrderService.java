@@ -19,15 +19,15 @@ import java.util.*;
 
 public class OrderService extends Service {
 
-    private static final OrderDao orderDao = new OrderDao();
+    private final OrderDao orderDao = new OrderDao();
 
-    private static final SkuService skuService = new SkuService();
-    private static final ProductService productService = new ProductService();
-    private static final MemberService memberService = new MemberService();
-    private static final MemberLevelService memberLevelService = new MemberLevelService();
-    private static final CategoryService categoryService = new CategoryService();
-    private static final BrandService brandService = new BrandService();
-    private static final OrderProductService orderProductService = new OrderProductService();
+    private final SkuService skuService = new SkuService();
+    private final ProductService productService = new ProductService();
+    private final MemberService memberService = new MemberService();
+    private final MemberLevelService memberLevelService = new MemberLevelService();
+    private final CategoryService categoryService = new CategoryService();
+    private final BrandService brandService = new BrandService();
+    private final OrderProductService orderProductService = new OrderProductService();
 
     public int count(Order order) {
         return orderDao.count(order.getOrder_number());
@@ -177,7 +177,7 @@ public class OrderService extends Service {
         parameter2.put("package", package_str);
         parameter2.put("signType", signType);
         parameter2.put("paySign", PaymentKit.createSign(parameter2, WeChat.mch_key));
-        parameter2.put("outTradeNo", out_trade_no);
+        parameter2.put("orderId", order.getOrder_id());
 
         return parameter2;
     }
@@ -186,12 +186,22 @@ public class OrderService extends Service {
         return orderDao.update(order, request_user_id);
     }
 
-    public boolean updateByOrder_numberAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(String order_number, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result) {
-        return orderDao.updateByOrder_numberAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(order_number, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result);
+    public boolean updateByOrder_numberAndOrder_receive_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(String order_number, BigDecimal order_receive_amount, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result) {
+        return orderDao.updateByOrder_numberAndOrder_receive_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(order_number, order_receive_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result);
     }
 
     public boolean delete(Order order, String request_user_id) {
         return orderDao.delete(order.getOrder_id(), request_user_id);
+    }
+
+    public Order confirm(String order_id, String request_user_id) {
+        Order order = orderDao.find(order_id);
+
+        if (!order.getOrder_is_pay()) {
+            orderDao.updateByOrder_idAndOrder_is_confirm(order_id);
+        }
+
+        return order;
     }
 
 }

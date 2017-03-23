@@ -4,7 +4,7 @@ public enum OrderStatusEnum {
 
 	WAIT("WAIT", "代付款"),
 	EXPIRE("EXPIRE", "超时未付款"),
-	CONFIRM("CONFIRM", "已付款，待确认"),
+//	CONFIRM("CONFIRM", "已付款，待确认"),
 	PAYED("PAYED", "已付款"),
 	SEND("SEND", "已发货"),
 	RECEIVED("RECEIVED", "货已签收"),

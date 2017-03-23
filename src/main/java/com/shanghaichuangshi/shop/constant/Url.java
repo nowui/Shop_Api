@@ -61,5 +61,6 @@ public class Url {
     public static final String ORDER_SAVE = "/order/save";
     public static final String ORDERL_UPDATE = "/order/update";
     public static final String ORDER_DELETE = "/order/delete";
+    public static final String ORDER_CONFIRM = "/order/confirm";
 
 }

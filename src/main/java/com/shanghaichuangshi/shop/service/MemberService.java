@@ -20,9 +20,9 @@ import java.util.Map;
 
 public class MemberService extends Service {
 
-    private static final MemberDao memberDao = new MemberDao();
+    private final MemberDao memberDao = new MemberDao();
 
-    private static final UserService userService = new UserService();
+    private final UserService userService = new UserService();
     private final AuthorizationService authorizationService = new AuthorizationService();
     private final DeliveryService deliveryService = new DeliveryService();
 
@@ -146,8 +146,6 @@ public class MemberService extends Service {
 
     public Map<String, Object> weChatLogin(String wechat_open_id) {
         User user = userService.findByWechat_open_idAndUser_type(wechat_open_id, UserType.MEMBER.getKey());
-
-        System.out.println("----" + wechat_open_id);
 
         String request_user_id = "";
         String platform = "";

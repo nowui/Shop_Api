@@ -39,6 +39,9 @@ public class Order extends Model<Order> {
     public static final String ORDER_RECEIVE_AMOUNT = "order_receive_amount";
 
     @Column(type = ColumnType.TINYINT, length = 1, comment = "是否支付")
+    public static final String ORDER_IS_CONFIRM = "order_is_confirm";
+
+    @Column(type = ColumnType.TINYINT, length = 1, comment = "是否确认")
     public static final String ORDER_IS_PAY = "order_is_pay";
 
     @Column(type = ColumnType.VARCHAR, length = 10, comment = "支付类型")
@@ -147,6 +150,14 @@ public class Order extends Model<Order> {
 
     public void setOrder_receive_amount(BigDecimal order_receive_amount) {
         set(ORDER_RECEIVE_AMOUNT, order_receive_amount);
+    }
+
+    public Boolean getOrder_is_confirm() {
+        return getBoolean(ORDER_IS_CONFIRM);
+    }
+
+    public void setOrder_is_confirm(Boolean order_is_confirm) {
+        set(ORDER_IS_CONFIRM, order_is_confirm);
     }
 
     public Boolean getOrder_is_pay() {

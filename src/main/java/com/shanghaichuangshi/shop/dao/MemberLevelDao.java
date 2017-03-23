@@ -13,7 +13,7 @@ import java.util.List;
 
 public class MemberLevelDao extends Dao {
 
-    private static final MemberLevelCache memberLevelCache = new MemberLevelCache();
+    private final MemberLevelCache memberLevelCache = new MemberLevelCache();
 
     public int count(String member_level_name) {
         JMap map = JMap.create();

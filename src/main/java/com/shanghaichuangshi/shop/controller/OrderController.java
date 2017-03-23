@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class OrderController extends Controller {
 
-    private static final OrderService orderService = new OrderService();
+    private final OrderService orderService = new OrderService();
 
     @ActionKey(Url.ORDER_LIST)
     public void list() {
@@ -96,6 +96,20 @@ public class OrderController extends Controller {
         orderService.delete(model, request_user_id);
 
         renderSuccessJson();
+    }
+
+    @ActionKey(Url.ORDER_CONFIRM)
+    public void confirm() {
+        Order model = getParameter(Order.class);
+        String request_user_id = getRequest_user_id();
+
+        model.validate(Order.ORDER_ID);
+
+        Order order = orderService.confirm(model.getOrder_id(), request_user_id);
+
+        order.keep(Order.ORDER_IS_PAY, Order.ORDER_RECEIVE_AMOUNT);
+
+        renderSuccessJson(order.format());
     }
 
 }

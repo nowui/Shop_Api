@@ -2,7 +2,6 @@ package com.shanghaichuangshi.shop.dao;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.JMap;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
@@ -16,7 +15,7 @@ import java.util.List;
 
 public class ProductDao extends Dao {
 
-    private static final ProductCache productCache = new ProductCache();
+    private final ProductCache productCache = new ProductCache();
 
     public int count(String product_name) {
         JMap map = JMap.create();

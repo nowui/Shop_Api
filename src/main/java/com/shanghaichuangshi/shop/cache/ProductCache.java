@@ -5,28 +5,22 @@ import com.shanghaichuangshi.shop.model.Product;
 
 public class ProductCache extends Cache {
 
-    private final String PRODUCT_CACHE_MODEL = "product_cache_model";
+    private final String PRODUCT_OBJECT_CACHE = "product_object_cache";
 
     public Product getProductByProduct_id(String product_id) {
-        return (Product) ehcacheObject.get(PRODUCT_CACHE_MODEL + "_" + product_id);
+        return (Product) getObjectBykeyAndId(PRODUCT_OBJECT_CACHE, product_id);
     }
 
     public void setProductByProduct_id(Product product, String product_id) {
-        ehcacheObject.put(PRODUCT_CACHE_MODEL + "_" + product_id, product);
-
-        setMapByKeyAndId(PRODUCT_CACHE_MODEL, product_id);
+        setObjectBykeyAndId(product, PRODUCT_OBJECT_CACHE, product_id);
     }
 
     public void removeProductByProduct_id(String product_id) {
-        ehcacheObject.remove(PRODUCT_CACHE_MODEL + "_" + product_id);
-
-        removeMapByKeyAndId(PRODUCT_CACHE_MODEL, product_id);
+        removeObjectBykeyAndId(PRODUCT_OBJECT_CACHE, product_id);
     }
 
     public void removeProduct() {
-        ehcacheObject.removeAll(getMapByKey(PRODUCT_CACHE_MODEL));
-
-        removeMapByKey(PRODUCT_CACHE_MODEL);
+        removeObjectByKey(PRODUCT_OBJECT_CACHE);
     }
 
 }

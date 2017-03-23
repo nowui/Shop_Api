@@ -13,9 +13,7 @@ import java.util.List;
 
 public class SkuService extends Service {
 
-    private static final SkuDao skuDao = new SkuDao();
-
-    private static final MemberService memberService = new MemberService();
+    private final SkuDao skuDao = new SkuDao();
 
     public List<Sku> list(String product_id) {
         return skuDao.list(product_id);

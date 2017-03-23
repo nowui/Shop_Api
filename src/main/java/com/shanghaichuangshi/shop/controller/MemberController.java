@@ -15,8 +15,8 @@ import java.util.Map;
 
 public class MemberController extends Controller {
 
-    private static final MemberService memberService = new MemberService();
-    private static final MemberLevelService memberLevelService = new MemberLevelService();
+    private final MemberService memberService = new MemberService();
+    private final MemberLevelService memberLevelService = new MemberLevelService();
 
     @ActionKey(Url.MEMBER_LIST)
     public void list() {

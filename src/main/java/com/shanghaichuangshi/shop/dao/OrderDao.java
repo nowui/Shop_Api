@@ -16,7 +16,7 @@ import java.util.List;
 
 public class OrderDao extends Dao {
 
-    private static final OrderCache orderCache = new OrderCache();
+    private final OrderCache orderCache = new OrderCache();
 
     public int count(String order_number) {
         JMap map = JMap.create();
@@ -82,16 +82,24 @@ public class OrderDao extends Dao {
     }
 
     public Order find(String order_id) {
-        JMap map = JMap.create();
-        map.put(Order.ORDER_ID, order_id);
-        SqlPara sqlPara = Db.getSqlPara("order.find", map);
+        Order order = orderCache.getOrderByOrder_id(order_id);
 
-        List<Order> orderList = new Order().find(sqlPara.getSql(), sqlPara.getPara());
-        if (orderList.size() == 0) {
-            return null;
-        } else {
-            return orderList.get(0);
+        if (order == null) {
+            JMap map = JMap.create();
+            map.put(Order.ORDER_ID, order_id);
+            SqlPara sqlPara = Db.getSqlPara("order.find", map);
+
+            List<Order> orderList = new Order().find(sqlPara.getSql(), sqlPara.getPara());
+            if (orderList.size() == 0) {
+                order = null;
+            } else {
+                order = orderList.get(0);
+
+                orderCache.setOrderByOrder_id(order, order_id);
+            }
         }
+
+        return order;
     }
 
     private String getOrder_number(String day) {
@@ -139,6 +147,8 @@ public class OrderDao extends Dao {
     }
 
     public boolean update(Order order, String request_user_id) {
+        orderCache.removeOrderByOrder_id(order.getOrder_id());
+
         order.remove(Order.SYSTEM_CREATE_USER_ID);
         order.remove(Order.SYSTEM_CREATE_TIME);
         order.setSystem_update_user_id(request_user_id);
@@ -148,26 +158,37 @@ public class OrderDao extends Dao {
         return order.update();
     }
 
-    public boolean updateByOrder_numberAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(String order_number, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result) {
+    public boolean updateByOrder_numberAndOrder_receive_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(String order_number, BigDecimal order_receive_amount, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result) {
         JMap map = JMap.create();
         map.put(Order.ORDER_NUMBER, order_number);
+        map.put(Order.ORDER_RECEIVE_AMOUNT, order_receive_amount);
         map.put(Order.ORDER_PAY_TYPE, order_pay_type);
         map.put(Order.ORDER_PAY_NUMBER, order_pay_number);
         map.put(Order.ORDER_PAY_ACCOUNT, order_pay_account);
         map.put(Order.ORDER_PAY_TIME, order_pay_time);
         map.put(Order.ORDER_PAY_RESULT, order_pay_result);
         map.put(Order.SYSTEM_UPDATE_TIME, new Date());
-        SqlPara sqlPara = Db.getSqlPara("order.updateByOrder_numberAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result", map);
+        SqlPara sqlPara = Db.getSqlPara("order.updateByOrder_numberAndOrder_receive_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result", map);
 
         return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }
 
     public boolean delete(String order_id, String request_user_id) {
+        orderCache.removeOrderByOrder_id(order_id);
+
         JMap map = JMap.create();
         map.put(Order.ORDER_ID, order_id);
         map.put(Order.SYSTEM_UPDATE_USER_ID, request_user_id);
         map.put(Order.SYSTEM_UPDATE_TIME, new Date());
         SqlPara sqlPara = Db.getSqlPara("order.delete", map);
+
+        return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
+    }
+
+    public boolean updateByOrder_idAndOrder_is_confirm(String order_id) {
+        JMap map = JMap.create();
+        map.put(Order.ORDER_ID, order_id);
+        SqlPara sqlPara = Db.getSqlPara("order.updateByOrder_idAndOrder_is_confirm", map);
 
         return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }

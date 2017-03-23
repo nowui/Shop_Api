@@ -13,7 +13,7 @@ import java.util.List;
 
 public class MemberDao extends Dao {
 
-    private static final MemberCache memberCache = new MemberCache();
+    private final MemberCache memberCache = new MemberCache();
 
     public int count(String member_name) {
         JMap map = JMap.create();

@@ -12,7 +12,7 @@ import java.util.*;
 
 public class ProductController extends Controller {
 
-    private static final ProductService productService = new ProductService();
+    private final ProductService productService = new ProductService();
 
     @ActionKey(Url.PRODUCT_LIST)
     public void list() {

@@ -16,11 +16,11 @@ import java.util.List;
 
 public class ProductService extends Service {
 
-    private static final ProductDao productDao = new ProductDao();
+    private final ProductDao productDao = new ProductDao();
 
-    private static final CategoryService categoryService = new CategoryService();
-    private static final SkuService skuService = new SkuService();
-    private static final MemberService memberService = new MemberService();
+    private final CategoryService categoryService = new CategoryService();
+    private final SkuService skuService = new SkuService();
+    private final MemberService memberService = new MemberService();
 
     public int count(Product product) {
         return productDao.count(product.getProduct_name());

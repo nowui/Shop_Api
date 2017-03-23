@@ -11,7 +11,7 @@ import java.util.List;
 
 public class DeliveryController extends Controller {
 
-    private static final DeliveryService deliveryService = new DeliveryService();
+    private final DeliveryService deliveryService = new DeliveryService();
 
     @ActionKey(Url.DELIVERY_LIST)
     public void list() {

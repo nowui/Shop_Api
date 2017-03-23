@@ -8,7 +8,7 @@ import java.util.List;
 
 public class OrderProductService extends Service {
 
-    private static final OrderProductDao orderProductDao = new OrderProductDao();
+    private final OrderProductDao orderProductDao = new OrderProductDao();
 
     public OrderProduct find(String order_product_id) {
         return orderProductDao.find(order_product_id);

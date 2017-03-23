@@ -11,7 +11,7 @@ import java.util.List;
 
 public class BrandController extends Controller {
 
-    private static final BrandService brandService = new BrandService();
+    private final BrandService brandService = new BrandService();
 
     @ActionKey(Url.BRAND_LIST)
     public void list() {

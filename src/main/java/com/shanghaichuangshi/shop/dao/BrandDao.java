@@ -13,7 +13,7 @@ import java.util.List;
 
 public class BrandDao extends Dao {
 
-    private static final BrandCache brandCache = new BrandCache();
+    private final BrandCache brandCache = new BrandCache();
 
     public int count(String brand_name) {
         JMap map = JMap.create();
@@ -69,6 +69,8 @@ public class BrandDao extends Dao {
     }
 
     public boolean update(Brand brand, String request_user_id) {
+        brandCache.removeBrandByBrand_id(brand.getBrand_id());
+
         brand.remove(Brand.SYSTEM_CREATE_USER_ID);
         brand.remove(Brand.SYSTEM_CREATE_TIME);
         brand.setSystem_update_user_id(request_user_id);
@@ -79,6 +81,8 @@ public class BrandDao extends Dao {
     }
 
     public boolean delete(String brand_id, String request_user_id) {
+        brandCache.removeBrandByBrand_id(brand_id);
+
         JMap map = JMap.create();
         map.put(Brand.BRAND_ID, brand_id);
         map.put(Brand.SYSTEM_UPDATE_USER_ID, request_user_id);

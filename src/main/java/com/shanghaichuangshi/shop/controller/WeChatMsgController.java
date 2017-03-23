@@ -8,24 +8,15 @@ import com.jfinal.weixin.sdk.msg.in.event.*;
 import com.jfinal.weixin.sdk.msg.in.speech_recognition.InSpeechRecognitionResults;
 import com.jfinal.weixin.sdk.msg.out.OutTextMsg;
 import com.shanghaichuangshi.constant.WeChat;
-import com.shanghaichuangshi.service.UserService;
 import com.shanghaichuangshi.shop.service.MemberService;
 
 public class WeChatMsgController extends MsgController {
 
-    private static final MemberService memberService = new MemberService();
-    private static final UserService userService = new UserService();
+    private final MemberService memberService = new MemberService();
 
     @Override
     public ApiConfig getApiConfig() {
-        ApiConfig apiConfig = new ApiConfig();
-        apiConfig.setAppId(WeChat.app_id);
-        apiConfig.setAppSecret(WeChat.app_secret);
-        apiConfig.setToken(WeChat.token);
-        apiConfig.setEncryptMessage(false);
-        apiConfig.setEncodingAesKey(WeChat.rncoding_aes_key);
-
-        return apiConfig;
+        return WeChat.getApiConfig();
     }
 
     @Override
