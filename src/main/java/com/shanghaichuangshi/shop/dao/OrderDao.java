@@ -6,10 +6,12 @@ import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.cache.OrderCache;
 import com.shanghaichuangshi.shop.model.Order;
+import com.shanghaichuangshi.shop.type.OrderStatusEnum;
 import com.shanghaichuangshi.util.DateUtil;
 import com.shanghaichuangshi.util.Util;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -129,6 +131,7 @@ public class OrderDao extends Dao {
         order.setUser_id(request_user_id);
         order.setOrder_number(order_number);
         order.setOrder_receive_amount(BigDecimal.valueOf(0));
+        order.setOrder_is_confirm(false);
         order.setOrder_is_pay(false);
         order.setOrder_pay_type("");
         order.setOrder_pay_number("");
@@ -159,6 +162,12 @@ public class OrderDao extends Dao {
     }
 
     public boolean updateByOrder_numberAndOrder_receive_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(String order_number, BigDecimal order_receive_amount, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result) {
+        try {
+            order_pay_time = DateUtil.dateTimeFormat.format(DateUtil.df.parse(order_pay_time));
+        } catch (ParseException e) {
+
+        }
+
         JMap map = JMap.create();
         map.put(Order.ORDER_NUMBER, order_number);
         map.put(Order.ORDER_RECEIVE_AMOUNT, order_receive_amount);
@@ -167,6 +176,7 @@ public class OrderDao extends Dao {
         map.put(Order.ORDER_PAY_ACCOUNT, order_pay_account);
         map.put(Order.ORDER_PAY_TIME, order_pay_time);
         map.put(Order.ORDER_PAY_RESULT, order_pay_result);
+        map.put(Order.ORDER_STATUS, OrderStatusEnum.PAYED.getKey());
         map.put(Order.SYSTEM_UPDATE_TIME, new Date());
         SqlPara sqlPara = Db.getSqlPara("order.updateByOrder_numberAndOrder_receive_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result", map);
 

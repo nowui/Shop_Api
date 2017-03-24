@@ -107,7 +107,7 @@ public class OrderController extends Controller {
 
         Order order = orderService.confirm(model.getOrder_id(), request_user_id);
 
-        order.keep(Order.ORDER_IS_PAY, Order.ORDER_RECEIVE_AMOUNT);
+        order.keep(Order.ORDER_NUMBER, Order.ORDER_IS_PAY, Order.ORDER_RECEIVE_AMOUNT);
 
         renderSuccessJson(order.format());
     }
