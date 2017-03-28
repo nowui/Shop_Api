@@ -29,7 +29,7 @@
     SELECT
     order_id,
     order_number,
-    order_receivable_amount,
+    order_amount,
     order_status
     FROM table_order
     WHERE system_status = 1
@@ -56,11 +56,11 @@
     AND order_id = #p(order_id)
   #end
 
-  #sql("updateByOrder_numberAndOrder_receive_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result")
+  #sql("updateByOrder_numberAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result")
     UPDATE table_order SET
     order_is_confirm = 1,
     order_is_pay = 1,
-    order_receive_amount = #p(order_receive_amount),
+    order_amount = #p(order_amount),
     order_pay_type = #p(order_pay_type),
     order_pay_number = #p(order_pay_number),
     order_pay_account = #p(order_pay_account),

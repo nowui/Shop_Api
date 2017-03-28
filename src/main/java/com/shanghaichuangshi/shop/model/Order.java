@@ -11,7 +11,7 @@ public class Order extends Model<Order> {
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "订单编号")
     public static final String ORDER_ID = "order_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "用户编号")
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "用户编号", findable = false)
     public static final String USER_ID = "user_id";
 
     @Column(type = ColumnType.VARCHAR, length = 15, comment = "订单号")
@@ -30,42 +30,48 @@ public class Order extends Model<Order> {
     public static final String ORDER_MESSAGE = "order_message";
 
     @Column(type = ColumnType.INT, length = 11, comment = "商品数量")
-    public static final String ORDER_PRODUCT_NUMBER = "order_product_number";
+    public static final String ORDER_PRODUCT_QUANTITY = "order_product_quantity";
 
-    @Column(type = ColumnType.DECIMAL, length = 0, comment = "应付金额")
-    public static final String ORDER_RECEIVABLE_AMOUNT = "order_receivable_amount";
+    @Column(type = ColumnType.DECIMAL, length = 0, comment = "商品金额", findable = false)
+    public static final String ORDER_PRODUCT_AMOUNT = "order_product_amount";
 
-    @Column(type = ColumnType.DECIMAL, length = 0, comment = "实付金额")
-    public static final String ORDER_RECEIVE_AMOUNT = "order_receive_amount";
+    @Column(type = ColumnType.DECIMAL, length = 0, comment = "运费金额", findable = false)
+    public static final String ORDER_FREIGHT_AMOUNT = "order_freight_amount";
 
-    @Column(type = ColumnType.TINYINT, length = 1, comment = "是否支付")
+    @Column(type = ColumnType.DECIMAL, length = 0, comment = "折扣金额", findable = false)
+    public static final String ORDER_DISCOUNT_AMOUNT = "order_discount_amount";
+
+    @Column(type = ColumnType.DECIMAL, length = 0, comment = "订单金额")
+    public static final String ORDER_AMOUNT = "order_amount";
+
+    @Column(type = ColumnType.TINYINT, length = 1, comment = "是否支付", findable = false)
     public static final String ORDER_IS_CONFIRM = "order_is_confirm";
 
-    @Column(type = ColumnType.TINYINT, length = 1, comment = "是否确认")
+    @Column(type = ColumnType.TINYINT, length = 1, comment = "是否确认", findable = false)
     public static final String ORDER_IS_PAY = "order_is_pay";
 
-    @Column(type = ColumnType.VARCHAR, length = 10, comment = "支付类型")
+    @Column(type = ColumnType.VARCHAR, length = 10, comment = "支付类型", findable = false)
     public static final String ORDER_PAY_TYPE = "order_pay_type";
 
-    @Column(type = ColumnType.VARCHAR, length = 100, comment = "支付号")
+    @Column(type = ColumnType.VARCHAR, length = 100, comment = "支付号", findable = false)
     public static final String ORDER_PAY_NUMBER = "order_pay_number";
 
-    @Column(type = ColumnType.VARCHAR, length = 100, comment = "支付帐号")
+    @Column(type = ColumnType.VARCHAR, length = 100, comment = "支付帐号", findable = false)
     public static final String ORDER_PAY_ACCOUNT = "order_pay_account";
 
-    @Column(type = ColumnType.VARCHAR, length = 19, comment = "支付时间")
+    @Column(type = ColumnType.VARCHAR, length = 19, comment = "支付时间", findable = false)
     public static final String ORDER_PAY_TIME = "order_pay_time";
 
-    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "支付结果")
+    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "支付结果", findable = false)
     public static final String ORDER_PAY_RESULT = "order_pay_result";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "会员等级编号")
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "会员等级编号", findable = false)
     public static final String MEMBER_LEVEL_ID = "member_level_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 20, comment = "会员等级名称")
+    @Column(type = ColumnType.VARCHAR, length = 20, comment = "会员等级名称", findable = false)
     public static final String MEMBER_LEVEL_NAME = "member_level_name";
 
-    @Column(type = ColumnType.INT, length = 11, comment = "会员等级数值")
+    @Column(type = ColumnType.INT, length = 11, comment = "会员等级数值", findable = false)
     public static final String MEMBER_LEVEL_VALUE = "member_level_value";
 
     @Column(type = ColumnType.VARCHAR, length = 10, comment = "订单状态")
@@ -128,28 +134,44 @@ public class Order extends Model<Order> {
         set(ORDER_MESSAGE, order_message);
     }
 
-    public Integer getOrder_product_number() {
-        return getInt(ORDER_PRODUCT_NUMBER);
+    public Integer getOrder_product_quantity() {
+        return getInt(ORDER_PRODUCT_QUANTITY);
     }
 
-    public void setOrder_product_number(Integer order_product_number) {
-        set(ORDER_PRODUCT_NUMBER, order_product_number);
+    public void setOrder_product_quantity(Integer order_product_quantity) {
+        set(ORDER_PRODUCT_QUANTITY, order_product_quantity);
     }
 
-    public BigDecimal getOrder_receivable_amount() {
-        return getBigDecimal(ORDER_RECEIVABLE_AMOUNT);
+    public BigDecimal getOrder_product_amount() {
+        return getBigDecimal(ORDER_PRODUCT_AMOUNT);
     }
 
-    public void setOrder_receivable_amount(BigDecimal order_receivable_amount) {
-        set(ORDER_RECEIVABLE_AMOUNT, order_receivable_amount);
+    public void setOrder_product_amount(BigDecimal order_product_amount) {
+        set(ORDER_PRODUCT_AMOUNT, order_product_amount);
     }
 
-    public BigDecimal getOrder_receive_amount() {
-        return getBigDecimal(ORDER_RECEIVE_AMOUNT);
+    public BigDecimal getOrder_freight_amount() {
+        return getBigDecimal(ORDER_FREIGHT_AMOUNT);
     }
 
-    public void setOrder_receive_amount(BigDecimal order_receive_amount) {
-        set(ORDER_RECEIVE_AMOUNT, order_receive_amount);
+    public void setOrder_freight_amount(BigDecimal order_freight_amount) {
+        set(ORDER_FREIGHT_AMOUNT, order_freight_amount);
+    }
+
+    public BigDecimal getOrder_discount_amount() {
+        return getBigDecimal(ORDER_DISCOUNT_AMOUNT);
+    }
+
+    public void setOrder_discount_amount(BigDecimal order_discount_amount) {
+        set(ORDER_DISCOUNT_AMOUNT, order_discount_amount);
+    }
+
+    public BigDecimal getOrder_amount() {
+        return getBigDecimal(ORDER_AMOUNT);
+    }
+
+    public void setOrder_amount(BigDecimal order_amount) {
+        set(ORDER_AMOUNT, order_amount);
     }
 
     public Boolean getOrder_is_confirm() {

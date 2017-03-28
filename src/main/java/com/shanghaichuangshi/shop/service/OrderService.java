@@ -1,5 +1,6 @@
 package com.shanghaichuangshi.shop.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
@@ -42,6 +43,15 @@ public class OrderService extends Service {
     }
 
     public Order find(String order_id) {
+        Order order = orderDao.find(order_id);
+
+        List<OrderProduct> orderProductList = orderProductService.list(order_id);
+        order.put("product", orderProductList);
+
+        return order;
+    }
+
+    public Order adminFind(String order_id) {
         return orderDao.find(order_id);
     }
 
@@ -52,8 +62,10 @@ public class OrderService extends Service {
             throw new RuntimeException("请选购商品");
         }
 
-        Integer order_product_number = 0;
-        BigDecimal order_receivable_amount = BigDecimal.valueOf(0);
+        Integer order_product_quantity = 0;
+        BigDecimal order_product_amount = BigDecimal.valueOf(0);
+        BigDecimal order_freight_amount = BigDecimal.valueOf(0);
+        BigDecimal order_discount_amount = BigDecimal.valueOf(0);
         String member_level_id = memberService.findMember_lever_idByUser_id(request_user_id);
         String member_level_name = "";
         Integer member_level_value = 0;
@@ -70,7 +82,7 @@ public class OrderService extends Service {
             JSONObject productJSONObject = productJSONArray.getJSONObject(i);
 
             String sku_id = productJSONObject.getString(Sku.SKU_ID);
-            Integer product_number = productJSONObject.getInteger(OrderProduct.PRODUCT_NUMBER);
+            Integer product_quantity = productJSONObject.getInteger(OrderProduct.PRODUCT_QUANTITY);
 
             Sku sku = skuService.find(sku_id);
 
@@ -80,17 +92,17 @@ public class OrderService extends Service {
 
             Product product = productService.find(sku.getProduct_id());
 
-            if (product_number > sku.getProduct_stock()) {
+            if (product_quantity > sku.getProduct_stock()) {
                 throw new RuntimeException("库存不足:" + product.getProduct_name());
             }
 
             //更新订单商品数量
-            order_product_number += product_number;
+            order_product_quantity += product_quantity;
 
             //更新订单应付价格
             JSONObject productPriceJSONObject = skuService.getProduct_price(sku, member_level_id);
             BigDecimal product_price = productPriceJSONObject.getBigDecimal(Product.PRODUCT_PRICE);
-            order_receivable_amount = order_receivable_amount.add(product_price.multiply(BigDecimal.valueOf(product_number)));
+            order_product_amount = order_product_amount.add(product_price.multiply(BigDecimal.valueOf(product_quantity)));
 
             //订单的商品
             Category category = categoryService.find(product.getCategory_id());
@@ -116,12 +128,15 @@ public class OrderService extends Service {
             orderProduct.setProduct_market_price(product.getProduct_market_price());
             orderProduct.setProduct_price(product.getProduct_price());
             orderProduct.setProduct_stock(product.getProduct_stock());
-            orderProduct.setProduct_number(product_number);
+            orderProduct.setProduct_quantity(product_quantity);
             orderProductList.add(orderProduct);
         }
 
-        order.setOrder_product_number(order_product_number);
-        order.setOrder_receivable_amount(order_receivable_amount);
+        order.setOrder_product_quantity(order_product_quantity);
+        order.setOrder_product_amount(order_product_amount);
+        order.setOrder_freight_amount(order_freight_amount);
+        order.setOrder_discount_amount(order_discount_amount);
+        order.setOrder_amount(order_product_amount.subtract(order_freight_amount).subtract(order_discount_amount));
         order.setMember_level_id(member_level_id);
         order.setMember_level_name(member_level_name);
         order.setMember_level_value(member_level_value);
@@ -145,7 +160,7 @@ public class OrderService extends Service {
         String out_trade_no = order.getOrder_number();
         String spbill_create_ip = "0.0.0.0";
         DecimalFormat format = new DecimalFormat("0");
-        String total_fee = format.format(order.getOrder_receivable_amount().multiply(BigDecimal.valueOf(100)));
+        String total_fee = format.format(order.getOrder_amount().multiply(BigDecimal.valueOf(100)));
         String trade_type = "JSAPI";
 
         SortedMap<String, String> parameter = new TreeMap<String, String>();
@@ -186,8 +201,8 @@ public class OrderService extends Service {
         return orderDao.update(order, request_user_id);
     }
 
-    public boolean updateByOrder_numberAndOrder_receive_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(String order_number, BigDecimal order_receive_amount, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result) {
-        return orderDao.updateByOrder_numberAndOrder_receive_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(order_number, order_receive_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result);
+    public boolean updateByOrder_numberAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(String order_number, BigDecimal order_amount, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result) {
+        return orderDao.updateByOrder_numberAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(order_number, order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result);
     }
 
     public boolean delete(Order order, String request_user_id) {

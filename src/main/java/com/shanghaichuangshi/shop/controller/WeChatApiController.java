@@ -68,7 +68,7 @@ public class WeChatApiController extends ApiController {
         String endsign = PaymentKit.createSign(parameter, WeChat.mch_key);
 
         if (sign.equals(endsign)) {
-            BigDecimal order_receive_amount = new BigDecimal(total_fee).divide(BigDecimal.valueOf(100));
+            BigDecimal order_amount = new BigDecimal(total_fee).divide(BigDecimal.valueOf(100));
             String order_number = out_trade_no;
             String order_pay_type = PayTypeEnum.WECHAT.getKey();
             String order_pay_number = transaction_id;
@@ -76,7 +76,7 @@ public class WeChatApiController extends ApiController {
             String order_pay_time = time_end;
             String order_pay_result = result;
 
-            orderService.updateByOrder_numberAndOrder_receive_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(order_number, order_receive_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result);
+            orderService.updateByOrder_numberAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(order_number, order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result);
 
             renderText("<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>");
         } else {

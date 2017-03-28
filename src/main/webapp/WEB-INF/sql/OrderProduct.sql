@@ -1,5 +1,18 @@
 #namespace("order_product")
 
+  #sql("list")
+    SELECT
+    product_id,
+    product_name,
+    product_image,
+    product_price,
+    product_quantity
+    FROM table_order_product
+    WHERE system_status = 1
+    AND order_id = #p(order_id)
+    ORDER BY system_create_time DESC
+  #end
+
   #sql("find")
     SELECT
     *
@@ -31,7 +44,7 @@
       product_market_price,
       product_price,
       product_stock,
-      product_number,
+      product_quantity,
       system_create_user_id,
       system_create_time,
       system_update_user_id,

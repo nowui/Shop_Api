@@ -68,9 +68,10 @@ public class DeliveryController extends Controller {
 
         model.validate(Delivery.DELIVERY_NAME);
 
-        deliveryService.save(model, request_user_id);
+        Delivery delivery = deliveryService.save(model, request_user_id);
+        delivery.keep(Delivery.DELIVERY_IS_DEFAULT, Delivery.DELIVERY_NAME, Delivery.DELIVERY_PHONE, Delivery.DELIVERY_ADDRESS);
 
-        renderSuccessJson();
+        renderSuccessJson(delivery);
     }
 
     @ActionKey(Url.DELIVERYL_UPDATE)
@@ -80,9 +81,10 @@ public class DeliveryController extends Controller {
 
         model.validate(Delivery.DELIVERY_ID, Delivery.DELIVERY_NAME);
 
-        deliveryService.update(model, request_user_id);
+        Delivery delivery = deliveryService.update(model, request_user_id);
+        delivery.keep(Delivery.DELIVERY_IS_DEFAULT, Delivery.DELIVERY_NAME, Delivery.DELIVERY_PHONE, Delivery.DELIVERY_ADDRESS);
 
-        renderSuccessJson();
+        renderSuccessJson(delivery);
     }
 
     @ActionKey(Url.DELIVERY_DELETE)
@@ -92,9 +94,10 @@ public class DeliveryController extends Controller {
 
         model.validate(Delivery.DELIVERY_ID);
 
-        deliveryService.delete(model, request_user_id);
+        Delivery delivery = deliveryService.delete(model, request_user_id);
+        delivery.keep(Delivery.DELIVERY_IS_DEFAULT, Delivery.DELIVERY_NAME, Delivery.DELIVERY_PHONE, Delivery.DELIVERY_ADDRESS);
 
-        renderSuccessJson();
+        renderSuccessJson(delivery);
     }
 
 }

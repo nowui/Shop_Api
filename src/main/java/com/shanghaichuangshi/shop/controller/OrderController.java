@@ -57,7 +57,7 @@ public class OrderController extends Controller {
 
         model.validate(Order.ORDER_ID);
 
-        Order order = orderService.find(model.getOrder_id());
+        Order order = orderService.adminFind(model.getOrder_id());
 
         renderSuccessJson(order);
     }
@@ -107,9 +107,9 @@ public class OrderController extends Controller {
 
         Order order = orderService.confirm(model.getOrder_id(), request_user_id);
 
-        order.keep(Order.ORDER_NUMBER, Order.ORDER_IS_PAY, Order.ORDER_RECEIVE_AMOUNT);
+        order.keep(Order.ORDER_NUMBER, Order.ORDER_IS_PAY, Order.ORDER_AMOUNT);
 
-        renderSuccessJson(order.format());
+        renderSuccessJson(order);
     }
 
 }

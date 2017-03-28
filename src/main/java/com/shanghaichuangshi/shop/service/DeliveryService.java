@@ -42,7 +42,7 @@ public class DeliveryService extends Service {
         return deliveryDao.save(delivery, request_user_id);
     }
 
-    public boolean update(Delivery delivery, String request_user_id) {
+    public Delivery update(Delivery delivery, String request_user_id) {
         Category province = categoryService.find(delivery.getDelivery_province());
         Category city = categoryService.find(delivery.getDelivery_city());
         Category area = categoryService.find(delivery.getDelivery_area());
@@ -51,11 +51,21 @@ public class DeliveryService extends Service {
 
         deliveryDao.updateIsDefault(delivery.getDelivery_id(), request_user_id);
 
-        return deliveryDao.update(delivery, request_user_id);
+        deliveryDao.update(delivery, request_user_id);
+
+        return delivery;
     }
 
-    public boolean delete(Delivery delivery, String request_user_id) {
-        return deliveryDao.delete(delivery.getDelivery_id(), request_user_id);
+    public Delivery delete(Delivery delivery, String request_user_id) {
+        deliveryDao.delete(delivery.getDelivery_id(), request_user_id);
+
+        Delivery d = findDefaultByUser_id(request_user_id);
+
+        if (d == null) {
+            d = new Delivery();
+        }
+
+        return d;
     }
 
 }

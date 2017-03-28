@@ -14,6 +14,14 @@ import java.util.List;
 
 public class OrderProductDao extends Dao {
 
+    public List<OrderProduct> list(String order_id) {
+        JMap map = JMap.create();
+        map.put(OrderProduct.ORDER_ID, order_id);
+        SqlPara sqlPara = Db.getSqlPara("order_product.list", map);
+
+        return new OrderProduct().find(sqlPara.getSql(), sqlPara.getPara());
+    }
+
     public OrderProduct find(String order_product_id) {
         JMap map = JMap.create();
         map.put(OrderProduct.ORDER_PRODUCT_ID, order_product_id);
@@ -55,7 +63,7 @@ public class OrderProductDao extends Dao {
             objectList.add(orderProduct.getProduct_market_price());
             objectList.add(orderProduct.getProduct_price());
             objectList.add(orderProduct.getProduct_stock());
-            objectList.add(orderProduct.getProduct_number());
+            objectList.add(orderProduct.getProduct_quantity());
             objectList.add(request_user_id);
             objectList.add(new Date());
             objectList.add(request_user_id);

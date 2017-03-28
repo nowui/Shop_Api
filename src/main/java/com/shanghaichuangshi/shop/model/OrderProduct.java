@@ -72,7 +72,7 @@ public class OrderProduct extends Model<OrderProduct> {
     public static final String PRODUCT_STOCK = "product_stock";
 
     @Column(type = ColumnType.INT, length = 11, comment = "商品数量")
-    public static final String PRODUCT_NUMBER = "product_number";
+    public static final String PRODUCT_QUANTITY = "product_quantity";
 
     
     public String getOrder_product_id() {
@@ -243,11 +243,11 @@ public class OrderProduct extends Model<OrderProduct> {
         set(PRODUCT_STOCK, product_stock);
     }
 
-    public Integer getProduct_number() {
-        return getInt(PRODUCT_NUMBER);
+    public Integer getProduct_quantity() {
+        return getInt(PRODUCT_QUANTITY);
     }
 
-    public void setProduct_number(Integer product_number) {
-        set(PRODUCT_NUMBER, product_number);
+    public void setProduct_quantity(Integer product_quantity) {
+        set(PRODUCT_QUANTITY, product_quantity);
     }
 }

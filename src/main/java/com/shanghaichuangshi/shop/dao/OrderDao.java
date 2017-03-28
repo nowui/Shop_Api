@@ -130,7 +130,7 @@ public class OrderDao extends Dao {
         order.setOrder_id(Util.getRandomUUID());
         order.setUser_id(request_user_id);
         order.setOrder_number(order_number);
-        order.setOrder_receive_amount(BigDecimal.valueOf(0));
+        order.setOrder_discount_amount(BigDecimal.valueOf(0));
         order.setOrder_is_confirm(false);
         order.setOrder_is_pay(false);
         order.setOrder_pay_type("");
@@ -161,7 +161,7 @@ public class OrderDao extends Dao {
         return order.update();
     }
 
-    public boolean updateByOrder_numberAndOrder_receive_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(String order_number, BigDecimal order_receive_amount, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result) {
+    public boolean updateByOrder_numberAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(String order_number, BigDecimal order_amount, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result) {
         try {
             order_pay_time = DateUtil.dateTimeFormat.format(DateUtil.df.parse(order_pay_time));
         } catch (ParseException e) {
@@ -170,7 +170,7 @@ public class OrderDao extends Dao {
 
         JMap map = JMap.create();
         map.put(Order.ORDER_NUMBER, order_number);
-        map.put(Order.ORDER_RECEIVE_AMOUNT, order_receive_amount);
+        map.put(Order.ORDER_AMOUNT, order_amount);
         map.put(Order.ORDER_PAY_TYPE, order_pay_type);
         map.put(Order.ORDER_PAY_NUMBER, order_pay_number);
         map.put(Order.ORDER_PAY_ACCOUNT, order_pay_account);
@@ -178,7 +178,7 @@ public class OrderDao extends Dao {
         map.put(Order.ORDER_PAY_RESULT, order_pay_result);
         map.put(Order.ORDER_STATUS, OrderStatusEnum.PAYED.getKey());
         map.put(Order.SYSTEM_UPDATE_TIME, new Date());
-        SqlPara sqlPara = Db.getSqlPara("order.updateByOrder_numberAndOrder_receive_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result", map);
+        SqlPara sqlPara = Db.getSqlPara("order.updateByOrder_numberAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result", map);
 
         return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }

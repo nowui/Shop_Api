@@ -10,6 +10,10 @@ public class OrderProductService extends Service {
 
     private final OrderProductDao orderProductDao = new OrderProductDao();
 
+    public List<OrderProduct> list(String order_id) {
+        return orderProductDao.list(order_id);
+    }
+
     public OrderProduct find(String order_product_id) {
         return orderProductDao.find(order_product_id);
     }
