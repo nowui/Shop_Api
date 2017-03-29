@@ -4,6 +4,7 @@ import com.shanghaichuangshi.cache.Cache;
 import com.shanghaichuangshi.shop.model.Order;
 
 import java.util.List;
+import java.util.Set;
 
 public class OrderCache extends Cache {
 
@@ -36,6 +37,27 @@ public class OrderCache extends Cache {
 
     public void removeOrderByOrder_id(String order_id) {
         removeObjectBykeyAndId(ORDER_OBJECT_CACHE, order_id);
+    }
+
+    public void removeOrderByOrder_number(String order_number) {
+        Set<String> set = getMapByKey(ORDER_OBJECT_CACHE);
+        String order_id = "";
+
+        for (String id : set) {
+            id = id.replace(ORDER_OBJECT_CACHE + "_", "");
+
+            Order order = getOrderByOrder_id(id);
+
+            if (order.getOrder_number().equals(order_number)) {
+                order_id = id;
+
+                break;
+            }
+        }
+
+        if (order_id != "") {
+            removeOrderByOrder_id(order_id);
+        }
     }
 
     public void removeOrder() {

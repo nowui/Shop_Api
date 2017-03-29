@@ -48,7 +48,7 @@ public class OrderController extends Controller {
 
         Order order = orderService.find(model.getOrder_id());
 
-        renderSuccessJson(order.format());
+        renderSuccessJson(order.formatToMap());
     }
 
     @ActionKey(Url.ORDER_ADMIN_FIND)
@@ -107,9 +107,21 @@ public class OrderController extends Controller {
 
         Order order = orderService.confirm(model.getOrder_id(), request_user_id);
 
-        order.keep(Order.ORDER_NUMBER, Order.ORDER_IS_PAY, Order.ORDER_AMOUNT);
+        Map<String, Object> result = order.keepToMap(Order.ORDER_NUMBER, Order.ORDER_IS_PAY, Order.ORDER_AMOUNT);
 
-        renderSuccessJson(order);
+        renderSuccessJson(result);
+    }
+
+    @ActionKey(Url.ORDER_PAY)
+    public void pay() {
+        Order model = getParameter(Order.class);
+        String request_user_id = getRequest_user_id();
+
+        model.validate(Order.ORDER_ID);
+
+        Map<String, String> result = orderService.pay(model.getOrder_id(), request_user_id);
+
+        renderSuccessJson(result);
     }
 
 }

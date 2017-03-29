@@ -168,6 +168,8 @@ public class OrderDao extends Dao {
 
         }
 
+        orderCache.removeOrderByOrder_number(order_number);
+
         JMap map = JMap.create();
         map.put(Order.ORDER_NUMBER, order_number);
         map.put(Order.ORDER_AMOUNT, order_amount);

@@ -172,7 +172,7 @@ public class MemberService extends Service {
         if (delivery == null) {
             resultMap.put("delivery", new JSONObject());
         } else {
-            resultMap.put("delivery", delivery.format());
+            resultMap.put("delivery", delivery.formatToMap());
         }
 
         return resultMap;

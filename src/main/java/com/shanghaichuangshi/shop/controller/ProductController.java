@@ -87,7 +87,7 @@ public class ProductController extends Controller {
 
         Product product = productService.findByUser_id(model.getProduct_id(), request_user_id);
 
-        renderSuccessJson(product.format());
+        renderSuccessJson(product.formatToMap());
     }
 
     @ActionKey(Url.PRODUCT_ADMIN_FIND)

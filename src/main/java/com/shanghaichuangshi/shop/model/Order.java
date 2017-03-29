@@ -32,10 +32,10 @@ public class Order extends Model<Order> {
     @Column(type = ColumnType.INT, length = 11, comment = "商品数量")
     public static final String ORDER_PRODUCT_QUANTITY = "order_product_quantity";
 
-    @Column(type = ColumnType.DECIMAL, length = 0, comment = "商品金额", findable = false)
+    @Column(type = ColumnType.DECIMAL, length = 0, comment = "商品金额")
     public static final String ORDER_PRODUCT_AMOUNT = "order_product_amount";
 
-    @Column(type = ColumnType.DECIMAL, length = 0, comment = "运费金额", findable = false)
+    @Column(type = ColumnType.DECIMAL, length = 0, comment = "运费金额")
     public static final String ORDER_FREIGHT_AMOUNT = "order_freight_amount";
 
     @Column(type = ColumnType.DECIMAL, length = 0, comment = "折扣金额", findable = false)

@@ -152,6 +152,16 @@ public class OrderService extends Service {
         return unifiedorder(o);
     }
 
+    public Map<String, String> pay(String order_id, String request_user_id) {
+        Order order = orderDao.find(order_id);
+
+        if (order.getOrder_is_pay() || !order.getUser_id().equals(request_user_id)) {
+            return new HashMap<String, String>();
+        }
+
+        return unifiedorder(order);
+    }
+
     public Map<String, String> unifiedorder(Order order) {
         String nonce_str = Util.getRandomStringByLength(32);
         String body = "上海星销信息技术有限公司";

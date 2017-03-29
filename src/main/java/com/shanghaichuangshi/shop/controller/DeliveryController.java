@@ -8,6 +8,7 @@ import com.shanghaichuangshi.shop.model.Delivery;
 import com.shanghaichuangshi.shop.service.DeliveryService;
 
 import java.util.List;
+import java.util.Map;
 
 public class DeliveryController extends Controller {
 
@@ -47,7 +48,7 @@ public class DeliveryController extends Controller {
 
         Delivery delivery = deliveryService.find(model.getDelivery_id());
 
-        renderSuccessJson(delivery.format());
+        renderSuccessJson(delivery.formatToMap());
     }
 
     @ActionKey(Url.DELIVERY_ADMIN_FIND)
@@ -69,9 +70,9 @@ public class DeliveryController extends Controller {
         model.validate(Delivery.DELIVERY_NAME);
 
         Delivery delivery = deliveryService.save(model, request_user_id);
-        delivery.keep(Delivery.DELIVERY_IS_DEFAULT, Delivery.DELIVERY_NAME, Delivery.DELIVERY_PHONE, Delivery.DELIVERY_ADDRESS);
+        Map<String, Object> result = delivery.keepToMap(Delivery.DELIVERY_IS_DEFAULT, Delivery.DELIVERY_NAME, Delivery.DELIVERY_PHONE, Delivery.DELIVERY_ADDRESS);
 
-        renderSuccessJson(delivery);
+        renderSuccessJson(result);
     }
 
     @ActionKey(Url.DELIVERYL_UPDATE)
@@ -82,9 +83,9 @@ public class DeliveryController extends Controller {
         model.validate(Delivery.DELIVERY_ID, Delivery.DELIVERY_NAME);
 
         Delivery delivery = deliveryService.update(model, request_user_id);
-        delivery.keep(Delivery.DELIVERY_IS_DEFAULT, Delivery.DELIVERY_NAME, Delivery.DELIVERY_PHONE, Delivery.DELIVERY_ADDRESS);
+        Map<String, Object> result = delivery.keepToMap(Delivery.DELIVERY_IS_DEFAULT, Delivery.DELIVERY_NAME, Delivery.DELIVERY_PHONE, Delivery.DELIVERY_ADDRESS);
 
-        renderSuccessJson(delivery);
+        renderSuccessJson(result);
     }
 
     @ActionKey(Url.DELIVERY_DELETE)
@@ -95,9 +96,9 @@ public class DeliveryController extends Controller {
         model.validate(Delivery.DELIVERY_ID);
 
         Delivery delivery = deliveryService.delete(model, request_user_id);
-        delivery.keep(Delivery.DELIVERY_IS_DEFAULT, Delivery.DELIVERY_NAME, Delivery.DELIVERY_PHONE, Delivery.DELIVERY_ADDRESS);
+        Map<String, Object> result = delivery.keepToMap(Delivery.DELIVERY_IS_DEFAULT, Delivery.DELIVERY_NAME, Delivery.DELIVERY_PHONE, Delivery.DELIVERY_ADDRESS);
 
-        renderSuccessJson(delivery);
+        renderSuccessJson(result);
     }
 
 }
