@@ -30,6 +30,8 @@
     order_id,
     order_number,
     order_amount,
+    order_delivery_name,
+    order_delivery_address,
     order_status
     FROM table_order
     WHERE system_status = 1
