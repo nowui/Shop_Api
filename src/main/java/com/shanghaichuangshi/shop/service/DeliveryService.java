@@ -31,24 +31,12 @@ public class DeliveryService extends Service {
     }
 
     public Delivery save(Delivery delivery, String request_user_id) {
-        Category province = categoryService.find(delivery.getDelivery_province());
-        Category city = categoryService.find(delivery.getDelivery_city());
-        Category area = categoryService.find(delivery.getDelivery_area());
-
-        delivery.setDelivery_address(province.getCategory_name() + city.getCategory_name() + area.getCategory_name() + delivery.getDelivery_street());
-
         deliveryDao.updateIsDefault("", request_user_id);
 
         return deliveryDao.save(delivery, request_user_id);
     }
 
     public Delivery update(Delivery delivery, String request_user_id) {
-        Category province = categoryService.find(delivery.getDelivery_province());
-        Category city = categoryService.find(delivery.getDelivery_city());
-        Category area = categoryService.find(delivery.getDelivery_area());
-
-        delivery.setDelivery_address(province.getCategory_name() + city.getCategory_name() + area.getCategory_name() + delivery.getDelivery_street());
-
         deliveryDao.updateIsDefault(delivery.getDelivery_id(), request_user_id);
 
         deliveryDao.update(delivery, request_user_id);

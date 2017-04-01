@@ -3,7 +3,6 @@ package com.shanghaichuangshi.shop;
 import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.jfinal.config.*;
 import com.jfinal.kit.PathKit;
-import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.druid.DruidPlugin;
 import com.jfinal.render.ViewType;
