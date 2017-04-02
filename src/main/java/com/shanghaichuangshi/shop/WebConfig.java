@@ -45,6 +45,7 @@ public class WebConfig extends JFinalConfig {
         routes.add("/order", OrderController.class);
         routes.add("/wechat/message", WeChatMsgController.class);
         routes.add("/wechat/api", WeChatApiController.class);
+        routes.add("/distributor", DistributorController.class);
 
     }
 
@@ -95,6 +96,7 @@ public class WebConfig extends JFinalConfig {
         activeRecordPlugin.addMapping("table_sku", "sku_id", Sku.class);
         activeRecordPlugin.addMapping("table_order", "order_id", Order.class);
         activeRecordPlugin.addMapping("table_order_product", "order_product_id", OrderProduct.class);
+        activeRecordPlugin.addMapping("table_distributor", "distributor_id", Distributor.class);
 
         plugins.add(activeRecordPlugin);
     }

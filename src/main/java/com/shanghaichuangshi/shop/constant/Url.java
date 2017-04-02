@@ -64,4 +64,11 @@ public class Url {
     public static final String ORDER_CONFIRM = "/order/confirm";
     public static final String ORDER_PAY = "/order/pay";
 
+    public static final String DISTRIBUTOR_LIST = "/distributor/list";
+    public static final String DISTRIBUTOR_ADMIN_LIST = "/distributor/admin/list";
+    public static final String DISTRIBUTOR_FIND = "/distributor/find";
+    public static final String DISTRIBUTOR_ADMIN_FIND = "/distributor/admin/find";
+    public static final String DISTRIBUTOR_SAVE = "/distributor/save";
+    public static final String DISTRIBUTORL_UPDATE = "/distributor/update";
+    public static final String DISTRIBUTOR_DELETE = "/distributor/delete";
 }
