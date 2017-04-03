@@ -124,9 +124,11 @@ public class WeChatApiController extends ApiController {
 
     @ActionKey(Url.WECHAT_API_ORCODE)
     public void orcode() {
-        ApiResult apiResult = QrcodeApi.createPermanent("100");
+        ApiResult apiResult = QrcodeApi.createTemporary(604800, 1);
 
-        renderText(apiResult.getJson());
+        System.out.println(apiResult.getJson());
+
+        renderText(QrcodeApi.getShowQrcodeUrl(apiResult.getStr("ticket")));
     }
 
 }

@@ -71,4 +71,20 @@ public class Url {
     public static final String DISTRIBUTOR_SAVE = "/distributor/save";
     public static final String DISTRIBUTORL_UPDATE = "/distributor/update";
     public static final String DISTRIBUTOR_DELETE = "/distributor/delete";
+
+    public static final String SUPPLIER_LIST = "/supplier/list";
+    public static final String SUPPLIER_ADMIN_LIST = "/supplier/admin/list";
+    public static final String SUPPLIER_FIND = "/supplier/find";
+    public static final String SUPPLIER_ADMIN_FIND = "/supplier/admin/find";
+    public static final String SUPPLIER_SAVE = "/supplier/save";
+    public static final String SUPPLIERL_UPDATE = "/supplier/update";
+    public static final String SUPPLIER_DELETE = "/supplier/delete";
+
+    public static final String SCENE_LIST = "/scene/list";
+    public static final String SCENE_ADMIN_LIST = "/scene/admin/list";
+    public static final String SCENE_FIND = "/scene/find";
+    public static final String SCENE_ADMIN_FIND = "/scene/admin/find";
+    public static final String SCENE_SAVE = "/scene/save";
+    public static final String SCENEL_UPDATE = "/scene/update";
+    public static final String SCENE_DELETE = "/scene/delete";
 }

@@ -2,6 +2,7 @@ package com.shanghaichuangshi.shop.controller;
 
 import com.jfinal.core.ActionKey;
 import com.shanghaichuangshi.constant.Constant;
+import com.shanghaichuangshi.model.User;
 import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.controller.Controller;
 import com.shanghaichuangshi.shop.model.Distributor;
@@ -66,11 +67,13 @@ public class DistributorController extends Controller {
     @ActionKey(Url.DISTRIBUTOR_SAVE)
     public void save() {
         Distributor model = getParameter(Distributor.class);
+        User userModel = getParameter(User.class);
         String request_user_id = getRequest_user_id();
 
         model.validate(Distributor.DISTRIBUTOR_NAME);
+        userModel.validate(User.USER_ACCOUNT, User.USER_PASSWORD);
 
-        distributorService.save(model, request_user_id);
+        distributorService.save(model, userModel, request_user_id);
 
         renderSuccessJson();
     }
@@ -78,11 +81,13 @@ public class DistributorController extends Controller {
     @ActionKey(Url.DISTRIBUTORL_UPDATE)
     public void update() {
         Distributor model = getParameter(Distributor.class);
+        User userModel = getParameter(User.class);
         String request_user_id = getRequest_user_id();
 
         model.validate(Distributor.DISTRIBUTOR_ID, Distributor.DISTRIBUTOR_NAME);
+        userModel.validate(User.USER_ACCOUNT, User.USER_PASSWORD);
 
-        distributorService.update(model, request_user_id);
+        distributorService.update(model, userModel, request_user_id);
 
         renderSuccessJson();
     }

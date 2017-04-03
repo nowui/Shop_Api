@@ -70,15 +70,14 @@ public class MemberService extends Service {
     }
 
     public Member save(Member member, User user, String request_user_id) {
-        Member m = memberDao.save(member, request_user_id);
+        String user_id = Util.getRandomUUID();
+        member.setUser_id(user_id);
 
-        String user_id = userService.saveByUser_phoneAndUser_passwordAndObject_idAndUser_type(user.getUser_phone(), user.getUser_password(), m.getMember_id(), UserType.MEMBER.getKey(), request_user_id);
+        memberDao.save(member, request_user_id);
 
-        memberDao.updateByMember_idAndUser_id(m.getMember_id(), user_id, request_user_id);
+        userService.saveByUser_idAndUser_phoneAndUser_passwordAndObject_idAndUser_type(user_id, user.getUser_phone(), user.getUser_password(), member.getMember_id(), UserType.MEMBER.getKey(), request_user_id);
 
-        m.setUser_id(user_id);
-
-        return m;
+        return member;
     }
 
     public void saveByWechat_open_idAndUser_nameAndUser_avatar(String wechat_open_id) {
@@ -88,17 +87,17 @@ public class MemberService extends Service {
             String user_name = apiResult.getStr("nickname");
             String user_avatar = apiResult.getStr("headimgurl");
 
+            String user_id = Util.getRandomUUID();
+
             Member member = new Member();
+            member.setUser_id(user_id);
             member.setMember_level_id("");
             member.setMember_name(user_name);
-
             String request_user_id = "";
 
-            Member m = memberDao.save(member, request_user_id);
+            memberDao.save(member, request_user_id);
 
-            user = userService.saveByUser_nameAndUser_avatarAndWechat_open_id(user_name, user_avatar, wechat_open_id, m.getMember_id(), UserType.MEMBER.getKey(), request_user_id);
-
-            memberDao.updateByMember_idAndUser_id(m.getMember_id(), user.getUser_id(), request_user_id);
+            userService.saveByUser_idAndUser_nameAndUser_avatarAndWechat_open_id(user_id, user_name, user_avatar, wechat_open_id, member.getMember_id(), UserType.MEMBER.getKey(), request_user_id);
         }
     }
 

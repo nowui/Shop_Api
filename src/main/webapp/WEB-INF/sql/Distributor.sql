@@ -27,10 +27,12 @@
 
   #sql("find")
     SELECT
-    *
+    table_distributor.*,
+    table_user.user_account
     FROM table_distributor
-    WHERE system_status = 1
-    AND distributor_id = #p(distributor_id)
+    LEFT JOIN table_user ON table_user.user_id = table_distributor.user_id
+    WHERE table_distributor.system_status = 1
+    AND table_distributor.distributor_id = #p(distributor_id)
   #end
 
   #sql("delete")

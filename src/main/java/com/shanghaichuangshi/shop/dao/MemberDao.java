@@ -80,17 +80,6 @@ public class MemberDao extends Dao {
         return member.update();
     }
 
-    public boolean updateByMember_idAndUser_id(String member_id, String user_id, String request_user_id) {
-        JMap map = JMap.create();
-        map.put(Member.MEMBER_ID, member_id);
-        map.put(Member.USER_ID, user_id);
-        map.put(Member.SYSTEM_UPDATE_USER_ID, request_user_id);
-        map.put(Member.SYSTEM_UPDATE_TIME, new Date());
-        SqlPara sqlPara = Db.getSqlPara("member.updateByMember_idAndUser_id", map);
-
-        return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
-    }
-
     public boolean delete(String member_id, String request_user_id) {
         memberCache.removeMemberByMember_id(member_id);
 

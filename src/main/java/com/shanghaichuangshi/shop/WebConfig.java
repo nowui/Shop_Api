@@ -46,7 +46,8 @@ public class WebConfig extends JFinalConfig {
         routes.add("/wechat/message", WeChatMsgController.class);
         routes.add("/wechat/api", WeChatApiController.class);
         routes.add("/distributor", DistributorController.class);
-
+        routes.add("/supplier", SupplierController.class);
+        routes.add("/scene", SceneController.class);
     }
 
     public void configEngine(Engine engine) {
@@ -97,6 +98,8 @@ public class WebConfig extends JFinalConfig {
         activeRecordPlugin.addMapping("table_order", "order_id", Order.class);
         activeRecordPlugin.addMapping("table_order_product", "order_product_id", OrderProduct.class);
         activeRecordPlugin.addMapping("table_distributor", "distributor_id", Distributor.class);
+        activeRecordPlugin.addMapping("table_supplier", "supplier_id", Supplier.class);
+        activeRecordPlugin.addMapping("table_scene", "scene_id", Scene.class);
 
         plugins.add(activeRecordPlugin);
     }
