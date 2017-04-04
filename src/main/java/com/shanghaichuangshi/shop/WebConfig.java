@@ -48,6 +48,7 @@ public class WebConfig extends JFinalConfig {
         routes.add("/distributor", DistributorController.class);
         routes.add("/supplier", SupplierController.class);
         routes.add("/scene", SceneController.class);
+        routes.add("/landwind", LandwindController.class);
     }
 
     public void configEngine(Engine engine) {
@@ -100,6 +101,7 @@ public class WebConfig extends JFinalConfig {
         activeRecordPlugin.addMapping("table_distributor", "distributor_id", Distributor.class);
         activeRecordPlugin.addMapping("table_supplier", "supplier_id", Supplier.class);
         activeRecordPlugin.addMapping("table_scene", "scene_id", Scene.class);
+        activeRecordPlugin.addMapping("table_landwind", "landwind_id", Landwind.class);
 
         plugins.add(activeRecordPlugin);
     }
@@ -111,12 +113,13 @@ public class WebConfig extends JFinalConfig {
         uncheckUrlList.add(Url.WECHAT_API_ORCODE);
         uncheckUrlList.add(Url.WECHAT_API_NOTIFY);
         uncheckUrlList.add(Url.WECHAT_MESSAGE);
-
+        uncheckUrlList.add(Url.LANDWIND_EXPORT);
 
         List<String> uncheckTokenUrlList = new ArrayList<String>();
         uncheckTokenUrlList.add(Url.PRODUCT_LIST);
         uncheckTokenUrlList.add(Url.PRODUCT_ALL_LIST);
         uncheckTokenUrlList.add(Url.MEMBER_WECHAT_LOGIN);
+        uncheckTokenUrlList.add(Url.LANDWIND_SAVE);
 
         List<String> uncheckRequestUserIdUrlList = new ArrayList<String>();
         uncheckRequestUserIdUrlList.add(Url.PRODUCT_FIND);

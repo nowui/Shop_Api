@@ -15,6 +15,12 @@ public class Distributor extends Model<Distributor> {
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "用户编号")
     public static final String USER_ID = "user_id";
 
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "场景编号")
+    public static final String SCENE_ID = "scene_id";
+
+    @Column(type = ColumnType.VARCHAR, length = 250, comment = "二维码")
+    public static final String SCENE_QRCODE = "scene_qrcode";
+
     
     public String getDistributor_id() {
         return getStr(DISTRIBUTOR_ID);
@@ -38,5 +44,21 @@ public class Distributor extends Model<Distributor> {
 
     public void setUser_id(String user_id) {
         set(USER_ID, user_id);
+    }
+
+    public String getScene_id() {
+        return getStr(SCENE_ID);
+    }
+
+    public void setScene_id(String scene_id) {
+        set(SCENE_ID, scene_id);
+    }
+
+    public String getScene_qrcode() {
+        return getStr(SCENE_QRCODE);
+    }
+
+    public void setScene_qrcode(String scene_qrcode) {
+        set(SCENE_QRCODE, scene_qrcode);
     }
 }

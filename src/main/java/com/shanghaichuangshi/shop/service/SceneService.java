@@ -22,8 +22,8 @@ public class SceneService extends Service {
         return sceneDao.find(scene_id);
     }
 
-    public Scene save(String scene_id, Scene scene, String request_user_id) {
-        return sceneDao.save(scene_id, scene, request_user_id);
+    public Scene save(String scene_id, String object_id, String scene_type, String scene_qrcode, String request_user_id) {
+        return sceneDao.save(scene_id, object_id, scene_type, scene_qrcode, request_user_id);
     }
 
     public boolean update(Scene scene, String request_user_id) {

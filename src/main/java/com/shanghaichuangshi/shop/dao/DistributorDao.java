@@ -44,8 +44,8 @@ public class DistributorDao extends Dao {
         }
     }
 
-    public Distributor save(Distributor distributor, String request_user_id) {
-        distributor.setDistributor_id(Util.getRandomUUID());
+    public Distributor save(String distributor_id, Distributor distributor, String request_user_id) {
+        distributor.setDistributor_id(distributor_id);
         distributor.setSystem_create_user_id(request_user_id);
         distributor.setSystem_create_time(new Date());
         distributor.setSystem_update_user_id(request_user_id);

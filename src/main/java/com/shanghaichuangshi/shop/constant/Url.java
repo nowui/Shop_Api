@@ -87,4 +87,13 @@ public class Url {
     public static final String SCENE_SAVE = "/scene/save";
     public static final String SCENEL_UPDATE = "/scene/update";
     public static final String SCENE_DELETE = "/scene/delete";
+
+    public static final String LANDWIND_LIST = "/landwind/list";
+    public static final String LANDWIND_ADMIN_LIST = "/landwind/admin/list";
+    public static final String LANDWIND_FIND = "/landwind/find";
+    public static final String LANDWIND_ADMIN_FIND = "/landwind/admin/find";
+    public static final String LANDWIND_SAVE = "/landwind/save";
+    public static final String LANDWINDL_UPDATE = "/landwind/update";
+    public static final String LANDWIND_DELETE = "/landwind/delete";
+    public static final String LANDWIND_EXPORT = "/landwind/export";
 }

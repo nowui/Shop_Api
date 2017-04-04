@@ -44,8 +44,14 @@ public class SceneDao extends Dao {
         }
     }
 
-    public Scene save(String scene_id, Scene scene, String request_user_id) {
+    public Scene save(String scene_id, String object_id, String scene_type, String scene_qrcode, String request_user_id) {
+        Scene scene = new Scene();
         scene.setScene_id(scene_id);
+        scene.setObject_id(object_id);
+        scene.setScene_type(scene_type);
+        scene.setScene_add(0);
+        scene.setScene_cancel(0);
+        scene.setScene_qrcode(scene_qrcode);
         scene.setSystem_create_user_id(request_user_id);
         scene.setSystem_create_time(new Date());
         scene.setSystem_update_user_id(request_user_id);

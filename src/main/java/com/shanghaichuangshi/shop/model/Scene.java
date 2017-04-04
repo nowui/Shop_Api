@@ -49,19 +49,19 @@ public class Scene extends Model<Scene> {
         set(SCENE_TYPE, scene_type);
     }
 
-    public String getScene_add() {
-        return getStr(SCENE_ADD);
+    public Integer getScene_add() {
+        return getInt(SCENE_ADD);
     }
 
-    public void setScene_add(String scene_add) {
+    public void setScene_add(Integer scene_add) {
         set(SCENE_ADD, scene_add);
     }
 
-    public String getScene_cancel() {
-        return getStr(SCENE_CANCEL);
+    public Integer getScene_cancel() {
+        return getInt(SCENE_CANCEL);
     }
 
-    public void setScene_cancel(String scene_cancel) {
+    public void setScene_cancel(Integer scene_cancel) {
         set(SCENE_CANCEL, scene_cancel);
     }
 
