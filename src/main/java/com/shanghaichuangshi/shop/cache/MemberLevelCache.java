@@ -17,8 +17,10 @@ public class MemberLevelCache extends Cache {
 
         Set<String> set = getMapByKey(MEMBER_LEVEL_OBJECT_CACHE);
 
-        for (String value : set) {
-            memberLevelList.add(getMemberLevelByMember_level_id(value));
+        for (String id : set) {
+            id = id.replace(MEMBER_LEVEL_OBJECT_CACHE + "_", "");
+
+            memberLevelList.add(getMemberLevelByMember_level_id(id));
         }
 
         return memberLevelList;

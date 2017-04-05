@@ -121,20 +121,36 @@ public class WeChatMsgController extends MsgController {
                 Distributor distributor = distributorService.find(member.getDistributor_id());
 
                 if (distributor_id.equals(member.getDistributor_id())) {
-                    content += "您以前就属于" + distributor.getDistributor_name() + "的销售团队";
+                    content += "恭喜您，成为我们的会员！您现在属于" + distributor.getDistributor_name() + "的销售团队";
                 } else {
                     content += "不能绑定，您属于" + distributor.getDistributor_name() + "的销售团队";
                 }
             }
         } else if (scene.getScene_type().equals(SceneTypeEnum.MEMBER.getKey())) {
-            Member parentMember = memberService.find(scene.getObject_id());
+            parent_id = scene.getObject_id();
 
-            distributor_id = parentMember.getDistributor_id();
-            parent_id = parentMember.getMember_id();
+            if (Util.isNullOrEmpty(member.getParent_id())) {
+                Member parentMember = memberService.find(parent_id);
 
-            MemberLevel memberLevel = memberLevelService.findNextMember_levelByMember_level_id(parentMember.getMember_level_id());
-            member_level_id = memberLevel.getMember_level_id();
+                distributor_id = parentMember.getDistributor_id();
 
+                MemberLevel memberLevel = memberLevelService.findNextMember_levelByMember_level_id(parentMember.getMember_level_id());
+                member_level_id = memberLevel.getMember_level_id();
+
+                memberService.updateByMember_idAndDistributor_idAndParent_idAndMember_level_id(member.getMember_id(), distributor_id, parent_id, member_level_id);
+
+                sceneService.updateScene_addByScene_id(scene_id, request_user_id);
+
+                content += "恭喜您，成为我们的会员！您的销售人员是" + parentMember.getMember_name();
+            } else {
+                Member parentMember = memberService.find(member.getParent_id());
+
+                if (parent_id.equals(member.getParent_id())) {
+                    content += "恭喜您，成为我们的会员！您的销售人员是" + parentMember.getMember_name();
+                } else {
+                    content += "不能绑定，您的销售人员是" + parentMember.getMember_name();
+                }
+            }
         }
 
 

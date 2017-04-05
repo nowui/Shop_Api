@@ -1,11 +1,11 @@
 package com.shanghaichuangshi.shop.dao;
 
+import com.alibaba.fastjson.JSON;
 import com.jfinal.kit.JMap;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.cache.MemberLevelCache;
-import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.shop.model.MemberLevel;
 import com.shanghaichuangshi.util.Util;
 
