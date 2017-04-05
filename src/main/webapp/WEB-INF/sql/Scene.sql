@@ -33,6 +33,18 @@
     AND scene_id = #p(scene_id)
   #end
 
+  #sql("updateScene_addByScene_id")
+    UPDATE table_scene SET
+    scene_add = scene_add + 1
+    WHERE scene_id = #p(scene_id)
+  #end
+
+  #sql("updateScene_cancelByScene_id")
+    UPDATE table_scene SET
+    scene_cancel = scene_cancel + 1
+    WHERE scene_id = #p(scene_id)
+  #end
+
   #sql("delete")
     UPDATE table_scene SET
     system_update_user_id = #p(system_update_user_id),

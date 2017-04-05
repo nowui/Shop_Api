@@ -30,6 +30,14 @@ public class SceneService extends Service {
         return sceneDao.update(scene, request_user_id);
     }
 
+    public boolean updateScene_addByScene_id(String scene_id, String request_user_id) {
+        return sceneDao.updateScene_addByScene_id(scene_id, request_user_id);
+    }
+
+    public boolean updateScene_cancelByScene_id(String scene_id, String request_user_id) {
+        return sceneDao.updateScene_cancelByScene_id(scene_id, request_user_id);
+    }
+
     public boolean delete(Scene scene, String request_user_id) {
         return sceneDao.delete(scene.getScene_id(), request_user_id);
     }

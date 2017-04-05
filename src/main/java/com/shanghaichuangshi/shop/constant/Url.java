@@ -12,6 +12,7 @@ public class Url {
     public static final String MEMBER_ADMIN_LIST = "/member/admin/list";
     public static final String MEMBER_FIND = "/member/find";
     public static final String MEMBER_ADMIN_FIND = "/member/admin/find";
+    public static final String MEMBER_QRCODE_FIND = "/member/qrcode/find";
     public static final String MEMBER_SAVE = "/member/save";
     public static final String MEMBER_WECHAT_SAVE = "/member/wechat/save";
     public static final String MEMBERL_UPDATE = "/member/update";

@@ -83,7 +83,7 @@ public class LandwindService extends Service {
             cell.setCellValue(landwind.getLandwind_sex());
             cell.setCellStyle(style);
             cell = row.createCell(4);
-            cell.setCellValue(DateUtil.getDateTimeString(landwind.getDate("system_create_time")));
+            cell.setCellValue(DateUtil.getDateTimeString(landwind.getSystem_create_time()));
             cell.setCellStyle(style);
         }
 

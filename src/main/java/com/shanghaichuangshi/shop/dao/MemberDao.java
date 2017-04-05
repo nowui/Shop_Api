@@ -80,6 +80,33 @@ public class MemberDao extends Dao {
         return member.update();
     }
 
+    public boolean updateByMember_idAndScene_idAndScene_qrcode(String member_id, String scene_id, String scene_qrcode, String request_user_id) {
+        memberCache.removeMemberByMember_id(member_id);
+
+        JMap map = JMap.create();
+        map.put(Member.MEMBER_ID, member_id);
+        map.put(Member.SCENE_ID, scene_id);
+        map.put(Member.SCENE_QRCODE, scene_qrcode);
+        map.put(Member.SYSTEM_UPDATE_USER_ID, request_user_id);
+        map.put(Member.SYSTEM_UPDATE_TIME, new Date());
+        SqlPara sqlPara = Db.getSqlPara("member.updateByMember_idAndScene_idAndScene_qrcode", map);
+
+        return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
+    }
+
+    public boolean updateByMember_idAndDistributor_idAndParent_idAndMember_level_id(String member_id, String distributor_id, String parent_id, String member_level_id) {
+        memberCache.removeMemberByMember_id(member_id);
+
+        JMap map = JMap.create();
+        map.put(Member.MEMBER_ID, member_id);
+        map.put(Member.DISTRIBUTOR_ID, distributor_id);
+        map.put(Member.PARENT_ID, parent_id);
+        map.put(Member.MEMBER_LEVEL_ID, member_level_id);
+        SqlPara sqlPara = Db.getSqlPara("member.updateByMember_idAndDistributor_idAndParent_idAndMember_level_id", map);
+
+        return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
+    }
+
     public boolean delete(String member_id, String request_user_id) {
         memberCache.removeMemberByMember_id(member_id);
 

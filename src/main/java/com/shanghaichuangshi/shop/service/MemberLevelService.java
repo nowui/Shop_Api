@@ -22,6 +22,15 @@ public class MemberLevelService extends Service {
         return memberLevelDao.find(member_level_id);
     }
 
+    public MemberLevel findTopMember_level() {
+        return memberLevelDao.findByMember_level_value(1);
+    }
+
+    public MemberLevel findNextMember_levelByMember_level_id(String member_level_id) {
+        MemberLevel memberLevel = memberLevelDao.find(member_level_id);
+        return memberLevelDao.findByMember_level_value(memberLevel.getMember_level_value() + 1);
+    }
+
     public MemberLevel save(MemberLevel member_level, String request_user_id) {
         return memberLevelDao.save(member_level, request_user_id);
     }

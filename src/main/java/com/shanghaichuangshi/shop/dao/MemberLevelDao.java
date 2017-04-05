@@ -5,6 +5,7 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.cache.MemberLevelCache;
+import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.shop.model.MemberLevel;
 import com.shanghaichuangshi.util.Util;
 
@@ -49,6 +50,37 @@ public class MemberLevelDao extends Dao {
                 memberLevel = member_levelList.get(0);
 
                 memberLevelCache.setMemberLevelByMember_level_id(memberLevel, member_level_id);
+            }
+        }
+
+        return memberLevel;
+    }
+
+    public MemberLevel findByMember_level_value(Integer member_level_value) {
+        MemberLevel memberLevel = null;
+
+        List<MemberLevel> memberLevelList = memberLevelCache.getMemberLevelList();
+
+        for (MemberLevel m : memberLevelList) {
+            if (m.getMember_level_value().equals(member_level_value)) {
+                memberLevel = m;
+
+                break;
+            }
+        }
+
+        if (memberLevel == null) {
+            JMap map = JMap.create();
+            map.put(MemberLevel.MEMBER_LEVEL_VALUE, member_level_value);
+            SqlPara sqlPara = Db.getSqlPara("member_level.findByMember_level_value", map);
+
+            List<MemberLevel> member_levelList = new MemberLevel().find(sqlPara.getSql(), sqlPara.getPara());
+            if (member_levelList.size() == 0) {
+                memberLevel = null;
+            } else {
+                memberLevel = member_levelList.get(0);
+
+                memberLevelCache.setMemberLevelByMember_level_id(memberLevel, memberLevel.getMember_level_id());
             }
         }
 

@@ -19,8 +19,8 @@ public class DistributorService extends Service {
 
     private final DistributorDao distributorDao = new DistributorDao();
 
-    private UserService userService = new UserService();
-    private SceneService sceneService = new SceneService();
+    private final UserService userService = new UserService();
+    private final SceneService sceneService = new SceneService();
 
     public int count(Distributor distributor) {
         return distributorDao.count(distributor.getDistributor_name());

@@ -23,7 +23,6 @@ public class Scene extends Model<Scene> {
 
     @Column(type = ColumnType.VARCHAR, length = 250, comment = "二维码")
     public static final String SCENE_QRCODE = "scene_qrcode";
-
     
     public String getScene_id() {
         return getStr(SCENE_ID);

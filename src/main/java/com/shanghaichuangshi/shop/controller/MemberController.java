@@ -68,6 +68,15 @@ public class MemberController extends Controller {
         renderSuccessJson(member);
     }
 
+    @ActionKey(Url.MEMBER_QRCODE_FIND)
+    public void qrcodeFind() {
+        String request_user_id = getRequest_user_id();
+
+        String scene_qrcode = memberService.qrcodeFind(request_user_id);
+
+        renderSuccessJson(scene_qrcode);
+    }
+
     @ActionKey(Url.MEMBER_SAVE)
     public void save() {
         Member model = getParameter(Member.class);

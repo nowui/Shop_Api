@@ -12,10 +12,10 @@ public class MemberLevel extends Model<MemberLevel> {
     @Column(type = ColumnType.VARCHAR, length = 10, comment = "会员等级名称")
     public static final String MEMBER_LEVEL_NAME = "member_level_name";
 
-    @Column(type = ColumnType.INT, length = 11, comment = "会员等级数值")
+    @Column(type = ColumnType.INT, length = 3, comment = "会员等级数值")
     public static final String MEMBER_LEVEL_VALUE = "member_level_value";
 
-    @Column(type = ColumnType.INT, length = 3, comment = "会员等级排序")
+    @Column(type = ColumnType.INT, length = 3, comment = "会员等级排序", findable = false)
     public static final String MEMBER_LEVEL_SORT = "member_level_sort";
 
     

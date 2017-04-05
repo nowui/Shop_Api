@@ -4,6 +4,7 @@ import com.jfinal.kit.JMap;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
+import com.shanghaichuangshi.shop.cache.DistributorCache;
 import com.shanghaichuangshi.shop.model.Distributor;
 import com.shanghaichuangshi.util.Util;
 
@@ -11,6 +12,8 @@ import java.util.Date;
 import java.util.List;
 
 public class DistributorDao extends Dao {
+
+    private final DistributorCache distributorCache = new DistributorCache();
 
     public int count(String distributor_name) {
         JMap map = JMap.create();
@@ -32,16 +35,24 @@ public class DistributorDao extends Dao {
     }
 
     public Distributor find(String distributor_id) {
-        JMap map = JMap.create();
-        map.put(Distributor.DISTRIBUTOR_ID, distributor_id);
-        SqlPara sqlPara = Db.getSqlPara("distributor.find", map);
+        Distributor distributor = distributorCache.getDistributorByDistributor_id(distributor_id);
 
-        List<Distributor> distributorList = new Distributor().find(sqlPara.getSql(), sqlPara.getPara());
-        if (distributorList.size() == 0) {
-            return null;
-        } else {
-            return distributorList.get(0);
+        if (distributor == null) {
+            JMap map = JMap.create();
+            map.put(Distributor.DISTRIBUTOR_ID, distributor_id);
+            SqlPara sqlPara = Db.getSqlPara("distributor.find", map);
+
+            List<Distributor> distributorList = new Distributor().find(sqlPara.getSql(), sqlPara.getPara());
+            if (distributorList.size() == 0) {
+                distributor = null;
+            } else {
+                distributor = distributorList.get(0);
+
+                distributorCache.setDistributorByDistributor_id(distributor, distributor_id);
+            }
         }
+
+        return distributor;
     }
 
     public Distributor save(String distributor_id, Distributor distributor, String request_user_id) {
@@ -58,6 +69,8 @@ public class DistributorDao extends Dao {
     }
 
     public boolean update(Distributor distributor, String request_user_id) {
+        distributorCache.removeDistributorByDistributor_id(distributor.getDistributor_id());
+
         distributor.remove(Distributor.SYSTEM_CREATE_USER_ID);
         distributor.remove(Distributor.SYSTEM_CREATE_TIME);
         distributor.setSystem_update_user_id(request_user_id);
@@ -68,6 +81,8 @@ public class DistributorDao extends Dao {
     }
 
     public boolean delete(String distributor_id, String request_user_id) {
+        distributorCache.removeDistributorByDistributor_id(distributor_id);
+
         JMap map = JMap.create();
         map.put(Distributor.DISTRIBUTOR_ID, distributor_id);
         map.put(Distributor.SYSTEM_UPDATE_USER_ID, request_user_id);

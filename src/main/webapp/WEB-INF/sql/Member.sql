@@ -35,6 +35,23 @@
     AND table_member.member_id = #p(member_id)
   #end
 
+  #sql("updateByMember_idAndScene_idAndScene_qrcode")
+    UPDATE table_member SET
+    scene_id = #p(scene_id),
+    scene_qrcode = #p(scene_qrcode),
+    system_update_user_id = #p(system_update_user_id),
+    system_update_time = #p(system_update_time)
+    WHERE member_id = #p(member_id)
+  #end
+
+  #sql("updateByMember_idAndDistributor_idAndParent_idAndMember_level_id")
+    UPDATE table_member SET
+    distributor_id = #p(distributor_id),
+    parent_id = #p(parent_id),
+    member_level_id = #p(member_level_id)
+    WHERE member_id = #p(member_id)
+  #end
+
   #sql("delete")
     UPDATE table_member SET
     system_update_user_id = #p(system_update_user_id),

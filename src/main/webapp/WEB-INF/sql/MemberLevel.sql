@@ -33,6 +33,14 @@
     AND member_level_id = #p(member_level_id)
   #end
 
+  #sql("findByMember_level_value")
+    SELECT
+    *
+    FROM table_member_level
+    WHERE system_status = 1
+    AND member_level_value = #p(member_level_value)
+  #end
+
   #sql("delete")
     UPDATE table_member_level SET
     system_update_user_id = #p(system_update_user_id),

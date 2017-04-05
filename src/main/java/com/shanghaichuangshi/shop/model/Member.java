@@ -9,8 +9,23 @@ public class Member extends Model<Member> {
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "会员编号")
     public static final String MEMBER_ID = "member_id";
 
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "场景编号")
+    public static final String FROM_SCENE_ID = "from_scene_id";
+
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "经销商编号")
+    public static final String DISTRIBUTOR_ID = "distributor_id";
+
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "上一级会员编号")
+    public static final String PARENT_ID = "parent_id";
+
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "用户编号")
     public static final String USER_ID = "user_id";
+
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "场景编号")
+    public static final String SCENE_ID = "scene_id";
+
+    @Column(type = ColumnType.VARCHAR, length = 250, comment = "二维码")
+    public static final String SCENE_QRCODE = "scene_qrcode";
 
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "会员等级")
     public static final String MEMBER_LEVEL_ID = "member_level_id";
@@ -26,12 +41,52 @@ public class Member extends Model<Member> {
         set(MEMBER_ID, member_id);
     }
 
+    public String getFrom_scene_id() {
+        return getStr(FROM_SCENE_ID);
+    }
+
+    public void setFrom_scene_id(String from_scene_id) {
+        set(FROM_SCENE_ID, from_scene_id);
+    }
+
+    public String getDistributor_id() {
+        return getStr(DISTRIBUTOR_ID);
+    }
+
+    public void setDistributor_id(String distributor_id) {
+        set(DISTRIBUTOR_ID, distributor_id);
+    }
+
+    public String getParent_id() {
+        return getStr(PARENT_ID);
+    }
+
+    public void setParent_id(String parent_id) {
+        set(PARENT_ID, parent_id);
+    }
+
     public String getUser_id() {
         return getStr(USER_ID);
     }
 
     public void setUser_id(String user_id) {
         set(USER_ID, user_id);
+    }
+
+    public String getScene_id() {
+        return getStr(SCENE_ID);
+    }
+
+    public void setScene_id(String scene_id) {
+        set(SCENE_ID, scene_id);
+    }
+
+    public String getScene_qrcode() {
+        return getStr(SCENE_QRCODE);
+    }
+
+    public void setScene_qrcode(String scene_qrcode) {
+        set(SCENE_QRCODE, scene_qrcode);
     }
 
     public String getMember_level_id() {
