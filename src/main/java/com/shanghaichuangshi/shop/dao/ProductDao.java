@@ -6,8 +6,8 @@ import com.jfinal.kit.JMap;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
-import com.shanghaichuangshi.shop.cache.ProductCache;
 import com.shanghaichuangshi.shop.model.Product;
+import com.shanghaichuangshi.util.CacheUtil;
 import com.shanghaichuangshi.util.Util;
 
 import java.util.Date;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class ProductDao extends Dao {
 
-    private final ProductCache productCache = new ProductCache();
+    private final String PRODUCT_CACHE = "product_cache";
 
     public int count(String product_name) {
         JMap map = JMap.create();
@@ -44,7 +44,7 @@ public class ProductDao extends Dao {
     }
 
     public Product find(String product_id) {
-        Product product = productCache.getProductByProduct_id(product_id);
+        Product product = CacheUtil.get(PRODUCT_CACHE, product_id);
 
         if (product == null) {
             JMap map = JMap.create();
@@ -57,7 +57,7 @@ public class ProductDao extends Dao {
             } else {
                 product = productList.get(0);
 
-                productCache.setProductByProduct_id(product, product_id);
+                CacheUtil.put(PRODUCT_CACHE, product_id, product);
             }
         }
 
@@ -122,7 +122,7 @@ public class ProductDao extends Dao {
     }
 
     public boolean update(Product product, String request_user_id) {
-        productCache.removeProductByProduct_id(product.getProduct_id());
+        CacheUtil.remove(PRODUCT_CACHE, product.getProduct_id());
 
         product.remove(Product.SYSTEM_CREATE_USER_ID);
         product.remove(Product.SYSTEM_CREATE_TIME);
@@ -136,7 +136,7 @@ public class ProductDao extends Dao {
     }
 
     public boolean delete(String product_id, String request_user_id) {
-        productCache.removeProductByProduct_id(product_id);
+        CacheUtil.remove(PRODUCT_CACHE, product_id);
 
         JMap map = JMap.create();
         map.put(Product.PRODUCT_ID, product_id);

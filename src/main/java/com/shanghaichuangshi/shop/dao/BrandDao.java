@@ -4,8 +4,8 @@ import com.jfinal.kit.JMap;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
-import com.shanghaichuangshi.shop.cache.BrandCache;
 import com.shanghaichuangshi.shop.model.Brand;
+import com.shanghaichuangshi.util.CacheUtil;
 import com.shanghaichuangshi.util.Util;
 
 import java.util.Date;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class BrandDao extends Dao {
 
-    private final BrandCache brandCache = new BrandCache();
+    private final String BRAND_CACHE = "brand_cache";
 
     public int count(String brand_name) {
         JMap map = JMap.create();
@@ -35,7 +35,7 @@ public class BrandDao extends Dao {
     }
 
     public Brand find(String brand_id) {
-        Brand brand = brandCache.getBrandByBrand_id(brand_id);
+        Brand brand = CacheUtil.get(BRAND_CACHE, brand_id);
 
         if (brand == null) {
             JMap map = JMap.create();
@@ -48,7 +48,7 @@ public class BrandDao extends Dao {
             } else {
                 brand = brandList.get(0);
 
-                brandCache.setBrandByBrand_id(brand, brand_id);
+                CacheUtil.put(BRAND_CACHE, brand_id, brand);
             }
         }
 
@@ -69,7 +69,7 @@ public class BrandDao extends Dao {
     }
 
     public boolean update(Brand brand, String request_user_id) {
-        brandCache.removeBrandByBrand_id(brand.getBrand_id());
+        CacheUtil.remove(BRAND_CACHE, brand.getBrand_id());
 
         brand.remove(Brand.SYSTEM_CREATE_USER_ID);
         brand.remove(Brand.SYSTEM_CREATE_TIME);
@@ -81,7 +81,7 @@ public class BrandDao extends Dao {
     }
 
     public boolean delete(String brand_id, String request_user_id) {
-        brandCache.removeBrandByBrand_id(brand_id);
+        CacheUtil.remove(BRAND_CACHE, brand_id);
 
         JMap map = JMap.create();
         map.put(Brand.BRAND_ID, brand_id);

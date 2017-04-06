@@ -5,6 +5,7 @@ import com.jfinal.config.*;
 import com.jfinal.kit.PathKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.druid.DruidPlugin;
+import com.jfinal.plugin.ehcache.EhCachePlugin;
 import com.jfinal.render.ViewType;
 import com.jfinal.template.Engine;
 import com.shanghaichuangshi.constant.Jdbc;
@@ -67,6 +68,8 @@ public class WebConfig extends JFinalConfig {
         sql_log_filter.setStatementExecutableSqlLogEnable(true);
         sql_log_filter.setResultSetLogEnabled(false);
         druidPlugin.addFilter(sql_log_filter);
+
+        plugins.add(new EhCachePlugin());
 
         String baseSqlTemplatePath = PathKit.getWebRootPath() + "/WEB-INF/sql/";
 

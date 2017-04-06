@@ -4,16 +4,15 @@ import com.jfinal.kit.JMap;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
-import com.shanghaichuangshi.shop.cache.SceneCache;
 import com.shanghaichuangshi.shop.model.Scene;
-import com.shanghaichuangshi.util.Util;
+import com.shanghaichuangshi.util.CacheUtil;
 
 import java.util.Date;
 import java.util.List;
 
 public class SceneDao extends Dao {
 
-    private final SceneCache sceneCache = new SceneCache();
+    private final String SCENED_CACHE = "scene_cache";
 
     public int count(String scene_type) {
         JMap map = JMap.create();
@@ -35,7 +34,7 @@ public class SceneDao extends Dao {
     }
 
     public Scene find(String scene_id) {
-        Scene scene = sceneCache.getSceneByScene_id(scene_id);
+        Scene scene = CacheUtil.get(SCENED_CACHE, scene_id);
 
         if (scene == null) {
             JMap map = JMap.create();
@@ -48,7 +47,7 @@ public class SceneDao extends Dao {
             } else {
                 scene = sceneList.get(0);
 
-                sceneCache.setSceneByScene_id(scene, scene_id);
+                CacheUtil.put(SCENED_CACHE, scene_id, scene);
             }
         }
 
@@ -75,7 +74,7 @@ public class SceneDao extends Dao {
     }
 
     public boolean update(Scene scene, String request_user_id) {
-        sceneCache.removeSceneByScene_id(scene.getScene_id());
+        CacheUtil.remove(SCENED_CACHE, scene.getScene_id());
 
         scene.remove(Scene.SYSTEM_CREATE_USER_ID);
         scene.remove(Scene.SYSTEM_CREATE_TIME);
@@ -87,7 +86,7 @@ public class SceneDao extends Dao {
     }
 
     public boolean updateScene_addByScene_id(String scene_id, String request_user_id) {
-        sceneCache.removeSceneByScene_id(scene_id);
+        CacheUtil.remove(SCENED_CACHE, scene_id);
 
         JMap map = JMap.create();
         map.put(Scene.SCENE_ID, scene_id);
@@ -97,7 +96,7 @@ public class SceneDao extends Dao {
     }
 
     public boolean updateScene_cancelByScene_id(String scene_id, String request_user_id) {
-        sceneCache.removeSceneByScene_id(scene_id);
+        CacheUtil.remove(SCENED_CACHE, scene_id);
 
         JMap map = JMap.create();
         map.put(Scene.SCENE_ID, scene_id);
@@ -107,7 +106,7 @@ public class SceneDao extends Dao {
     }
 
     public boolean delete(String scene_id, String request_user_id) {
-        sceneCache.removeSceneByScene_id(scene_id);
+        CacheUtil.remove(SCENED_CACHE, scene_id);
 
         JMap map = JMap.create();
         map.put(Scene.SCENE_ID, scene_id);

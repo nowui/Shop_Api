@@ -4,16 +4,15 @@ import com.jfinal.kit.JMap;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
-import com.shanghaichuangshi.shop.cache.DistributorCache;
 import com.shanghaichuangshi.shop.model.Distributor;
-import com.shanghaichuangshi.util.Util;
+import com.shanghaichuangshi.util.CacheUtil;
 
 import java.util.Date;
 import java.util.List;
 
 public class DistributorDao extends Dao {
 
-    private final DistributorCache distributorCache = new DistributorCache();
+    private final String DISTRIBUTOR_CACHE = "distributor_cache";
 
     public int count(String distributor_name) {
         JMap map = JMap.create();
@@ -35,7 +34,7 @@ public class DistributorDao extends Dao {
     }
 
     public Distributor find(String distributor_id) {
-        Distributor distributor = distributorCache.getDistributorByDistributor_id(distributor_id);
+        Distributor distributor = CacheUtil.get(DISTRIBUTOR_CACHE, distributor_id);
 
         if (distributor == null) {
             JMap map = JMap.create();
@@ -48,7 +47,7 @@ public class DistributorDao extends Dao {
             } else {
                 distributor = distributorList.get(0);
 
-                distributorCache.setDistributorByDistributor_id(distributor, distributor_id);
+                CacheUtil.put(DISTRIBUTOR_CACHE, distributor_id, distributor);
             }
         }
 
@@ -69,7 +68,7 @@ public class DistributorDao extends Dao {
     }
 
     public boolean update(Distributor distributor, String request_user_id) {
-        distributorCache.removeDistributorByDistributor_id(distributor.getDistributor_id());
+        CacheUtil.remove(DISTRIBUTOR_CACHE, distributor.getDistributor_id());
 
         distributor.remove(Distributor.SYSTEM_CREATE_USER_ID);
         distributor.remove(Distributor.SYSTEM_CREATE_TIME);
@@ -81,7 +80,7 @@ public class DistributorDao extends Dao {
     }
 
     public boolean delete(String distributor_id, String request_user_id) {
-        distributorCache.removeDistributorByDistributor_id(distributor_id);
+        CacheUtil.remove(DISTRIBUTOR_CACHE, distributor_id);
 
         JMap map = JMap.create();
         map.put(Distributor.DISTRIBUTOR_ID, distributor_id);

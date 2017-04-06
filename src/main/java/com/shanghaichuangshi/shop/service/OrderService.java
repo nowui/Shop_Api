@@ -58,6 +58,8 @@ public class OrderService extends Service {
     public Map<String, String> save(Order order, JSONObject jsonObject, String request_user_id) {
         JSONArray productJSONArray = jsonObject.getJSONArray(Product.PRODUCT_LIST);
 
+        String open_id = jsonObject.getString("open_id");
+
         if (productJSONArray.size() == 0) {
             throw new RuntimeException("请选购商品");
         }
@@ -149,24 +151,26 @@ public class OrderService extends Service {
         }
         orderProductService.save(orderProductList, request_user_id);
 
-        return unifiedorder(o);
+        return unifiedorder(o, open_id);
     }
 
-    public Map<String, String> pay(String order_id, String request_user_id) {
+    public Map<String, String> pay(String order_id, JSONObject jsonObject, String request_user_id) {
+        String open_id = jsonObject.getString("open_id");
+
         Order order = orderDao.find(order_id);
 
         if (order.getOrder_is_pay() || !order.getUser_id().equals(request_user_id)) {
             return new HashMap<String, String>();
         }
 
-        return unifiedorder(order);
+        return unifiedorder(order, open_id);
     }
 
-    public Map<String, String> unifiedorder(Order order) {
+    public Map<String, String> unifiedorder(Order order, String open_id) {
         String nonce_str = Util.getRandomStringByLength(32);
-        String body = "上海星销信息技术有限公司";
-        String notify_url = "http://api.jiyiguan.nowui.com/wechat/api/notify";
-        String openid = "oqvzXv4c-FY2-cGh9U-RA4JIrZoc";
+        String body = WeChat.body;
+        String notify_url = WeChat.notify_url;
+        String openid = open_id;
         String out_trade_no = order.getOrder_number();
         String spbill_create_ip = "0.0.0.0";
         DecimalFormat format = new DecimalFormat("0");

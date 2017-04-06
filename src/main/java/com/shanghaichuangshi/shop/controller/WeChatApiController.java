@@ -1,5 +1,7 @@
 package com.shanghaichuangshi.shop.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.jfinal.core.ActionKey;
 import com.jfinal.kit.HttpKit;
 import com.jfinal.weixin.sdk.api.*;
@@ -76,9 +78,16 @@ public class WeChatApiController extends ApiController {
             String order_pay_time = time_end;
             String order_pay_result = result;
 
-            orderService.updateByOrder_numberAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(order_number, order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result);
+            boolean is_update = orderService.updateByOrder_numberAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(order_number, order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result);
 
-            renderText("<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>");
+            System.out.println("----------------------------------------------------");
+
+            if (is_update) {
+                renderText("<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>");
+            } else {
+                renderText("<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[]]></return_msg></xml>");
+            }
+
         } else {
             renderText("<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[]]></return_msg></xml>");
         }
@@ -89,13 +98,13 @@ public class WeChatApiController extends ApiController {
     public void menu() {
         String url = null;
         try {
-            url = URLEncoder.encode("http://api.jiyiguan.nowui.com/wechat/api/auth?url=category", "UTF-8");
+            url = URLEncoder.encode("http://api." + WeChat.redirect_uri + "/wechat/api/auth?url=category", "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
 //        ApiResult jsonResult = MenuApi.createMenu("{\"button\":[{\"name\":\"我的健康\",\"sub_button\":[{\"type\":\"click\",\"name\":\"我的积分\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"查询医生\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"我的病历\",\"key\":\"V1001_TODAY_MUSIC\"}]},{\"type\":\"view\",\"name\":\"快速购买\",\"url\":\"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + WeChat.app_id + "&redirect_uri=" + url + "&response_type=code&scope=snsapi_base&state=123#wechat_redirect\"},{\"name\":\"服务中心\",\"sub_button\":[{\"type\":\"click\",\"name\":\"个人中心\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"在线咨询\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"文献查询\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"我的物流\",\"key\":\"V1001_TODAY_MUSIC\"}]}]}");
-        ApiResult jsonResult = MenuApi.createMenu("{\"button\":[{\"type\":\"view\",\"name\":\"快速购买\",\"url\":\"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + WeChat.app_id + "&redirect_uri=" + url + "&response_type=code&scope=snsapi_base&state=123#wechat_redirect\"}]}");
+        ApiResult jsonResult = MenuApi.createMenu("{\"button\":[{\"type\":\"view\",\"name\":\"微信商城\",\"url\":\"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + WeChat.app_id + "&redirect_uri=" + url + "&response_type=code&scope=snsapi_base&state=123#wechat_redirect\"}]}");
 
         renderText(jsonResult.getJson());
     }
@@ -112,14 +121,9 @@ public class WeChatApiController extends ApiController {
 
         String wechat_open_id = snsAccessToken.getOpenid();
 
-//        redirect("http://h5.jiyiguan.nowui.com/#/auth/" + wechat_open_id);
-        redirect("http://h5.jiyiguan.nowui.com/#/" + url + "/?wechat_open_id=" + wechat_open_id);
+        System.out.println("http://h5." + WeChat.redirect_uri + "/#/" + url + "/?wechat_open_id=" + wechat_open_id);
 
-//        ApiResult apiResult = UserApi.getUserInfo(snsAccessToken.getOpenid());
-//
-//        System.out.println(apiResult.getJson());
-
-//        renderText(snsAccessToken.getOpenid());
+        redirect("http://h5." + WeChat.redirect_uri + "/#/" + url + "/?wechat_open_id=" + wechat_open_id);
     }
 
     @ActionKey(Url.WECHAT_API_ORCODE)

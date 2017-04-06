@@ -4,8 +4,8 @@ import com.jfinal.kit.JMap;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
-import com.shanghaichuangshi.shop.cache.MemberCache;
 import com.shanghaichuangshi.shop.model.Member;
+import com.shanghaichuangshi.util.CacheUtil;
 import com.shanghaichuangshi.util.Util;
 
 import java.util.Date;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class MemberDao extends Dao {
 
-    private final MemberCache memberCache = new MemberCache();
+    private final String MEMBER_CACHE = "membe_cache";
 
     public int count(String member_name) {
         JMap map = JMap.create();
@@ -35,7 +35,7 @@ public class MemberDao extends Dao {
     }
 
     public Member find(String member_id) {
-        Member member = memberCache.getMemberByMember_id(member_id);
+        Member member = CacheUtil.get(MEMBER_CACHE, member_id);
 
         if (member == null) {
             JMap map = JMap.create();
@@ -48,7 +48,7 @@ public class MemberDao extends Dao {
             } else {
                 member = memberList.get(0);
 
-                memberCache.setMemberByMember_id(member, member_id);
+                CacheUtil.put(MEMBER_CACHE, member_id, member);
             }
         }
 
@@ -69,7 +69,7 @@ public class MemberDao extends Dao {
     }
 
     public boolean update(Member member, String request_user_id) {
-        memberCache.removeMemberByMember_id(member.getMember_id());
+        CacheUtil.remove(MEMBER_CACHE, member.getMember_id());
 
         member.remove(Member.SYSTEM_CREATE_USER_ID);
         member.remove(Member.SYSTEM_CREATE_TIME);
@@ -81,7 +81,7 @@ public class MemberDao extends Dao {
     }
 
     public boolean updateByMember_idAndScene_idAndScene_qrcode(String member_id, String scene_id, String scene_qrcode, String request_user_id) {
-        memberCache.removeMemberByMember_id(member_id);
+        CacheUtil.remove(MEMBER_CACHE, member_id);
 
         JMap map = JMap.create();
         map.put(Member.MEMBER_ID, member_id);
@@ -95,7 +95,7 @@ public class MemberDao extends Dao {
     }
 
     public boolean updateByMember_idAndDistributor_idAndParent_idAndMember_level_id(String member_id, String distributor_id, String parent_id, String member_level_id) {
-        memberCache.removeMemberByMember_id(member_id);
+        CacheUtil.remove(MEMBER_CACHE, member_id);
 
         JMap map = JMap.create();
         map.put(Member.MEMBER_ID, member_id);
@@ -108,7 +108,7 @@ public class MemberDao extends Dao {
     }
 
     public boolean delete(String member_id, String request_user_id) {
-        memberCache.removeMemberByMember_id(member_id);
+        CacheUtil.remove(MEMBER_CACHE, member_id);
 
         JMap map = JMap.create();
         map.put(Member.MEMBER_ID, member_id);

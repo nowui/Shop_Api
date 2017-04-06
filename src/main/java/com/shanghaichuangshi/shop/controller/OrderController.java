@@ -119,7 +119,7 @@ public class OrderController extends Controller {
 
         model.validate(Order.ORDER_ID);
 
-        Map<String, String> result = orderService.pay(model.getOrder_id(), request_user_id);
+        Map<String, String> result = orderService.pay(model.getOrder_id(), getAttr(Constant.REQUEST_PARAMETER), request_user_id);
 
         renderSuccessJson(result);
     }
