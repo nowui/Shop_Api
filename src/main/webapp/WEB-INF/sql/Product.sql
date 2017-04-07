@@ -35,6 +35,18 @@
     ORDER BY system_create_time DESC
   #end
 
+  #sql("listAllHot")
+    SELECT
+    product_id,
+    product_name,
+    product_image,
+    product_price
+    FROM table_product
+    WHERE system_status = 1
+    AND product_is_hot = 1
+    ORDER BY system_create_time DESC
+  #end
+
   #sql("find")
     SELECT
     *

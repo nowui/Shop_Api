@@ -116,14 +116,18 @@ public class WeChatMsgController extends MsgController {
 
                 Distributor distributor = distributorService.find(distributor_id);
 
-                content += "恭喜您，成为我们的会员！您现在属于" + distributor.getDistributor_name() + "的销售团队";
+                content += "恭喜您，成为我们的会员！您现在属于" + distributor.getDistributor_name() + "的团队。";
             } else {
                 Distributor distributor = distributorService.find(member.getDistributor_id());
 
                 if (distributor_id.equals(member.getDistributor_id())) {
-                    content += "恭喜您，成为我们的会员！您现在属于" + distributor.getDistributor_name() + "的销售团队";
+                    if (Util.isNullOrEmpty(member.getParent_id())) {
+                        content += "恭喜您，成为我们的会员！您现在属于" + distributor.getDistributor_name() + "的团队。";
+                    } else {
+                        content += "不能绑定，您的上一级是" + member.getMember_name() + "。";
+                    }
                 } else {
-                    content += "不能绑定，您属于" + distributor.getDistributor_name() + "的销售团队";
+                    content += "不能绑定，您属于" + distributor.getDistributor_name() + "的团队。";
                 }
             }
         } else if (scene.getScene_type().equals(SceneTypeEnum.MEMBER.getKey())) {
@@ -141,14 +145,14 @@ public class WeChatMsgController extends MsgController {
 
                 sceneService.updateScene_addByScene_id(scene_id, request_user_id);
 
-                content += "恭喜您，成为我们的会员！您的销售人员是" + parentMember.getMember_name();
+                content += "恭喜您，成为我们的会员！您的上一级是" + parentMember.getMember_name() + "。";
             } else {
                 Member parentMember = memberService.find(member.getParent_id());
 
                 if (parent_id.equals(member.getParent_id())) {
-                    content += "恭喜您，成为我们的会员！您的销售人员是" + parentMember.getMember_name();
+                    content += "恭喜您，成为我们的会员！您的上一级是" + parentMember.getMember_name() + "。";
                 } else {
-                    content += "不能绑定，您的销售人员是" + parentMember.getMember_name();
+                    content += "不能绑定，您的上一级是" + parentMember.getMember_name() + "。";
                 }
             }
         }

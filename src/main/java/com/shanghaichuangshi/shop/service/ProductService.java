@@ -38,6 +38,10 @@ public class ProductService extends Service {
         return productDao.listAll();
     }
 
+    public List<Product> listAllHot() {
+        return productDao.listAllHot();
+    }
+
     public Product find(String product_id) {
         return productDao.find(product_id);
     }

@@ -23,7 +23,7 @@ public class Product extends Model<Product> {
     @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品图片")
     public static final String PRODUCT_IMAGE = "product_image";
 
-    @Column(type = ColumnType.VARCHAR, length = 100, comment = "商品图片")
+    @Column(type = ColumnType.VARCHAR, length = 100, comment = "商品图片", findable = false)
     public static final String PRODUCT_IMAGE_THUMBNAIL = "product_image_thumbnail";
 
     @Column(type = ColumnType.VARCHAR, length = 100, comment = "商品图片")
@@ -32,7 +32,7 @@ public class Product extends Model<Product> {
     @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品图片")
     public static final String PRODUCT_IMAGE_LIST = "product_image_list";
 
-    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品图片")
+    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品图片", findable = false)
     public static final String PRODUCT_IMAGE_LIST_THUMBNAIL = "product_image_list_thumbnail";
 
     @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品图片")

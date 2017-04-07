@@ -1,6 +1,5 @@
 package com.shanghaichuangshi.shop.service;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
@@ -189,6 +188,10 @@ public class OrderService extends Service {
         parameter.put("total_fee", total_fee);
         parameter.put("trade_type", trade_type);
         parameter.put("sign", PaymentKit.createSign(parameter, WeChat.mch_key));
+
+        System.out.println("--------------------------");
+        System.out.println(JSONObject.toJSONString(parameter));
+        System.out.println("--------------------------");
 
         String result = HttpKit.post("https://api.mch.weixin.qq.com/pay/unifiedorder", PaymentKit.toXml(parameter));
 

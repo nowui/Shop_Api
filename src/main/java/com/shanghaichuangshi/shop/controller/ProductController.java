@@ -60,6 +60,18 @@ public class ProductController extends Controller {
 
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
+        List<Product> hotProductList = productService.listAllHot();
+
+        if (hotProductList == null) {
+            hotProductList = new ArrayList<Product>();
+        }
+
+        Map<String, Object> hotMap = new HashMap<String, Object>();
+        hotMap.put(Category.CATEGORY_ID, "0");
+        hotMap.put(Category.CATEGORY_NAME, "热销商品");
+        hotMap.put(Constant.CHILDREN, hotProductList);
+        list.add(hotMap);
+
         for (Category category : categoryList) {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put(Category.CATEGORY_ID, category.getCategory_id());
