@@ -107,8 +107,6 @@ public class ProductService extends Service {
     }
 
     public boolean update(Product product, JSONObject jsonObject, String request_user_id) {
-        JSONArray skuJsonArray = jsonObject.getJSONArray(Sku.SKU_LIST);
-
         List<Sku> skuAllList = skuService.list(product.getProduct_id());
         List<Sku> skuList = getSkuList(product.getProduct_id(), jsonObject);
         List<Sku> skuSaveList = new ArrayList<Sku>();

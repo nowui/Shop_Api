@@ -87,7 +87,8 @@ public class SkuDao extends Dao {
     }
 
     public void updateProduct_stock(List<Sku> skuList, String product_id, String request_user_id) {
-        for(Sku sku : skuList) {
+        List<Sku> skuListCache = CacheUtil.get(SKU_LIST_CACHE, product_id);
+        for(Sku sku : skuListCache) {
             CacheUtil.remove(SKU_CACHE, sku.getSku_id());
         }
 
@@ -116,7 +117,8 @@ public class SkuDao extends Dao {
     }
 
     public void delete(List<Sku> skuList, String product_id, String request_user_id) {
-        for(Sku sku : skuList) {
+        List<Sku> skuListCache = CacheUtil.get(SKU_LIST_CACHE, product_id);
+        for(Sku sku : skuListCache) {
             CacheUtil.remove(SKU_CACHE, sku.getSku_id());
         }
 
