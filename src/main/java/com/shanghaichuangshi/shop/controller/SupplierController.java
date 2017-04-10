@@ -50,7 +50,7 @@ public class SupplierController extends Controller {
 
         Supplier supplier = supplierService.find(model.getSupplier_id());
 
-        renderSuccessJson(supplier.formatToMap());
+        renderSuccessJson(supplier.removeUnfindable());
     }
 
     @ActionKey(Url.SUPPLIER_ADMIN_FIND)

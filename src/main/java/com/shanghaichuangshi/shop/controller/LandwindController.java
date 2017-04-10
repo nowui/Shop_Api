@@ -49,7 +49,7 @@ public class LandwindController extends Controller {
 
         Landwind landwind = landwindService.find(model.getLandwind_id());
 
-        renderSuccessJson(landwind.formatToMap());
+        renderSuccessJson(landwind.removeUnfindable());
     }
 
     @ActionKey(Url.LANDWIND_ADMIN_FIND)

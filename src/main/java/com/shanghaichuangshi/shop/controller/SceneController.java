@@ -49,7 +49,7 @@ public class SceneController extends Controller {
 
         Scene scene = sceneService.find(model.getScene_id());
 
-        renderSuccessJson(scene.formatToMap());
+        renderSuccessJson(scene.removeUnfindable());
     }
 
     @ActionKey(Url.SCENE_ADMIN_FIND)

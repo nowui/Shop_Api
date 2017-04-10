@@ -50,7 +50,7 @@ public class DistributorController extends Controller {
 
         Distributor distributor = distributorService.find(model.getDistributor_id());
 
-        renderSuccessJson(distributor.formatToMap());
+        renderSuccessJson(distributor.removeUnfindable());
     }
 
     @ActionKey(Url.DISTRIBUTOR_ADMIN_FIND)

@@ -48,7 +48,7 @@ public class OrderController extends Controller {
 
         Order order = orderService.find(model.getOrder_id());
 
-        renderSuccessJson(order.formatToMap());
+        renderSuccessJson(order.removeUnfindable());
     }
 
     @ActionKey(Url.ORDER_ADMIN_FIND)
@@ -107,9 +107,7 @@ public class OrderController extends Controller {
 
         Order order = orderService.confirm(model.getOrder_id(), request_user_id);
 
-        Map<String, Object> result = order.keepToMap(Order.ORDER_NUMBER, Order.ORDER_IS_PAY, Order.ORDER_AMOUNT);
-
-        renderSuccessJson(result);
+        renderSuccessJson(order.keep(Order.ORDER_NUMBER, Order.ORDER_IS_PAY, Order.ORDER_AMOUNT));
     }
 
     @ActionKey(Url.ORDER_PAY)

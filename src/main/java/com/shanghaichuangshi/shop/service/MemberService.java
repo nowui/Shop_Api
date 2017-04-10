@@ -226,13 +226,13 @@ public class MemberService extends Service {
         } else {
             MemberLevel memberLevel = memberLevelService.find(member.getMember_level_id());
 
-            resultMap.put("member_level", memberLevel.formatToMap());
+            resultMap.put("member_level", memberLevel.removeUnfindable());
         }
 
         if (delivery == null) {
             resultMap.put("delivery", new JSONObject());
         } else {
-            resultMap.put("delivery", delivery.formatToMap());
+            resultMap.put("delivery", delivery.removeUnfindable());
         }
 
         return resultMap;

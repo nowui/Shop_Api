@@ -54,7 +54,7 @@ public class MemberController extends Controller {
 
         Member member = memberService.find(model.getMember_id());
 
-        renderSuccessJson(member.formatToMap());
+        renderSuccessJson(member.removeUnfindable());
     }
 
     @ActionKey(Url.MEMBER_ADMIN_FIND)
