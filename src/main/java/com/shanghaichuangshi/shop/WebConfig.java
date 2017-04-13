@@ -50,6 +50,7 @@ public class WebConfig extends JFinalConfig {
         routes.add("/supplier", SupplierController.class);
         routes.add("/scene", SceneController.class);
         routes.add("/landwind", LandwindController.class);
+        routes.add("/guangfeng", GuangfengController.class);
     }
 
     public void configEngine(Engine engine) {
@@ -105,6 +106,7 @@ public class WebConfig extends JFinalConfig {
         activeRecordPlugin.addMapping("table_supplier", "supplier_id", Supplier.class);
         activeRecordPlugin.addMapping("table_scene", "scene_id", Scene.class);
         activeRecordPlugin.addMapping("table_landwind", "landwind_id", Landwind.class);
+        activeRecordPlugin.addMapping("table_guangfeng", "guangfeng_id", Guangfeng.class);
 
         plugins.add(activeRecordPlugin);
     }
@@ -123,6 +125,8 @@ public class WebConfig extends JFinalConfig {
         uncheckTokenUrlList.add(Url.PRODUCT_ALL_LIST);
         uncheckTokenUrlList.add(Url.MEMBER_WECHAT_LOGIN);
         uncheckTokenUrlList.add(Url.LANDWIND_SAVE);
+        uncheckTokenUrlList.add(Url.GUANGFENG_RESULT_LIST);
+        uncheckTokenUrlList.add(Url.GUANGFENG_SAVE);
 
         List<String> uncheckRequestUserIdUrlList = new ArrayList<String>();
         uncheckRequestUserIdUrlList.add(Url.PRODUCT_FIND);

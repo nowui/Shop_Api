@@ -60,9 +60,10 @@ public class MemberService extends Service {
 
             ApiConfigKit.setThreadLocalApiConfig(WeChat.getApiConfig());
             ApiResult apiResult = QrcodeApi.createPermanent(scene_id);
+            Boolean scene_is_temporary = false;
             String scene_qrcode = QrcodeApi.getShowQrcodeUrl(apiResult.getStr("ticket"));
 
-            sceneService.save(scene_id, member_id, SceneTypeEnum.MEMBER.getKey(), scene_qrcode, user_id);
+            sceneService.save(scene_id, member_id, SceneTypeEnum.MEMBER.getKey(), scene_is_temporary, scene_qrcode, user_id);
 
             memberDao.updateByMember_idAndScene_idAndScene_qrcode(member_id, scene_id, scene_qrcode, user_id);
 

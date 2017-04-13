@@ -54,11 +54,12 @@ public class SceneDao extends Dao {
         return scene;
     }
 
-    public Scene save(String scene_id, String object_id, String scene_type, String scene_qrcode, String request_user_id) {
+    public Scene save(String scene_id, String object_id, String scene_type, boolean scene_is_temporary, String scene_qrcode, String request_user_id) {
         Scene scene = new Scene();
         scene.setScene_id(scene_id);
         scene.setObject_id(object_id);
         scene.setScene_type(scene_type);
+        scene.setScene_is_temporary(scene_is_temporary);
         scene.setScene_add(0);
         scene.setScene_cancel(0);
         scene.setScene_qrcode(scene_qrcode);
@@ -73,17 +74,17 @@ public class SceneDao extends Dao {
         return scene;
     }
 
-    public boolean update(Scene scene, String request_user_id) {
-        CacheUtil.remove(SCENED_CACHE, scene.getScene_id());
-
-        scene.remove(Scene.SYSTEM_CREATE_USER_ID);
-        scene.remove(Scene.SYSTEM_CREATE_TIME);
-        scene.setSystem_update_user_id(request_user_id);
-        scene.setSystem_update_time(new Date());
-        scene.remove(Scene.SYSTEM_STATUS);
-
-        return scene.update();
-    }
+//    public boolean update(Scene scene, String request_user_id) {
+//        CacheUtil.remove(SCENED_CACHE, scene.getScene_id());
+//
+//        scene.remove(Scene.SYSTEM_CREATE_USER_ID);
+//        scene.remove(Scene.SYSTEM_CREATE_TIME);
+//        scene.setSystem_update_user_id(request_user_id);
+//        scene.setSystem_update_time(new Date());
+//        scene.remove(Scene.SYSTEM_STATUS);
+//
+//        return scene.update();
+//    }
 
     public boolean updateScene_addByScene_id(String scene_id, String request_user_id) {
         CacheUtil.remove(SCENED_CACHE, scene_id);

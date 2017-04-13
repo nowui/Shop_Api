@@ -102,34 +102,36 @@ public class WeChatMsgController extends MsgController {
 
         Member member = memberService.saveByWechat_open_idAndFrom_scene_id(wechat_open_id, scene_id);
 
-        if (scene.getScene_type().equals(SceneTypeEnum.DISTRIBUTOR.getKey())) {
-            distributor_id = scene.getObject_id();
-            parent_id = "";
+        if (scene.getScene_type().equals(SceneTypeEnum.COMPANY.getKey())) {
 
-            if (Util.isNullOrEmpty(member.getDistributor_id())) {
-                MemberLevel memberLevel = memberLevelService.findTopMember_level();
-                member_level_id = memberLevel.getMember_level_id();
-
-                memberService.updateByMember_idAndDistributor_idAndParent_idAndMember_level_id(member.getMember_id(), distributor_id, parent_id, member_level_id);
-
-                sceneService.updateScene_addByScene_id(scene_id, request_user_id);
-
-                Distributor distributor = distributorService.find(distributor_id);
-
-                content += "恭喜您，成为我们的会员！您现在属于" + distributor.getDistributor_name() + "的团队。";
-            } else {
-                Distributor distributor = distributorService.find(member.getDistributor_id());
-
-                if (distributor_id.equals(member.getDistributor_id())) {
-                    if (Util.isNullOrEmpty(member.getParent_id())) {
-                        content += "恭喜您，成为我们的会员！您现在属于" + distributor.getDistributor_name() + "的团队。";
-                    } else {
-                        content += "不能绑定，您的上一级是" + member.getMember_name() + "。";
-                    }
-                } else {
-                    content += "不能绑定，您属于" + distributor.getDistributor_name() + "的团队。";
-                }
-            }
+        } else if (scene.getScene_type().equals(SceneTypeEnum.DISTRIBUTOR.getKey())) {
+//            distributor_id = scene.getObject_id();
+//            parent_id = "";
+//
+//            if (Util.isNullOrEmpty(member.getDistributor_id())) {
+//                MemberLevel memberLevel = memberLevelService.findTopMember_level();
+//                member_level_id = memberLevel.getMember_level_id();
+//
+//                memberService.updateByMember_idAndDistributor_idAndParent_idAndMember_level_id(member.getMember_id(), distributor_id, parent_id, member_level_id);
+//
+//                sceneService.updateScene_addByScene_id(scene_id, request_user_id);
+//
+//                Distributor distributor = distributorService.find(distributor_id);
+//
+//                content += "恭喜您，成为我们的会员！您现在属于" + distributor.getDistributor_name() + "的团队。";
+//            } else {
+//                Distributor distributor = distributorService.find(member.getDistributor_id());
+//
+//                if (distributor_id.equals(member.getDistributor_id())) {
+//                    if (Util.isNullOrEmpty(member.getParent_id())) {
+//                        content += "恭喜您，成为我们的会员！您现在属于" + distributor.getDistributor_name() + "的团队。";
+//                    } else {
+//                        content += "不能绑定，您的上一级是" + member.getMember_name() + "。";
+//                    }
+//                } else {
+//                    content += "不能绑定，您属于" + distributor.getDistributor_name() + "的团队。";
+//                }
+//            }
         } else if (scene.getScene_type().equals(SceneTypeEnum.MEMBER.getKey())) {
             parent_id = scene.getObject_id();
 

@@ -63,18 +63,15 @@ public class SceneController extends Controller {
         renderSuccessJson(scene);
     }
 
-//    @ActionKey(Url.SCENE_SAVE)
-//    public void save() {
-//        Scene model = getParameter(Scene.class);
-//        String request_user_id = getRequest_user_id();
-//
-//        model.validate(Scene.SCENE_TYPE, Scene.OBJECT_ID);
-//
-//        sceneService.save(model, request_user_id);
-//
-//        renderSuccessJson();
-//    }
-//
+    @ActionKey(Url.SCENE_SAVE)
+    public void save() {
+        String request_user_id = getRequest_user_id();
+
+        sceneService.companySave(request_user_id);
+
+        renderSuccessJson();
+    }
+
 //    @ActionKey(Url.SCENEL_UPDATE)
 //    public void update() {
 //        Scene model = getParameter(Scene.class);

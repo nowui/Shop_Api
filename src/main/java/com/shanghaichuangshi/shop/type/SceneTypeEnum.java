@@ -3,6 +3,7 @@ package com.shanghaichuangshi.shop.type;
 public enum SceneTypeEnum {
 
     DISTRIBUTOR("DISTRIBUTOR"),
+    COMPANY("COMPANY"),
     MEMBER("MEMBER");
 
     private String key;

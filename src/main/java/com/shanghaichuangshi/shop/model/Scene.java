@@ -15,6 +15,9 @@ public class Scene extends Model<Scene> {
     @Column(type = ColumnType.VARCHAR, length = 20, comment = "场景类型")
     public static final String SCENE_TYPE = "scene_type";
 
+    @Column(type = ColumnType.TINYINT, length = 1, comment = "是否临时")
+    public static final String SCENE_IS_TEMPORARY = "scene_is_temporary";
+
     @Column(type = ColumnType.INT, length = 11, comment = "新增关注")
     public static final String SCENE_ADD = "scene_add";
 
@@ -46,6 +49,14 @@ public class Scene extends Model<Scene> {
 
     public void setScene_type(String scene_type) {
         set(SCENE_TYPE, scene_type);
+    }
+
+    public Boolean getScene_is_temporary() {
+        return getBoolean(SCENE_IS_TEMPORARY);
+    }
+
+    public void setScene_is_temporary(Boolean scene_is_temporary) {
+        set(SCENE_IS_TEMPORARY, scene_is_temporary);
     }
 
     public Integer getScene_add() {
