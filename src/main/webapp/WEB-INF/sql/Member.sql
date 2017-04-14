@@ -44,9 +44,8 @@
     WHERE member_id = #p(member_id)
   #end
 
-  #sql("updateByMember_idAndDistributor_idAndParent_idAndMember_level_id")
+  #sql("updateByMember_idAndParent_idAndMember_level_id")
     UPDATE table_member SET
-    distributor_id = #p(distributor_id),
     parent_id = #p(parent_id),
     member_level_id = #p(member_level_id)
     WHERE member_id = #p(member_id)

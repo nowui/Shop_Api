@@ -41,10 +41,10 @@ public class DistributorService extends Service {
 
         ApiConfigKit.setThreadLocalApiConfig(WeChat.getApiConfig());
         ApiResult apiResult = QrcodeApi.createPermanent(scene_id);
-        Boolean scene_is_temporary = false;
+        Boolean scene_is_expire = false;
         String scene_qrcode = QrcodeApi.getShowQrcodeUrl(apiResult.getStr("ticket"));
 
-        sceneService.save(scene_id, distributor_id, SceneTypeEnum.DISTRIBUTOR.getKey(), scene_is_temporary, scene_qrcode, request_user_id);
+        sceneService.save(scene_id, distributor_id, SceneTypeEnum.DISTRIBUTOR.getKey(), scene_is_expire, scene_qrcode, request_user_id);
 
         distributor.setUser_id(user_id);
         distributor.setScene_id(scene_id);

@@ -45,6 +45,12 @@
     WHERE scene_id = #p(scene_id)
   #end
 
+  #sql("updateScene_is_expireByScene_id")
+    UPDATE table_scene SET
+    scene_is_expire = 1
+    WHERE scene_id = #p(scene_id)
+  #end
+
   #sql("delete")
     UPDATE table_scene SET
     system_update_user_id = #p(system_update_user_id),

@@ -7,7 +7,6 @@ import com.jfinal.weixin.sdk.msg.in.event.*;
 import com.jfinal.weixin.sdk.msg.in.speech_recognition.InSpeechRecognitionResults;
 import com.jfinal.weixin.sdk.msg.out.OutTextMsg;
 import com.shanghaichuangshi.constant.WeChat;
-import com.shanghaichuangshi.shop.model.Distributor;
 import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.shop.model.MemberLevel;
 import com.shanghaichuangshi.shop.model.Scene;
@@ -73,11 +72,12 @@ public class WeChatMsgController extends MsgController {
     @Override
     protected void processInFollowEvent(InFollowEvent inFollowEvent) {
         String wechat_open_id = inFollowEvent.getFromUserName();
-        String scene_id = "";
+        String from_scene_id = "";
+        String parent_id = "";
         String event = inFollowEvent.getEvent();
         String request_user_id = "";
 
-        Member member = memberService.saveByWechat_open_idAndFrom_scene_id(wechat_open_id, scene_id);
+        Member member = memberService.saveByWechat_open_idAndFrom_scene_idAndParent_id(wechat_open_id, from_scene_id, parent_id);
 
         if (event.equals("unsubscribe")) {
             sceneService.updateScene_cancelByScene_id(member.getFrom_scene_id(), request_user_id);
@@ -92,7 +92,6 @@ public class WeChatMsgController extends MsgController {
     protected void processInQrCodeEvent(InQrCodeEvent inQrCodeEvent) {
         String wechat_open_id = inQrCodeEvent.getFromUserName();
         String scene_id = inQrCodeEvent.getEventKey().replace("qrscene_", "");
-        String distributor_id = "";
         String parent_id = "";
         String member_level_id = "";
         String content = "";
@@ -100,66 +99,61 @@ public class WeChatMsgController extends MsgController {
 
         Scene scene = sceneService.find(scene_id);
 
-        Member member = memberService.saveByWechat_open_idAndFrom_scene_id(wechat_open_id, scene_id);
+        if (scene.getScene_is_expire()) {
+            content = "该二维码已经过期！";
 
-        if (scene.getScene_type().equals(SceneTypeEnum.COMPANY.getKey())) {
+            OutTextMsg outMsg = new OutTextMsg(inQrCodeEvent);
+            outMsg.setContent(content);
+            render(outMsg);
 
-        } else if (scene.getScene_type().equals(SceneTypeEnum.DISTRIBUTOR.getKey())) {
-//            distributor_id = scene.getObject_id();
-//            parent_id = "";
-//
-//            if (Util.isNullOrEmpty(member.getDistributor_id())) {
-//                MemberLevel memberLevel = memberLevelService.findTopMember_level();
-//                member_level_id = memberLevel.getMember_level_id();
-//
-//                memberService.updateByMember_idAndDistributor_idAndParent_idAndMember_level_id(member.getMember_id(), distributor_id, parent_id, member_level_id);
-//
-//                sceneService.updateScene_addByScene_id(scene_id, request_user_id);
-//
-//                Distributor distributor = distributorService.find(distributor_id);
-//
-//                content += "恭喜您，成为我们的会员！您现在属于" + distributor.getDistributor_name() + "的团队。";
-//            } else {
-//                Distributor distributor = distributorService.find(member.getDistributor_id());
-//
-//                if (distributor_id.equals(member.getDistributor_id())) {
-//                    if (Util.isNullOrEmpty(member.getParent_id())) {
-//                        content += "恭喜您，成为我们的会员！您现在属于" + distributor.getDistributor_name() + "的团队。";
-//                    } else {
-//                        content += "不能绑定，您的上一级是" + member.getMember_name() + "。";
-//                    }
-//                } else {
-//                    content += "不能绑定，您属于" + distributor.getDistributor_name() + "的团队。";
-//                }
-//            }
-        } else if (scene.getScene_type().equals(SceneTypeEnum.MEMBER.getKey())) {
-            parent_id = scene.getObject_id();
+            return;
+        }
 
-            if (Util.isNullOrEmpty(member.getParent_id())) {
+        Member member = memberService.saveByWechat_open_idAndFrom_scene_idAndParent_id(wechat_open_id, scene_id, parent_id);
+
+        if (Util.isNullOrEmpty(member.getParent_id())) {
+            if (scene.getScene_type().equals(SceneTypeEnum.COMPANY.getKey())) {
+                parent_id = "";
+
+                if (Util.isNullOrEmpty(member.getMember_level_id())) {
+                    MemberLevel memberLevel = memberLevelService.findTopMember_level();
+                    member_level_id = memberLevel.getMember_level_id();
+
+                    memberService.updateByMember_idAndParent_idAndMember_level_id(member.getMember_id(), parent_id, member_level_id);
+
+                    sceneService.updateScene_addByScene_id(scene_id, request_user_id);
+
+                    content = "恭喜您，成为我们的会员！您的等级是" + memberLevel.getMember_level_name() + "。";
+                } else {
+                    MemberLevel memberLevel = memberLevelService.find(member.getMember_level_id());
+
+                    content = "不能绑定，您的等级已经是" + memberLevel.getMember_level_name() + "。";
+                }
+
+                sceneService.updateScene_is_expireByScene_id(scene_id, request_user_id);
+            } else if (scene.getScene_type().equals(SceneTypeEnum.MEMBER.getKey())) {
+                parent_id = scene.getObject_id();
+
                 Member parentMember = memberService.find(parent_id);
-
-                distributor_id = parentMember.getDistributor_id();
 
                 MemberLevel memberLevel = memberLevelService.findNextMember_levelByMember_level_id(parentMember.getMember_level_id());
                 member_level_id = memberLevel.getMember_level_id();
 
-                memberService.updateByMember_idAndDistributor_idAndParent_idAndMember_level_id(member.getMember_id(), distributor_id, parent_id, member_level_id);
+                memberService.updateByMember_idAndParent_idAndMember_level_id(member.getMember_id(), parent_id, member_level_id);
 
                 sceneService.updateScene_addByScene_id(scene_id, request_user_id);
 
-                content += "恭喜您，成为我们的会员！您的上一级是" + parentMember.getMember_name() + "。";
-            } else {
-                Member parentMember = memberService.find(member.getParent_id());
+                content = "恭喜您，成为我们的会员！您的推荐人是" + parentMember.getMember_name() + "。";
+            }
+        } else {
+            Member parentMember = memberService.find(member.getParent_id());
 
-                if (parent_id.equals(member.getParent_id())) {
-                    content += "恭喜您，成为我们的会员！您的上一级是" + parentMember.getMember_name() + "。";
-                } else {
-                    content += "不能绑定，您的上一级是" + parentMember.getMember_name() + "。";
-                }
+            if (parent_id.equals(member.getParent_id())) {
+                content = "恭喜您，成为我们的会员！您推荐人是" + parentMember.getMember_name() + "。";
+            } else {
+                content = "不能绑定，您推荐人已经是" + parentMember.getMember_name() + "。";
             }
         }
-
-
 
         OutTextMsg outMsg = new OutTextMsg(inQrCodeEvent);
         outMsg.setContent(content);

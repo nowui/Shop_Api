@@ -1,5 +1,7 @@
 package com.shanghaichuangshi.shop.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.weixin.sdk.api.ApiConfigKit;
 import com.jfinal.weixin.sdk.api.ApiResult;
@@ -60,10 +62,10 @@ public class MemberService extends Service {
 
             ApiConfigKit.setThreadLocalApiConfig(WeChat.getApiConfig());
             ApiResult apiResult = QrcodeApi.createPermanent(scene_id);
-            Boolean scene_is_temporary = false;
+            Boolean scene_is_expire = false;
             String scene_qrcode = QrcodeApi.getShowQrcodeUrl(apiResult.getStr("ticket"));
 
-            sceneService.save(scene_id, member_id, SceneTypeEnum.MEMBER.getKey(), scene_is_temporary, scene_qrcode, user_id);
+            sceneService.save(scene_id, member_id, SceneTypeEnum.MEMBER.getKey(), scene_is_expire, scene_qrcode, user_id);
 
             memberDao.updateByMember_idAndScene_idAndScene_qrcode(member_id, scene_id, scene_qrcode, user_id);
 
@@ -98,25 +100,23 @@ public class MemberService extends Service {
         return member_level_id;
     }
 
-    public Member save(Member member, User user, String request_user_id) {
-        String user_id = Util.getRandomUUID();
-        member.setUser_id(user_id);
+//    public Member save(Member member, User user, String request_user_id) {
+//        String user_id = Util.getRandomUUID();
+//        String member_phone = "";
+//        String member_remark = "";
+//
+//        member.setUser_id(user_id);
+//        member.setMember_phone(member_phone);
+//        member.setMember_remark(member_remark);
+//
+//        memberDao.save(member, request_user_id);
+//
+//        userService.saveByUser_idAndUser_phoneAndUser_passwordAndObject_idAndUser_type(user_id, user.getUser_phone(), user.getUser_password(), member.getMember_id(), UserType.MEMBER.getKey(), request_user_id);
+//
+//        return member;
+//    }
 
-        memberDao.save(member, request_user_id);
-
-        userService.saveByUser_idAndUser_phoneAndUser_passwordAndObject_idAndUser_type(user_id, user.getUser_phone(), user.getUser_password(), member.getMember_id(), UserType.MEMBER.getKey(), request_user_id);
-
-        return member;
-    }
-
-    public Member saveByWechat_open_idAndFrom_scene_id(String wechat_open_id, String from_scene_id) {
-        String request_user_id = "";
-        String distributor_id = "";
-        String parent_id = "";
-        String member_level_id = "";
-        String scene_id = "";
-        String scene_qrcode = "";
-
+    public Member saveByWechat_open_idAndFrom_scene_idAndParent_id(String wechat_open_id, String from_scene_id, String parent_id) {
         User user = userService.findByWechat_open_idAndUser_type(wechat_open_id, UserType.MEMBER.getKey());
         if (user == null) {
             ApiResult apiResult = UserApi.getUserInfo(wechat_open_id);
@@ -124,16 +124,36 @@ public class MemberService extends Service {
             String user_avatar = apiResult.getStr("headimgurl");
 
             String user_id = Util.getRandomUUID();
+            String parent_path = "";
+            String scene_id = "";
+            String scene_qrcode = "";
+            String member_level_id = "";
+            String request_user_id = "";
+            String member_phone = "";
+            String member_remark = "";
+
+            if (Util.isNullOrEmpty(parent_id)) {
+                parent_path = (new JSONArray()).toJSONString();
+            } else {
+                Member parentMember = memberDao.find(parent_id);
+                JSONArray jsonArray = JSON.parseArray(parentMember.getParent_path());
+                jsonArray.add(parent_id);
+
+                parent_path = jsonArray.toJSONString();
+            }
 
             Member member = new Member();
-            member.setFrom_scene_id(from_scene_id);
-            member.setDistributor_id(distributor_id);
+            member.setParent_id(parent_id);
+            member.setParent_path(parent_path);
             member.setParent_id(parent_id);
             member.setUser_id(user_id);
+            member.setFrom_scene_id(from_scene_id);
             member.setScene_id(scene_id);
             member.setScene_qrcode(scene_qrcode);
             member.setMember_level_id(member_level_id);
             member.setMember_name(user_name);
+            member.setMember_phone(member_phone);
+            member.setMember_remark(member_remark);
 
             memberDao.save(member, request_user_id);
 
@@ -147,18 +167,18 @@ public class MemberService extends Service {
         }
     }
 
-    public boolean update(Member member, User user, String request_user_id) {
-        boolean result = memberDao.update(member, request_user_id);
+//    public boolean update(Member member, User user, String request_user_id) {
+//        boolean result = memberDao.update(member, request_user_id);
+//
+//        userService.updateByObject_idAndUser_phoneAndUser_type(member.getMember_id(), user.getUser_phone(), UserType.MEMBER.getKey(), request_user_id);
+//
+//        userService.updateByObject_idAndUser_passwordAndUser_type(member.getMember_id(), user.getUser_password(), UserType.MEMBER.getKey(), request_user_id);
+//
+//        return result;
+//    }
 
-        userService.updateByObject_idAndUser_phoneAndUser_type(member.getMember_id(), user.getUser_phone(), UserType.MEMBER.getKey(), request_user_id);
-
-        userService.updateByObject_idAndUser_passwordAndUser_type(member.getMember_id(), user.getUser_password(), UserType.MEMBER.getKey(), request_user_id);
-
-        return result;
-    }
-
-    public boolean updateByMember_idAndDistributor_idAndParent_idAndMember_level_id(String member_id, String distributor_id, String parent_id, String member_level_id) {
-        return memberDao.updateByMember_idAndDistributor_idAndParent_idAndMember_level_id(member_id, distributor_id, parent_id, member_level_id);
+    public boolean updateByMember_idAndParent_idAndMember_level_id(String member_id, String parent_id, String member_level_id) {
+        return memberDao.updateByMember_idAndParent_idAndMember_level_id(member_id, parent_id, member_level_id);
     }
 
     public boolean delete(Member member, String request_user_id) {

@@ -94,15 +94,14 @@ public class MemberDao extends Dao {
         return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }
 
-    public boolean updateByMember_idAndDistributor_idAndParent_idAndMember_level_id(String member_id, String distributor_id, String parent_id, String member_level_id) {
+    public boolean updateByMember_idAndParent_idAndMember_level_id(String member_id, String parent_id, String member_level_id) {
         CacheUtil.remove(MEMBER_CACHE, member_id);
 
         JMap map = JMap.create();
         map.put(Member.MEMBER_ID, member_id);
-        map.put(Member.DISTRIBUTOR_ID, distributor_id);
         map.put(Member.PARENT_ID, parent_id);
         map.put(Member.MEMBER_LEVEL_ID, member_level_id);
-        SqlPara sqlPara = Db.getSqlPara("member.updateByMember_idAndDistributor_idAndParent_idAndMember_level_id", map);
+        SqlPara sqlPara = Db.getSqlPara("member.updateByMember_idAndParent_idAndMember_level_id", map);
 
         return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }

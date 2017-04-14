@@ -77,31 +77,31 @@ public class MemberController extends Controller {
         renderSuccessJson(scene_qrcode);
     }
 
-    @ActionKey(Url.MEMBER_SAVE)
-    public void save() {
-        Member model = getParameter(Member.class);
-        User userModel = getParameter(User.class);
-        String request_user_id = getRequest_user_id();
+//    @ActionKey(Url.MEMBER_SAVE)
+//    public void save() {
+//        Member model = getParameter(Member.class);
+//        User userModel = getParameter(User.class);
+//        String request_user_id = getRequest_user_id();
+//
+//        model.validate(Member.MEMBER_NAME);
+//
+//        memberService.save(model, userModel, request_user_id);
+//
+//        renderSuccessJson();
+//    }
 
-        model.validate(Member.MEMBER_NAME);
-
-        memberService.save(model, userModel, request_user_id);
-
-        renderSuccessJson();
-    }
-
-    @ActionKey(Url.MEMBERL_UPDATE)
-    public void update() {
-        Member model = getParameter(Member.class);
-        User userModel = getParameter(User.class);
-        String request_user_id = getRequest_user_id();
-
-        model.validate(Member.MEMBER_ID, Member.MEMBER_NAME);
-
-        memberService.update(model, userModel, request_user_id);
-
-        renderSuccessJson();
-    }
+//    @ActionKey(Url.MEMBERL_UPDATE)
+//    public void update() {
+//        Member model = getParameter(Member.class);
+//        User userModel = getParameter(User.class);
+//        String request_user_id = getRequest_user_id();
+//
+//        model.validate(Member.MEMBER_ID, Member.MEMBER_NAME);
+//
+//        memberService.update(model, userModel, request_user_id);
+//
+//        renderSuccessJson();
+//    }
 
     @ActionKey(Url.MEMBER_DELETE)
     public void delete() {

@@ -54,12 +54,12 @@ public class SceneDao extends Dao {
         return scene;
     }
 
-    public Scene save(String scene_id, String object_id, String scene_type, boolean scene_is_temporary, String scene_qrcode, String request_user_id) {
+    public Scene save(String scene_id, String object_id, String scene_type, boolean scene_is_expire, String scene_qrcode, String request_user_id) {
         Scene scene = new Scene();
         scene.setScene_id(scene_id);
         scene.setObject_id(object_id);
         scene.setScene_type(scene_type);
-        scene.setScene_is_temporary(scene_is_temporary);
+        scene.setScene_is_expire(scene_is_expire);
         scene.setScene_add(0);
         scene.setScene_cancel(0);
         scene.setScene_qrcode(scene_qrcode);
@@ -102,6 +102,16 @@ public class SceneDao extends Dao {
         JMap map = JMap.create();
         map.put(Scene.SCENE_ID, scene_id);
         SqlPara sqlPara = Db.getSqlPara("scene.updateScene_cancelByScene_id", map);
+
+        return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
+    }
+
+    public boolean updateScene_is_expireByScene_id(String scene_id, String request_user_id) {
+        CacheUtil.remove(SCENED_CACHE, scene_id);
+
+        JMap map = JMap.create();
+        map.put(Scene.SCENE_ID, scene_id);
+        SqlPara sqlPara = Db.getSqlPara("scene.updateScene_is_expireByScene_id", map);
 
         return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }
