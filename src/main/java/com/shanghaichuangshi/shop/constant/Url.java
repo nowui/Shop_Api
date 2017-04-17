@@ -106,4 +106,12 @@ public class Url {
     public static final String GUANGFENGL_UPDATE = "/guangfeng/update";
     public static final String GUANGFENG_DELETE = "/guangfeng/delete";
     public static final String GUANGFENG_EXPORT = "/guangfeng/export";
+
+    public static final String COMMISSION_LIST = "/commission/list";
+    public static final String COMMISSION_ADMIN_LIST = "/commission/admin/list";
+    public static final String COMMISSION_FIND = "/commission/find";
+    public static final String COMMISSION_ADMIN_FIND = "/commission/admin/find";
+    public static final String COMMISSION_SAVE = "/commission/save";
+    public static final String COMMISSIONL_UPDATE = "/commission/update";
+    public static final String COMMISSION_DELETE = "/commission/delete";
 }

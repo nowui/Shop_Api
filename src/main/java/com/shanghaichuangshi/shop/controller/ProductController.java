@@ -5,7 +5,9 @@ import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.model.Category;
 import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.controller.Controller;
+import com.shanghaichuangshi.shop.model.Commission;
 import com.shanghaichuangshi.shop.model.Product;
+import com.shanghaichuangshi.shop.model.Sku;
 import com.shanghaichuangshi.shop.model.Supplier;
 import com.shanghaichuangshi.shop.service.ProductService;
 
@@ -134,6 +136,8 @@ public class ProductController extends Controller {
         String request_user_id = getRequest_user_id();
 
         model.validate(Product.PRODUCT_ID, Product.PRODUCT_NAME);
+
+        validate(Sku.SKU_LIST, Commission.COMMISSION_LIST);
 
         productService.update(model, getAttr(Constant.REQUEST_PARAMETER), request_user_id);
 

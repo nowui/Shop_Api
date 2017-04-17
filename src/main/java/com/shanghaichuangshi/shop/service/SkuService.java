@@ -61,12 +61,11 @@ public class SkuService extends Service {
             }
         }
 
-        System.out.println("---------");
-        System.out.println(JSONObject.toJSONString(sku));
-        System.out.println(member_level_id);
-        System.out.println("---------");
-
         throw new RuntimeException("找不到价格");
+    }
+
+    public boolean deleteByProduct_id(String product_id, String request_user_id) {
+        return skuDao.deleteByProduct_id(product_id, request_user_id);
     }
 
 }

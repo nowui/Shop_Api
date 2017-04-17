@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.shanghaichuangshi.model.Category;
 import com.shanghaichuangshi.service.CategoryService;
 import com.shanghaichuangshi.shop.dao.ProductDao;
+import com.shanghaichuangshi.shop.model.Commission;
 import com.shanghaichuangshi.shop.model.Product;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.shop.model.Sku;
@@ -20,6 +21,7 @@ public class ProductService extends Service {
 
     private final CategoryService categoryService = new CategoryService();
     private final SkuService skuService = new SkuService();
+    private final CommissionService commissionService = new CommissionService();
     private final MemberService memberService = new MemberService();
 
     public int count(Product product) {
@@ -74,6 +76,9 @@ public class ProductService extends Service {
         List<Sku> skuList = skuService.list(product.getProduct_id());
         product.put(Sku.SKU_LIST, skuList);
 
+        List<Commission> commissionList = commissionService.list(product.getProduct_id());
+        product.put(Commission.COMMISSION_LIST, commissionList);
+
         return product;
     }
 
@@ -96,12 +101,32 @@ public class ProductService extends Service {
         return skuList;
     }
 
+    private List<Commission> getCommissionList(String product_id, JSONObject jsonObject) {
+        JSONArray commissionArray = jsonObject.getJSONArray(Commission.COMMISSION_LIST);
+
+        List<Commission> commissionList = new ArrayList<Commission>();
+
+        for (int i = 0; i < commissionArray.size(); i++) {
+            JSONObject commissionJsonObject = commissionArray.getJSONObject(i);
+
+            Commission commission = new Commission();
+            commission.setProduct_id(product_id);
+            commission.setProduct_attribute(commissionJsonObject.getString(Commission.PRODUCT_ATTRIBUTE));
+            commission.setProduct_commission(commissionJsonObject.getString(Commission.PRODUCT_COMMISSION));
+            commissionList.add(commission);
+        }
+
+        return commissionList;
+    }
+
     public Product save(Product product, JSONObject jsonObject, String request_user_id) {
         Product p = productDao.save(product, request_user_id);
 
         List<Sku> skuSaveList = getSkuList(p.getProduct_id(), jsonObject);
-
         skuService.save(skuSaveList, request_user_id);
+
+        List<Commission> commissionLis = getCommissionList(p.getProduct_id(), jsonObject);
+        commissionService.save(commissionLis, request_user_id);
 
         return p;
     }
@@ -156,10 +181,57 @@ public class ProductService extends Service {
         skuService.save(skuSaveList, request_user_id);
         skuService.updateProduct_stock(skuUpdateList, product.getProduct_id(), request_user_id);
 
+
+        List<Commission> commissionAllList = commissionService.list(product.getProduct_id());
+        List<Commission> commissionList = getCommissionList(product.getProduct_id(), jsonObject);
+        List<Commission> commissionSaveList = new ArrayList<Commission>();
+        List<Commission> commissionDeleteList = new ArrayList<Commission>();
+
+        for (Commission commission : commissionAllList) {
+            boolean isExit = false;
+
+            for (Commission c : commissionList) {
+                if (commission.getProduct_attribute().equals(c.getProduct_attribute()) && commission.getProduct_commission().equals(c.getProduct_commission())) {
+                    isExit = true;
+
+                    break;
+                }
+            }
+
+            //判断商品属性和商品价格是否修改
+            if (!isExit) {
+                commissionDeleteList.add(commission);
+            }
+        }
+
+        for (Commission c : commissionList) {
+            Boolean isExit = false;
+
+            for (Commission commission : commissionAllList) {
+                if (commission.getProduct_attribute().equals(c.getProduct_attribute()) && commission.getProduct_commission().equals(c.getProduct_commission())) {
+                    isExit = true;
+
+                    break;
+                }
+            }
+
+            //判断是否保存
+            if (!isExit) {
+                commissionSaveList.add(c);
+            }
+        }
+
+        commissionService.delete(commissionDeleteList, product.getProduct_id(), request_user_id);
+        commissionService.save(commissionSaveList, request_user_id);
+
         return productDao.update(product, request_user_id);
     }
 
     public boolean delete(Product product, String request_user_id) {
+        skuService.deleteByProduct_id(product.getProduct_id(), request_user_id);
+
+        commissionService.deleteByProduct_id(product.getProduct_id(), request_user_id);
+
         return productDao.delete(product.getProduct_id(), request_user_id);
     }
 

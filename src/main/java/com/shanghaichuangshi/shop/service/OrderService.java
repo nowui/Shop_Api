@@ -28,6 +28,7 @@ public class OrderService extends Service {
     private final CategoryService categoryService = new CategoryService();
     private final BrandService brandService = new BrandService();
     private final OrderProductService orderProductService = new OrderProductService();
+    private final CommissionService commissionService = new CommissionService();
 
     public int count(Order order) {
         return orderDao.count(order.getOrder_number());
@@ -97,6 +98,16 @@ public class OrderService extends Service {
                 throw new RuntimeException("库存不足:" + product.getProduct_name());
             }
 
+            String commission_id = "";
+
+            List<Commission> commissionList = commissionService.list(product.getProduct_id());
+
+            for (Commission commission : commissionList) {
+                if (commission.getProduct_attribute().equals(sku.getProduct_attribute())) {
+                    commission_id = commission.getCommission_id();
+                }
+            }
+
             //更新订单商品数量
             order_product_quantity += product_quantity;
 
@@ -124,7 +135,8 @@ public class OrderService extends Service {
             orderProduct.setProduct_is_hot(product.getProduct_is_hot());
             orderProduct.setProduct_is_sale(product.getProduct_is_sale());
             orderProduct.setProduct_content(product.getProduct_content());
-            orderProduct.setSku_id(sku.getSku_id());
+            orderProduct.setSku_id(sku_id);
+            orderProduct.setCommission_id(commission_id);
             orderProduct.setProduct_attribute(sku.getProduct_attribute());
             orderProduct.setProduct_market_price(product.getProduct_market_price());
             orderProduct.setProduct_price(product.getProduct_price());
