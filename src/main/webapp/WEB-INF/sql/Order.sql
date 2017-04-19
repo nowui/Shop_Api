@@ -12,7 +12,11 @@
   #sql("list")
     SELECT
     order_id,
-    order_number
+    order_number,
+    order_delivery_name,
+    order_delivery_phone,
+    order_product_amount,
+    order_status
     FROM table_order
     WHERE system_status = 1
     #if(order_number)

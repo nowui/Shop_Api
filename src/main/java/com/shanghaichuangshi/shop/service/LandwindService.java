@@ -38,8 +38,6 @@ public class LandwindService extends Service {
         return landwindDao.delete(landwind.getLandwind_id(), request_user_id);
     }
 
-
-
     public ExcelRender export() {
         List<Landwind> landwindList = landwindDao.list("", 0, 0);
 

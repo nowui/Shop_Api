@@ -22,6 +22,20 @@
       #set(delivery_name = "%" + delivery_name + "%")
       AND delivery_name LIKE #p(delivery_name)
     #end
+    ORDER BY system_create_time DESC
+    #if(n > 0)
+      LIMIT #p(m), #p(n)
+    #end
+  #end
+
+  #sql("listByUser_id")
+    SELECT
+    delivery_id,
+    delivery_name,
+    delivery_phone,
+    delivery_address
+    FROM table_delivery
+    WHERE system_status = 1
     AND user_id = #p(user_id)
     ORDER BY system_create_time DESC
     #if(n > 0)

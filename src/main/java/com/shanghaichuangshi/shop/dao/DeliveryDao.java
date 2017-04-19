@@ -22,13 +22,22 @@ public class DeliveryDao extends Dao {
         return count.intValue();
     }
 
-    public List<Delivery> list(String delivery_name, String user_id, Integer m, Integer n) {
+    public List<Delivery> list(String delivery_name, Integer m, Integer n) {
         JMap map = JMap.create();
         map.put(Delivery.DELIVERY_NAME, delivery_name);
-        map.put(Delivery.USER_ID, user_id);
         map.put(Delivery.M, m);
         map.put(Delivery.N, n);
         SqlPara sqlPara = Db.getSqlPara("delivery.list", map);
+
+        return new Delivery().find(sqlPara.getSql(), sqlPara.getPara());
+    }
+
+    public List<Delivery> listByUser_id(String user_id, Integer m, Integer n) {
+        JMap map = JMap.create();
+        map.put(Delivery.USER_ID, user_id);
+        map.put(Delivery.M, m);
+        map.put(Delivery.N, n);
+        SqlPara sqlPara = Db.getSqlPara("delivery.listByUser_id", map);
 
         return new Delivery().find(sqlPara.getSql(), sqlPara.getPara());
     }

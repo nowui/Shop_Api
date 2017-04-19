@@ -6,6 +6,7 @@ public class Url {
     public static final String WECHAT_API_ORCODE = "/wechat/api/orcode";
     public static final String WECHAT_API_NOTIFY = "/wechat/api/notify";
     public static final String WECHAT_MESSAGE = "/wechat/message";
+    public static final String WECHAT_SHARE = "/wechat/share";
 
     public static final String MEMBER_LIST = "/member/list";
     public static final String MEMBER_ADMIN_LIST = "/member/admin/list";
@@ -106,6 +107,15 @@ public class Url {
     public static final String GUANGFENGL_UPDATE = "/guangfeng/update";
     public static final String GUANGFENG_DELETE = "/guangfeng/delete";
     public static final String GUANGFENG_EXPORT = "/guangfeng/export";
+
+    public static final String FUTE_LIST = "/fute/list";
+    public static final String FUTE_ADMIN_LIST = "/fute/admin/list";
+    public static final String FUTE_FIND = "/fute/find";
+    public static final String FUTE_ADMIN_FIND = "/fute/admin/find";
+    public static final String FUTE_SAVE = "/fute/save";
+    public static final String FUTEL_UPDATE = "/fute/update";
+    public static final String FUTE_DELETE = "/fute/delete";
+    public static final String FUTE_EXPORT = "/fute/export";
 
     public static final String COMMISSION_LIST = "/commission/list";
     public static final String COMMISSION_ADMIN_LIST = "/commission/admin/list";

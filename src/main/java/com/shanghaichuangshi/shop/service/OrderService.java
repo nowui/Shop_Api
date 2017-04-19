@@ -68,7 +68,16 @@ public class OrderService extends Service {
         BigDecimal order_product_amount = BigDecimal.valueOf(0);
         BigDecimal order_freight_amount = BigDecimal.valueOf(0);
         BigDecimal order_discount_amount = BigDecimal.valueOf(0);
-        String member_level_id = memberService.findMember_lever_idByUser_id(request_user_id);
+
+        Member member = memberService.findByUser_id(request_user_id);
+        JSONArray member_path = new JSONArray();
+
+        if (member == null) {
+            throw new RuntimeException("没有改会员");
+        }
+
+        String member_id = member.getMember_id();
+        String member_level_id = member.getMember_level_id();
         String member_level_name = "";
         Integer member_level_value = 0;
         if (!Util.isNullOrEmpty(member_level_id)) {
@@ -78,6 +87,33 @@ public class OrderService extends Service {
                 member_level_value = memberLevel.getMember_level_value();
             }
         }
+
+        JSONArray parentPathArray = JSONArray.parseArray(member.getParent_path());
+        for (int i = 0; i < parentPathArray.size(); i++) {
+            String m_id = parentPathArray.getString(i);
+
+            Member m = memberService.find(m_id);
+            MemberLevel mLevel = memberLevelService.find(m.getMember_level_id());
+
+            JSONObject mObject = new JSONObject();
+            mObject.put(Member.MEMBER_ID, m_id);
+            mObject.put(MemberLevel.MEMBER_LEVEL_ID, mLevel.getMember_level_id());
+            mObject.put(MemberLevel.MEMBER_LEVEL_NAME, mLevel.getMember_level_name());
+            mObject.put(MemberLevel.MEMBER_LEVEL_VALUE, mLevel.getMember_level_value());
+
+            member_path.add(mObject);
+        }
+
+        if (parentPathArray.size() > 0) {
+            JSONObject memberObject = new JSONObject();
+            memberObject.put(Member.MEMBER_ID, member_id);
+            memberObject.put(MemberLevel.MEMBER_LEVEL_ID, member_level_id);
+            memberObject.put(MemberLevel.MEMBER_LEVEL_NAME, member_level_name);
+            memberObject.put(MemberLevel.MEMBER_LEVEL_VALUE, member_level_value);
+            member_path.add(memberObject);
+        }
+
+
         List<OrderProduct> orderProductList = new ArrayList<OrderProduct>();
 
         for (int i = 0; i < productJSONArray.size(); i++) {
@@ -137,6 +173,8 @@ public class OrderService extends Service {
             orderProduct.setProduct_content(product.getProduct_content());
             orderProduct.setSku_id(sku_id);
             orderProduct.setCommission_id(commission_id);
+            orderProduct.setMember_id(member_id);
+            orderProduct.setMember_path(member_path.toJSONString());
             orderProduct.setProduct_attribute(sku.getProduct_attribute());
             orderProduct.setProduct_market_price(product.getProduct_market_price());
             orderProduct.setProduct_price(product.getProduct_price());
@@ -145,14 +183,15 @@ public class OrderService extends Service {
             orderProductList.add(orderProduct);
         }
 
+        order.setMember_id(member_id);
+        order.setMember_level_id(member_level_id);
+        order.setMember_level_name(member_level_name);
+        order.setMember_level_value(member_level_value);
         order.setOrder_product_quantity(order_product_quantity);
         order.setOrder_product_amount(order_product_amount);
         order.setOrder_freight_amount(order_freight_amount);
         order.setOrder_discount_amount(order_discount_amount);
         order.setOrder_amount(order_product_amount.subtract(order_freight_amount).subtract(order_discount_amount));
-        order.setMember_level_id(member_level_id);
-        order.setMember_level_name(member_level_name);
-        order.setMember_level_value(member_level_value);
         order.setOrder_status(OrderStatusEnum.WAIT.getKey());
 
         Order o = orderDao.save(order, request_user_id);

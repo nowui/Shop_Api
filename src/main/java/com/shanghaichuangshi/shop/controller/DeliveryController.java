@@ -19,7 +19,7 @@ public class DeliveryController extends Controller {
         validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);
         String request_user_id = getRequest_user_id();
 
-        List<Delivery> deliveryList = deliveryService.list(new Delivery(), request_user_id, getM(), getN());
+        List<Delivery> deliveryList = deliveryService.listByUser_id(request_user_id, getM(), getN());
 
         renderSuccessJson(deliveryList);
     }
@@ -35,7 +35,7 @@ public class DeliveryController extends Controller {
 
         int count = deliveryService.count(model, request_user_id);
 
-        List<Delivery> deliveryList = deliveryService.list(model, request_user_id, getM(), getN());
+        List<Delivery> deliveryList = deliveryService.list(model, getM(), getN());
 
         renderSuccessJson(count, deliveryList);
     }

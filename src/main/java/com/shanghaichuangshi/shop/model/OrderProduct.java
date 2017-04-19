@@ -62,6 +62,12 @@ public class OrderProduct extends Model<OrderProduct> {
     @Column(type = ColumnType.INT, length = 11, comment = "佣金编号")
     public static final String COMMISSION_ID = "commission_id";
 
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "会员编号")
+    public static final String MEMBER_ID = "member_id";
+
+    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "会员上级")
+    public static final String MEMBER_PATH = "member_path";
+
     @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品属性")
     public static final String PRODUCT_ATTRIBUTE = "product_attribute";
 
@@ -220,6 +226,22 @@ public class OrderProduct extends Model<OrderProduct> {
 
     public void setCommission_id(String commission_id) {
         set(COMMISSION_ID, commission_id);
+    }
+
+    public String getMember_id() {
+        return getStr(MEMBER_ID);
+    }
+
+    public void setMember_id(String member_id) {
+        set(MEMBER_ID, member_id);
+    }
+
+    public String getMember_path() {
+        return getStr(MEMBER_PATH);
+    }
+
+    public void setMember_path(String member_path) {
+        set(MEMBER_PATH, member_path);
     }
 
     public String getProduct_attribute() {

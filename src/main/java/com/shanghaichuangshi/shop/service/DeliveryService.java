@@ -18,8 +18,12 @@ public class DeliveryService extends Service {
         return deliveryDao.count(delivery.getDelivery_name(), request_user_id);
     }
 
-    public List<Delivery> list(Delivery delivery, String request_user_id, int m, int n) {
-        return deliveryDao.list(delivery.getDelivery_name(), request_user_id, m, n);
+    public List<Delivery> list(Delivery delivery, int m, int n) {
+        return deliveryDao.list(delivery.getDelivery_name(), m, n);
+    }
+
+    public List<Delivery> listByUser_id(String user_id, Integer m, Integer n) {
+        return deliveryDao.listByUser_id(user_id, m, n);
     }
 
     public Delivery find(String delivery_id) {

@@ -14,6 +14,18 @@ public class Order extends Model<Order> {
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "用户编号", findable = false)
     public static final String USER_ID = "user_id";
 
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "会员编号")
+    public static final String MEMBER_ID = "member_id";
+
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "会员等级编号", findable = false)
+    public static final String MEMBER_LEVEL_ID = "member_level_id";
+
+    @Column(type = ColumnType.VARCHAR, length = 20, comment = "会员等级名称", findable = false)
+    public static final String MEMBER_LEVEL_NAME = "member_level_name";
+
+    @Column(type = ColumnType.INT, length = 11, comment = "会员等级数值", findable = false)
+    public static final String MEMBER_LEVEL_VALUE = "member_level_value";
+
     @Column(type = ColumnType.VARCHAR, length = 15, comment = "订单号")
     public static final String ORDER_NUMBER = "order_number";
 
@@ -65,15 +77,6 @@ public class Order extends Model<Order> {
     @Column(type = ColumnType.VARCHAR, length = 1000, comment = "支付结果", findable = false)
     public static final String ORDER_PAY_RESULT = "order_pay_result";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "会员等级编号", findable = false)
-    public static final String MEMBER_LEVEL_ID = "member_level_id";
-
-    @Column(type = ColumnType.VARCHAR, length = 20, comment = "会员等级名称", findable = false)
-    public static final String MEMBER_LEVEL_NAME = "member_level_name";
-
-    @Column(type = ColumnType.INT, length = 11, comment = "会员等级数值", findable = false)
-    public static final String MEMBER_LEVEL_VALUE = "member_level_value";
-
     @Column(type = ColumnType.VARCHAR, length = 10, comment = "订单状态")
     public static final String ORDER_STATUS = "order_status";
 
@@ -92,6 +95,38 @@ public class Order extends Model<Order> {
 
     public void setUser_id(String user_id) {
         set(USER_ID, user_id);
+    }
+
+    public String getMember_id() {
+        return getStr(MEMBER_ID);
+    }
+
+    public void setMember_id(String member_id) {
+        set(MEMBER_ID, member_id);
+    }
+
+    public String getMember_level_id() {
+        return getStr(MEMBER_LEVEL_ID);
+    }
+
+    public void setMember_level_id(String member_level_id) {
+        set(MEMBER_LEVEL_ID, member_level_id);
+    }
+
+    public String getMember_level_name() {
+        return getStr(MEMBER_LEVEL_NAME);
+    }
+
+    public void setMember_level_name(String member_level_name) {
+        set(MEMBER_LEVEL_NAME, member_level_name);
+    }
+
+    public Integer getMember_level_value() {
+        return getInt(MEMBER_LEVEL_VALUE);
+    }
+
+    public void setMember_level_value(Integer member_level_value) {
+        set(MEMBER_LEVEL_VALUE, member_level_value);
     }
 
     public String getOrder_number() {
@@ -228,30 +263,6 @@ public class Order extends Model<Order> {
 
     public void setOrder_pay_result(String order_pay_result) {
         set(ORDER_PAY_RESULT, order_pay_result);
-    }
-
-    public String getMember_level_id() {
-        return getStr(MEMBER_LEVEL_ID);
-    }
-
-    public void setMember_level_id(String member_level_id) {
-        set(MEMBER_LEVEL_ID, member_level_id);
-    }
-
-    public String getMember_level_name() {
-        return getStr(MEMBER_LEVEL_NAME);
-    }
-
-    public void setMember_level_name(String member_level_name) {
-        set(MEMBER_LEVEL_NAME, member_level_name);
-    }
-
-    public Integer getMember_level_value() {
-        return getInt(MEMBER_LEVEL_VALUE);
-    }
-
-    public void setMember_level_value(Integer member_level_value) {
-        set(MEMBER_LEVEL_VALUE, member_level_value);
     }
 
     public String getOrder_status() {
