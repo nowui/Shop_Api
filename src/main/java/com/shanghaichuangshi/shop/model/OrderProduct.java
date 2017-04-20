@@ -14,6 +14,9 @@ public class OrderProduct extends Model<OrderProduct> {
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "订单编号")
     public static final String ORDER_ID = "order_id";
 
+    @Column(type = ColumnType.VARCHAR, length = 10, comment = "订单状态")
+    public static final String ORDER_STATUS = "order_status";
+
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "商品编号")
     public static final String PRODUCT_ID = "product_id";
 
@@ -98,6 +101,14 @@ public class OrderProduct extends Model<OrderProduct> {
 
     public void setOrder_id(String order_id) {
         set(ORDER_ID, order_id);
+    }
+
+    public String getOrder_status() {
+        return getStr(ORDER_STATUS);
+    }
+
+    public void setOrder_status(String order_status) {
+        set(ORDER_STATUS, order_status);
     }
 
     public String getProduct_id() {

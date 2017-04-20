@@ -77,7 +77,10 @@ public class Order extends Model<Order> {
     @Column(type = ColumnType.VARCHAR, length = 1000, comment = "支付结果", findable = false)
     public static final String ORDER_PAY_RESULT = "order_pay_result";
 
-    @Column(type = ColumnType.VARCHAR, length = 10, comment = "订单状态")
+    @Column(type = ColumnType.VARCHAR, length = 10, comment = "订单流程")
+    public static final String ORDER_FLOW = "order_flow";
+
+    @Column(type = ColumnType.TINYINT, length = 1, comment = "订单状态")
     public static final String ORDER_STATUS = "order_status";
 
     
@@ -265,11 +268,19 @@ public class Order extends Model<Order> {
         set(ORDER_PAY_RESULT, order_pay_result);
     }
 
-    public String getOrder_status() {
-        return getStr(ORDER_STATUS);
+    public String getOrder_flow() {
+        return getStr(ORDER_FLOW);
     }
 
-    public void setOrder_status(String order_status) {
+    public void setOrder_flow(String order_flow) {
+        set(ORDER_FLOW, order_flow);
+    }
+
+    public Boolean getOrder_status() {
+        return getBoolean(ORDER_STATUS);
+    }
+
+    public void setOrder_status(Boolean order_status) {
         set(ORDER_STATUS, order_status);
     }
 }

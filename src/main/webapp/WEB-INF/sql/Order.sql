@@ -62,7 +62,15 @@
     AND order_id = #p(order_id)
   #end
 
-  #sql("updateByOrder_numberAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result")
+  #sql("findByOrder_number")
+    SELECT
+    *
+    FROM table_order
+    WHERE system_status = 1
+    AND order_number = #p(order_number)
+  #end
+
+  #sql("updateByOrder_idAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result")
     UPDATE table_order SET
     order_is_confirm = 1,
     order_is_pay = 1,
@@ -74,7 +82,7 @@
     order_pay_result = #p(order_pay_result),
     order_status = #p(order_status),
     system_update_time = #p(system_update_time)
-    WHERE order_number = #p(order_number)
+    WHERE order_id = #p(order_id)
   #end
 
   #sql("updateByOrder_idAndOrder_is_confirm")

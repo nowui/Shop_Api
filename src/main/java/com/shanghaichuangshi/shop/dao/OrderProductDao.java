@@ -6,6 +6,7 @@ import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.model.OrderProduct;
+import com.shanghaichuangshi.shop.type.OrderStatusEnum;
 import com.shanghaichuangshi.util.Util;
 
 import java.util.ArrayList;
@@ -89,6 +90,17 @@ public class OrderProductDao extends Dao {
         order_product.remove(OrderProduct.SYSTEM_STATUS);
 
         return order_product.update();
+    }
+
+    public boolean updateByOrder_idAndOrder_status(String order_id, String request_user_id) {
+        JMap map = JMap.create();
+        map.put(OrderProduct.ORDER_ID, order_id);
+        map.put(OrderProduct.ORDER_STATUS, OrderStatusEnum.PAYED.getKey());
+        map.put(OrderProduct.SYSTEM_UPDATE_USER_ID, request_user_id);
+        map.put(OrderProduct.SYSTEM_UPDATE_TIME, new Date());
+        SqlPara sqlPara = Db.getSqlPara("order_product.updateByOrder_idAndOrder_status", map);
+
+        return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }
 
     public boolean delete(String order_product_id, String request_user_id) {

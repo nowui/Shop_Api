@@ -7,7 +7,10 @@ import com.jfinal.weixin.sdk.jfinal.ApiController;
 import com.jfinal.weixin.sdk.kit.PaymentKit;
 import com.shanghaichuangshi.constant.WeChat;
 import com.shanghaichuangshi.shop.constant.Url;
+import com.shanghaichuangshi.shop.model.Order;
+import com.shanghaichuangshi.shop.service.OrderProductService;
 import com.shanghaichuangshi.shop.service.OrderService;
+import com.shanghaichuangshi.shop.type.OrderStatusEnum;
 import com.shanghaichuangshi.shop.type.PayTypeEnum;
 
 import java.io.UnsupportedEncodingException;
@@ -20,6 +23,7 @@ import java.util.*;
 public class WeChatApiController extends ApiController {
 
     private final OrderService orderService = new OrderService();
+    private final OrderProductService orderProductService = new OrderProductService();
 
     public ApiConfig getApiConfig() {
         return WeChat.getApiConfig();
@@ -145,7 +149,11 @@ public class WeChatApiController extends ApiController {
             String order_pay_time = time_end;
             String order_pay_result = result;
 
-            boolean is_update = orderService.updateByOrder_numberAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(order_number, order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result);
+            Order order = orderService.findByOrder_number(order_number);
+
+            boolean is_update = orderService.updateByOrder_idAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(order.getOrder_id(), order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result);
+
+            orderProductService.updateByOrder_idAndOrder_status(order.getOrder_id(), OrderStatusEnum.PAYED.getKey());
 
             if (is_update) {
                 renderText("<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>");

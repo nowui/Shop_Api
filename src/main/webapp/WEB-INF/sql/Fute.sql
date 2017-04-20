@@ -17,7 +17,9 @@
     fute_phone,
     fute_province,
     fute_city,
-    fute_distributor
+    fute_distributor,
+    fute_platform,
+    system_create_time
     FROM table_fute
     WHERE system_status = 1
     #if(fute_name)

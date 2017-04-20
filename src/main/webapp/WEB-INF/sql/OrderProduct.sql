@@ -81,6 +81,14 @@
     )
   #end
 
+  #sql("updateByOrder_idAndOrder_status")
+    UPDATE table_order_product SET
+    order_status = #p(order_status),
+    system_update_user_id = #p(system_update_user_id),
+    system_update_time = #p(system_update_time)
+    WHERE order_id = #p(order_id)
+  #end
+
   #sql("delete")
     UPDATE table_order_product SET
     system_update_user_id = #p(system_update_user_id),

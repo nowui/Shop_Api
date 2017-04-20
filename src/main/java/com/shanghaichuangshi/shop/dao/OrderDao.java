@@ -107,6 +107,36 @@ public class OrderDao extends Dao {
         return "E" + day + Util.getFixLenthString(6);
     }
 
+    public Order findByOrder_number(String order_number) {
+        Order order = null;
+        List<String> keyList = CacheUtil.getKeys(ORDER_CACHE);
+
+        for(String key : keyList) {
+            order = CacheUtil.get(ORDER_CACHE, key);
+
+            if (order.getOrder_number().equals(order_number)) {
+                return order;
+            }
+        }
+
+        if (order == null) {
+            JMap map = JMap.create();
+            map.put(Order.ORDER_NUMBER, order_number);
+            SqlPara sqlPara = Db.getSqlPara("order.findByOrder_number", map);
+
+            List<Order> orderList = new Order().find(sqlPara.getSql(), sqlPara.getPara());
+            if (orderList.size() == 0) {
+                order = null;
+            } else {
+                order = orderList.get(0);
+
+                CacheUtil.put(ORDER_CACHE, order.getOrder_id(), order);
+            }
+        }
+
+        return order;
+    }
+
     public Order save(Order order, String request_user_id) {
         String today = DateUtil.getDateString(new Date()).replaceAll("-", "");
 
@@ -160,43 +190,27 @@ public class OrderDao extends Dao {
         return order.update();
     }
 
-    public boolean updateByOrder_numberAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(String order_number, BigDecimal order_amount, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result) {
+    public boolean updateByOrder_idAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(String order_id, BigDecimal order_amount, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result) {
         try {
             order_pay_time = DateUtil.dateTimeFormat.format(DateUtil.df.parse(order_pay_time));
         } catch (ParseException e) {
 
         }
 
-        order_pay_result = order_pay_result.replaceAll("\r|\n", "");
-
-        String order_id = "";
-        List<String> keyList = CacheUtil.getKeys(ORDER_CACHE);
-
-        for(String key : keyList) {
-            Order order = CacheUtil.get(ORDER_CACHE, key);
-
-            if (order.getOrder_number().equals(order_number)) {
-                order_id = key;
-
-                break;
-            }
-        }
-
-        if (order_id != "") {
-            CacheUtil.remove(ORDER_CACHE, order_id);
-        }
+        CacheUtil.remove(ORDER_CACHE, order_id);
 
         JMap map = JMap.create();
-        map.put(Order.ORDER_NUMBER, order_number);
+        map.put(Order.ORDER_ID, order_id);
         map.put(Order.ORDER_AMOUNT, order_amount);
         map.put(Order.ORDER_PAY_TYPE, order_pay_type);
         map.put(Order.ORDER_PAY_NUMBER, order_pay_number);
         map.put(Order.ORDER_PAY_ACCOUNT, order_pay_account);
         map.put(Order.ORDER_PAY_TIME, order_pay_time);
         map.put(Order.ORDER_PAY_RESULT, order_pay_result);
-        map.put(Order.ORDER_STATUS, OrderStatusEnum.PAYED.getKey());
+        map.put(Order.ORDER_FLOW, OrderStatusEnum.PAYED.getKey());
+        map.put(Order.ORDER_STATUS, true);
         map.put(Order.SYSTEM_UPDATE_TIME, new Date());
-        SqlPara sqlPara = Db.getSqlPara("order.updateByOrder_numberAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result", map);
+        SqlPara sqlPara = Db.getSqlPara("order.updateByOrder_idAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result", map);
 
         return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }

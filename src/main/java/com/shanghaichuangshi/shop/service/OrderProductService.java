@@ -26,6 +26,10 @@ public class OrderProductService extends Service {
         return orderProductDao.update(order_product, request_user_id);
     }
 
+    public boolean updateByOrder_idAndOrder_status(String order_id, String request_user_id) {
+        return orderProductDao.updateByOrder_idAndOrder_status(order_id, request_user_id);
+    }
+
     public boolean delete(OrderProduct order_product, String request_user_id) {
         return orderProductDao.delete(order_product.getOrder_product_id(), request_user_id);
     }

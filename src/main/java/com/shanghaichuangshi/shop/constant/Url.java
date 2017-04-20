@@ -89,34 +89,6 @@ public class Url {
     public static final String SCENEL_UPDATE = "/scene/update";
     public static final String SCENE_DELETE = "/scene/delete";
 
-    public static final String LANDWIND_LIST = "/landwind/list";
-    public static final String LANDWIND_ADMIN_LIST = "/landwind/admin/list";
-    public static final String LANDWIND_FIND = "/landwind/find";
-    public static final String LANDWIND_ADMIN_FIND = "/landwind/admin/find";
-    public static final String LANDWIND_SAVE = "/landwind/save";
-    public static final String LANDWINDL_UPDATE = "/landwind/update";
-    public static final String LANDWIND_DELETE = "/landwind/delete";
-    public static final String LANDWIND_EXPORT = "/landwind/export";
-
-    public static final String GUANGFENG_LIST = "/guangfeng/list";
-    public static final String GUANGFENG_ADMIN_LIST = "/guangfeng/admin/list";
-    public static final String GUANGFENG_RESULT_LIST = "/guangfeng/result/list";
-    public static final String GUANGFENG_FIND = "/guangfeng/find";
-    public static final String GUANGFENG_ADMIN_FIND = "/guangfeng/admin/find";
-    public static final String GUANGFENG_SAVE = "/guangfeng/save";
-    public static final String GUANGFENGL_UPDATE = "/guangfeng/update";
-    public static final String GUANGFENG_DELETE = "/guangfeng/delete";
-    public static final String GUANGFENG_EXPORT = "/guangfeng/export";
-
-    public static final String FUTE_LIST = "/fute/list";
-    public static final String FUTE_ADMIN_LIST = "/fute/admin/list";
-    public static final String FUTE_FIND = "/fute/find";
-    public static final String FUTE_ADMIN_FIND = "/fute/admin/find";
-    public static final String FUTE_SAVE = "/fute/save";
-    public static final String FUTEL_UPDATE = "/fute/update";
-    public static final String FUTE_DELETE = "/fute/delete";
-    public static final String FUTE_EXPORT = "/fute/export";
-
     public static final String COMMISSION_LIST = "/commission/list";
     public static final String COMMISSION_ADMIN_LIST = "/commission/admin/list";
     public static final String COMMISSION_FIND = "/commission/find";
@@ -124,4 +96,12 @@ public class Url {
     public static final String COMMISSION_SAVE = "/commission/save";
     public static final String COMMISSIONL_UPDATE = "/commission/update";
     public static final String COMMISSION_DELETE = "/commission/delete";
+
+    public static final String BILL_LIST = "/bill/list";
+    public static final String BILL_ADMIN_LIST = "/bill/admin/list";
+    public static final String BILL_FIND = "/bill/find";
+    public static final String BILL_ADMIN_FIND = "/bill/admin/find";
+    public static final String BILL_SAVE = "/bill/save";
+    public static final String BILLL_UPDATE = "/bill/update";
+    public static final String BILL_DELETE = "/bill/delete";
 }

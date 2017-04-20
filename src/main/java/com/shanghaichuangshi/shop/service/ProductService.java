@@ -7,6 +7,7 @@ import com.shanghaichuangshi.model.Category;
 import com.shanghaichuangshi.service.CategoryService;
 import com.shanghaichuangshi.shop.dao.ProductDao;
 import com.shanghaichuangshi.shop.model.Commission;
+import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.shop.model.Product;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.shop.model.Sku;
@@ -51,7 +52,9 @@ public class ProductService extends Service {
     public Product findByUser_id(String product_id, String user_id) {
         Product product = find(product_id);
 
-        String member_level_id = memberService.findMember_lever_idByUser_id(user_id);
+        Member member = memberService.findByUser_id(user_id);
+
+        String member_level_id = member.getMember_level_id();
 
         List<Sku> skuList = skuService.list(product.getProduct_id());
 
@@ -73,7 +76,7 @@ public class ProductService extends Service {
     public Product adminFind(String product_id) {
         Product product = find(product_id);
 
-        List<Sku> skuList = skuService.list(product.getProduct_id());
+        List<Sku> skuList = skuService.list(product_id);
         product.put(Sku.SKU_LIST, skuList);
 
         List<Commission> commissionList = commissionService.list(product.getProduct_id());

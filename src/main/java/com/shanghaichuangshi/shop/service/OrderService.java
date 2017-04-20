@@ -157,6 +157,7 @@ public class OrderService extends Service {
             Brand brand = brandService.find(product.getBrand_id());
 
             OrderProduct orderProduct = new OrderProduct();
+            orderProduct.setOrder_status(OrderStatusEnum.WAIT.getKey());
             orderProduct.setProduct_id(product.getProduct_id());
             orderProduct.setCategory_id(category.getCategory_id());
             orderProduct.setCategory_name(category.getCategory_name());
@@ -192,7 +193,8 @@ public class OrderService extends Service {
         order.setOrder_freight_amount(order_freight_amount);
         order.setOrder_discount_amount(order_discount_amount);
         order.setOrder_amount(order_product_amount.subtract(order_freight_amount).subtract(order_discount_amount));
-        order.setOrder_status(OrderStatusEnum.WAIT.getKey());
+        order.setOrder_flow(OrderStatusEnum.WAIT.getKey());
+        order.setOrder_status(false);
 
         Order o = orderDao.save(order, request_user_id);
 
@@ -265,12 +267,16 @@ public class OrderService extends Service {
         return parameter2;
     }
 
+    public Order findByOrder_number(String order_number) {
+        return orderDao.findByOrder_number(order_number);
+    }
+
     public boolean update(Order order, String request_user_id) {
         return orderDao.update(order, request_user_id);
     }
 
-    public boolean updateByOrder_numberAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(String order_number, BigDecimal order_amount, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result) {
-        return orderDao.updateByOrder_numberAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(order_number, order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result);
+    public boolean updateByOrder_idAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(String order_id, BigDecimal order_amount, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result) {
+        return orderDao.updateByOrder_idAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(order_id, order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result);
     }
 
     public boolean delete(Order order, String request_user_id) {
