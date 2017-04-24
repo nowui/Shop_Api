@@ -10,7 +10,6 @@ import com.shanghaichuangshi.constant.WeChat;
 import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.shop.model.MemberLevel;
 import com.shanghaichuangshi.shop.model.Scene;
-import com.shanghaichuangshi.shop.service.DistributorService;
 import com.shanghaichuangshi.shop.service.MemberLevelService;
 import com.shanghaichuangshi.shop.service.MemberService;
 import com.shanghaichuangshi.shop.service.SceneService;
@@ -20,7 +19,6 @@ import com.shanghaichuangshi.util.Util;
 public class WeChatMsgController extends MsgController {
 
     private final MemberService memberService = new MemberService();
-    private final DistributorService distributorService = new DistributorService();
     private final SceneService sceneService = new SceneService();
     private final MemberLevelService memberLevelService = new MemberLevelService();
 

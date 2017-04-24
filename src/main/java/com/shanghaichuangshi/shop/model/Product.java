@@ -26,10 +26,10 @@ public class Product extends Model<Product> {
     @Column(type = ColumnType.VARCHAR, length = 100, comment = "商品图片", findable = false)
     public static final String PRODUCT_IMAGE_THUMBNAIL = "product_image_thumbnail";
 
-    @Column(type = ColumnType.VARCHAR, length = 100, comment = "商品图片")
+    @Column(type = ColumnType.VARCHAR, length = 100, comment = "商品图片", findable = false)
     public static final String PRODUCT_IMAGE_ORIGINAL = "product_image_original";
 
-    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品图片")
+    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品图片", findable = false)
     public static final String PRODUCT_IMAGE_LIST = "product_image_list";
 
     @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品图片", findable = false)

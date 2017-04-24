@@ -54,7 +54,10 @@ public class ProductService extends Service {
 
         Member member = memberService.findByUser_id(user_id);
 
-        String member_level_id = member.getMember_level_id();
+        String member_level_id = "";
+        if (member != null) {
+            member_level_id = member.getMember_level_id();
+        }
 
         List<Sku> skuList = skuService.list(product.getProduct_id());
 
