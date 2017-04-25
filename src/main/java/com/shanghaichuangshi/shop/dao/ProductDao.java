@@ -125,7 +125,11 @@ public class ProductDao extends Dao {
     }
 
     private String getImageUrl(String url, String file) {
-        return url.substring(0, url.lastIndexOf("/")) + "/" + file + "/" + url.substring(url.lastIndexOf("/") + 1);
+        if (url.startsWith("/upload/")) {
+            return url.substring(0, url.lastIndexOf("/")) + "/" + file + "/" + url.substring(url.lastIndexOf("/") + 1);
+        } else {
+            return url;
+        }
     }
 
     public boolean update(Product product, String request_user_id) {
