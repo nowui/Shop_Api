@@ -7,6 +7,7 @@ public class Url {
     public static final String WECHAT_API_NOTIFY = "/wechat/api/notify";
     public static final String WECHAT_MESSAGE = "/wechat/message";
     public static final String WECHAT_SHARE = "/wechat/share";
+    public static final String WECHAT_API_OPENID = "/wechat/api/openid";
 
     public static final String MEMBER_LIST = "/member/list";
     public static final String MEMBER_ADMIN_LIST = "/member/admin/list";

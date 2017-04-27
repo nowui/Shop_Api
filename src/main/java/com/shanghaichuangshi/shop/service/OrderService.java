@@ -60,6 +60,7 @@ public class OrderService extends Service {
         JSONArray productJSONArray = jsonObject.getJSONArray(Product.PRODUCT_LIST);
 
         String open_id = jsonObject.getString("open_id");
+        String pay_type = jsonObject.getString("pay_type");
 
         if (productJSONArray.size() == 0) {
             throw new RuntimeException("请选购商品");
@@ -211,11 +212,12 @@ public class OrderService extends Service {
         }
         orderProductService.save(orderProductList, request_user_id);
 
-        return unifiedorder(o, open_id);
+        return unifiedorder(o, open_id, pay_type);
     }
 
     public Map<String, String> pay(String order_id, JSONObject jsonObject, String request_user_id) {
         String open_id = jsonObject.getString("open_id");
+        String pay_type = jsonObject.getString("pay_type");
 
         Order order = orderDao.find(order_id);
 
@@ -223,10 +225,15 @@ public class OrderService extends Service {
             return new HashMap<String, String>();
         }
 
-        return unifiedorder(order, open_id);
+        return unifiedorder(order, open_id, pay_type);
     }
 
-    public Map<String, String> unifiedorder(Order order, String open_id) {
+    public Map<String, String> unifiedorder(Order order, String open_id, String pay_type) {
+        String appid = WeChat.app_id;
+        if (pay_type.equals("wx")) {
+            appid = WeChat.wx_app_id;
+        }
+
         String nonce_str = Util.getRandomStringByLength(32);
         String body = WeChat.body;
         String notify_url = WeChat.notify_url;
@@ -238,7 +245,7 @@ public class OrderService extends Service {
         String trade_type = "JSAPI";
 
         SortedMap<String, String> parameter = new TreeMap<String, String>();
-        parameter.put("appid", WeChat.app_id);
+        parameter.put("appid", appid);
         parameter.put("body", body);
         parameter.put("mch_id", WeChat.mch_id);
         parameter.put("nonce_str", nonce_str);
@@ -260,7 +267,7 @@ public class OrderService extends Service {
         String signType = "MD5";
 
         SortedMap<String, String> parameter2 = new TreeMap<String, String>();
-        parameter2.put("appId", WeChat.app_id);
+        parameter2.put("appId", appid);
         parameter2.put("timeStamp", timestamp);
         parameter2.put("nonceStr", nonce_str);
         parameter2.put("package", package_str);

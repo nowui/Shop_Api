@@ -70,6 +70,8 @@ public class OrderController extends Controller {
 
         model.validate(Order.ORDER_DELIVERY_NAME, Order.ORDER_DELIVERY_PHONE, Order.ORDER_DELIVERY_ADDRESS, Order.ORDER_MESSAGE, Order.ORDER_PAY_TYPE);
 
+        validate("open_id", "pay_type");
+
         Map<String, String> result = orderService.save(model, getAttr(Constant.REQUEST_PARAMETER), request_user_id);
 
         renderSuccessJson(result);
@@ -117,6 +119,8 @@ public class OrderController extends Controller {
         String request_user_id = getRequest_user_id();
 
         model.validate(Order.ORDER_ID);
+
+        validate("open_id", "pay_type");
 
         Map<String, String> result = orderService.pay(model.getOrder_id(), getAttr(Constant.REQUEST_PARAMETER), request_user_id);
 

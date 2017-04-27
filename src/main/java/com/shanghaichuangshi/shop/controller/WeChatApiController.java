@@ -196,8 +196,8 @@ public class WeChatApiController extends ApiController {
 
         String wechat_open_id = snsAccessToken.getOpenid();
 
-        System.out.println("http://h5." + WeChat.redirect_uri + "/#/" + url + "/?wechat_open_id=" + wechat_open_id);
-
+//        System.out.println("http://h5." + WeChat.redirect_uri + "/#/" + url + "/?wechat_open_id=" + wechat_open_id);
+//
         redirect("http://h5." + WeChat.redirect_uri + "/#/" + url + "/?wechat_open_id=" + wechat_open_id);
     }
 
@@ -205,9 +205,20 @@ public class WeChatApiController extends ApiController {
     public void orcode() {
         ApiResult apiResult = QrcodeApi.createTemporary(604800, 1);
 
-        System.out.println(apiResult.getJson());
+//        System.out.println(apiResult.getJson());
 
         renderText(QrcodeApi.getShowQrcodeUrl(apiResult.getStr("ticket")));
+    }
+
+    @ActionKey(Url.WECHAT_API_OPENID)
+    public void openid() {
+        String wx_app_id = WeChat.wx_app_id;
+        String wx_app_secret = WeChat.wx_app_secret;
+        String js_code = getPara("js_code");
+
+        String result = HttpKit.get("https://api.weixin.qq.com/sns/jscode2session?appid=" + wx_app_id + "&secret=" + wx_app_secret + "&js_code=" + js_code + "&grant_type=authorization_code");
+
+        renderJson(result);
     }
 
 }
