@@ -70,7 +70,7 @@
     AND order_number = #p(order_number)
   #end
 
-  #sql("updateByOrder_idAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result")
+  #sql("update")
     UPDATE table_order SET
     order_is_confirm = 1,
     order_is_pay = 1,

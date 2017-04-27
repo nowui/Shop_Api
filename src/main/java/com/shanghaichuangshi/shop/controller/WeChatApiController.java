@@ -148,12 +148,14 @@ public class WeChatApiController extends ApiController {
             String order_pay_account = openid;
             String order_pay_time = time_end;
             String order_pay_result = result;
+            String order_flow = OrderStatusEnum.WAIT_SEND.getKey();
+            Boolean order_status = true;
 
             Order order = orderService.findByOrder_number(order_number);
 
-            boolean is_update = orderService.updateByOrder_idAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(order.getOrder_id(), order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result);
+            boolean is_update = orderService.update(order.getOrder_id(), order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result, order_flow, order_status);
 
-            orderProductService.updateByOrder_idAndOrder_status(order.getOrder_id(), OrderStatusEnum.PAYED.getKey());
+            orderProductService.updateByOrder_idAndOrder_status(order.getOrder_id(), order_status);
 
             if (is_update) {
                 renderText("<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>");

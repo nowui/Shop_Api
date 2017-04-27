@@ -5,6 +5,7 @@ import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.controller.Controller;
 import com.shanghaichuangshi.shop.model.Order;
+import com.shanghaichuangshi.shop.model.Product;
 import com.shanghaichuangshi.shop.service.OrderService;
 
 import java.util.List;
@@ -74,18 +75,6 @@ public class OrderController extends Controller {
         renderSuccessJson(result);
     }
 
-    @ActionKey(Url.ORDERL_UPDATE)
-    public void update() {
-        Order model = getParameter(Order.class);
-        String request_user_id = getRequest_user_id();
-
-        model.validate(Order.ORDER_ID, Order.ORDER_NUMBER);
-
-        orderService.update(model, request_user_id);
-
-        renderSuccessJson();
-    }
-
     @ActionKey(Url.ORDER_DELETE)
     public void delete() {
         Order model = getParameter(Order.class);
@@ -96,6 +85,18 @@ public class OrderController extends Controller {
         orderService.delete(model, request_user_id);
 
         renderSuccessJson();
+    }
+
+    @ActionKey(Url.ORDER_CHECK)
+    public void check() {
+        Order model = getParameter(Order.class);
+        String request_user_id = getRequest_user_id();
+
+        validate(Product.PRODUCT_LIST);
+
+        Map<String, Object> resultMap = orderService.check(request_user_id);
+
+        renderSuccessJson(resultMap);
     }
 
     @ActionKey(Url.ORDER_CONFIRM)

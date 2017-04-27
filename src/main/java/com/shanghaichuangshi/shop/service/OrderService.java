@@ -29,6 +29,7 @@ public class OrderService extends Service {
     private final BrandService brandService = new BrandService();
     private final OrderProductService orderProductService = new OrderProductService();
     private final CommissionService commissionService = new CommissionService();
+    private final DeliveryService deliveryService = new DeliveryService();
 
     public int count(Order order) {
         return orderDao.count(order.getOrder_number());
@@ -88,7 +89,13 @@ public class OrderService extends Service {
             }
         }
 
-        JSONArray parentPathArray = JSONArray.parseArray(member.getParent_path());
+        JSONArray parentPathArray = new JSONArray();
+
+        if (!Util.isNullOrEmpty(member.getParent_path())) {
+            parentPathArray = JSONArray.parseArray(member.getParent_path());
+        }
+
+        //添加上一级
         for (int i = 0; i < parentPathArray.size(); i++) {
             String m_id = parentPathArray.getString(i);
 
@@ -104,6 +111,7 @@ public class OrderService extends Service {
             member_path.add(mObject);
         }
 
+        //添加自己
         if (parentPathArray.size() > 0) {
             JSONObject memberObject = new JSONObject();
             memberObject.put(Member.MEMBER_ID, member_id);
@@ -130,9 +138,9 @@ public class OrderService extends Service {
 
             Product product = productService.find(sku.getProduct_id());
 
-            if (product_quantity > sku.getProduct_stock()) {
-                throw new RuntimeException("库存不足:" + product.getProduct_name());
-            }
+//            if (product_quantity > sku.getProduct_stock()) {
+//                throw new RuntimeException("库存不足:" + product.getProduct_name());
+//            }
 
             String commission_id = "";
 
@@ -157,7 +165,7 @@ public class OrderService extends Service {
             Brand brand = brandService.find(product.getBrand_id());
 
             OrderProduct orderProduct = new OrderProduct();
-            orderProduct.setOrder_status(OrderStatusEnum.WAIT.getKey());
+            orderProduct.setOrder_status(false);
             orderProduct.setProduct_id(product.getProduct_id());
             orderProduct.setCategory_id(category.getCategory_id());
             orderProduct.setCategory_name(category.getCategory_name());
@@ -242,10 +250,6 @@ public class OrderService extends Service {
         parameter.put("trade_type", trade_type);
         parameter.put("sign", PaymentKit.createSign(parameter, WeChat.mch_key));
 
-        System.out.println("--------------------------");
-        System.out.println(JSONObject.toJSONString(parameter));
-        System.out.println("--------------------------");
-
         String result = HttpKit.post("https://api.mch.weixin.qq.com/pay/unifiedorder", PaymentKit.toXml(parameter));
 
         Map<String, String> map = PaymentKit.xmlToMap(result);
@@ -271,16 +275,30 @@ public class OrderService extends Service {
         return orderDao.findByOrder_number(order_number);
     }
 
-    public boolean update(Order order, String request_user_id) {
-        return orderDao.update(order, request_user_id);
-    }
-
-    public boolean updateByOrder_idAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(String order_id, BigDecimal order_amount, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result) {
-        return orderDao.updateByOrder_idAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(order_id, order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result);
+    public boolean update(String order_id, BigDecimal order_amount, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result, String order_flow, Boolean order_status) {
+        return orderDao.update(order_id, order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result, order_flow, order_status);
     }
 
     public boolean delete(Order order, String request_user_id) {
         return orderDao.delete(order.getOrder_id(), request_user_id);
+    }
+
+    public Map<String, Object> check(String request_user_id) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+
+        Delivery delivery = deliveryService.findDefaultByUser_id(request_user_id);
+        if (delivery == null) {
+            resultMap.put(Delivery.DELIVERY_NAME, "");
+            resultMap.put(Delivery.DELIVERY_PHONE, "");
+            resultMap.put(Delivery.DELIVERY_ADDRESS, "");
+        } else {
+            resultMap.put(Delivery.DELIVERY_NAME, delivery.getDelivery_name());
+            resultMap.put(Delivery.DELIVERY_PHONE, delivery.getDelivery_phone());
+            resultMap.put(Delivery.DELIVERY_ADDRESS, delivery.getDelivery_address());
+        }
+        resultMap.put("freight", "0");
+
+        return resultMap;
     }
 
     public Order confirm(String order_id, String request_user_id) {

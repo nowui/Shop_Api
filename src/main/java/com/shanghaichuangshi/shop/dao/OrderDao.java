@@ -178,19 +178,7 @@ public class OrderDao extends Dao {
         return order;
     }
 
-    public boolean update(Order order, String request_user_id) {
-        CacheUtil.remove(ORDER_CACHE, order.getOrder_id());
-
-        order.remove(Order.SYSTEM_CREATE_USER_ID);
-        order.remove(Order.SYSTEM_CREATE_TIME);
-        order.setSystem_update_user_id(request_user_id);
-        order.setSystem_update_time(new Date());
-        order.remove(Order.SYSTEM_STATUS);
-
-        return order.update();
-    }
-
-    public boolean updateByOrder_idAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result(String order_id, BigDecimal order_amount, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result) {
+    public boolean update(String order_id, BigDecimal order_amount, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result, String order_flow, Boolean order_status) {
         try {
             order_pay_time = DateUtil.dateTimeFormat.format(DateUtil.df.parse(order_pay_time));
         } catch (ParseException e) {
@@ -207,10 +195,10 @@ public class OrderDao extends Dao {
         map.put(Order.ORDER_PAY_ACCOUNT, order_pay_account);
         map.put(Order.ORDER_PAY_TIME, order_pay_time);
         map.put(Order.ORDER_PAY_RESULT, order_pay_result);
-        map.put(Order.ORDER_FLOW, OrderStatusEnum.PAYED.getKey());
-        map.put(Order.ORDER_STATUS, true);
+        map.put(Order.ORDER_FLOW, order_flow);
+        map.put(Order.ORDER_STATUS, order_status);
         map.put(Order.SYSTEM_UPDATE_TIME, new Date());
-        SqlPara sqlPara = Db.getSqlPara("order.updateByOrder_idAndOrder_amountAndOrder_pay_typeAndOrder_pay_numberAndOrder_pay_accountAndOrder_pay_timeAndOrder_pay_result", map);
+        SqlPara sqlPara = Db.getSqlPara("order.update", map);
 
         return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }

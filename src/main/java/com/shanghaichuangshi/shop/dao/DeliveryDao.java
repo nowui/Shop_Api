@@ -5,12 +5,15 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.model.Delivery;
+import com.shanghaichuangshi.util.CacheUtil;
 import com.shanghaichuangshi.util.Util;
 
 import java.util.Date;
 import java.util.List;
 
 public class DeliveryDao extends Dao {
+
+    private final String DELIVERY_LIST_CACHE = "delivery_list_cache";
 
     public int count(String delivery_name, String user_id) {
         JMap map = JMap.create();
@@ -33,13 +36,25 @@ public class DeliveryDao extends Dao {
     }
 
     public List<Delivery> listByUser_id(String user_id, Integer m, Integer n) {
-        JMap map = JMap.create();
-        map.put(Delivery.USER_ID, user_id);
-        map.put(Delivery.M, m);
-        map.put(Delivery.N, n);
-        SqlPara sqlPara = Db.getSqlPara("delivery.listByUser_id", map);
+        List<Delivery> deliveryList = CacheUtil.get(DELIVERY_LIST_CACHE, user_id);
 
-        return new Delivery().find(sqlPara.getSql(), sqlPara.getPara());
+        if (deliveryList == null) {
+            JMap map = JMap.create();
+            map.put(Delivery.USER_ID, user_id);
+            map.put(Delivery.M, m);
+            map.put(Delivery.N, n);
+            SqlPara sqlPara = Db.getSqlPara("delivery.listByUser_id", map);
+
+            deliveryList = new Delivery().find(sqlPara.getSql(), sqlPara.getPara());
+
+            if (deliveryList.size() == 0) {
+                deliveryList = null;
+            } else {
+                CacheUtil.put(DELIVERY_LIST_CACHE, user_id, deliveryList);
+            }
+        }
+
+        return deliveryList;
     }
 
     public Delivery find(String delivery_id) {
@@ -69,6 +84,8 @@ public class DeliveryDao extends Dao {
     }
 
     public Delivery save(Delivery delivery, String request_user_id) {
+        CacheUtil.remove(DELIVERY_LIST_CACHE, request_user_id);
+
         delivery.setDelivery_id(Util.getRandomUUID());
         delivery.setUser_id(request_user_id);
         delivery.setSystem_create_user_id(request_user_id);
@@ -83,6 +100,8 @@ public class DeliveryDao extends Dao {
     }
 
     public boolean update(Delivery delivery, String request_user_id) {
+        CacheUtil.remove(DELIVERY_LIST_CACHE, request_user_id);
+
         delivery.remove(Delivery.SYSTEM_CREATE_USER_ID);
         delivery.remove(Delivery.SYSTEM_CREATE_TIME);
         delivery.setSystem_update_user_id(request_user_id);
@@ -104,6 +123,8 @@ public class DeliveryDao extends Dao {
     }
 
     public boolean delete(String delivery_id, String request_user_id) {
+        CacheUtil.remove(DELIVERY_LIST_CACHE, request_user_id);
+
         JMap map = JMap.create();
         map.put(Delivery.DELIVERY_ID, delivery_id);
         map.put(Delivery.SYSTEM_UPDATE_USER_ID, request_user_id);

@@ -29,7 +29,11 @@
 
   #sql("listAll")
     SELECT
-    *
+    product_id,
+    category_id,
+    product_name,
+    product_image_original,
+    product_price
     FROM table_product
     WHERE system_status = 1
     ORDER BY system_create_time DESC

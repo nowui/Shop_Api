@@ -45,6 +45,7 @@ public class OrderProductDao extends Dao {
             List<Object> objectList = new ArrayList<Object>();
             objectList.add(Util.getRandomUUID());
             objectList.add(orderProduct.getOrder_id());
+            objectList.add(orderProduct.getOrder_status());
             objectList.add(orderProduct.getProduct_id());
             objectList.add(orderProduct.getCategory_id());
             objectList.add(orderProduct.getCategory_name());
@@ -60,6 +61,9 @@ public class OrderProductDao extends Dao {
             objectList.add(orderProduct.getProduct_is_sale());
             objectList.add(orderProduct.getProduct_content());
             objectList.add(orderProduct.getSku_id());
+            objectList.add(orderProduct.getCommission_id());
+            objectList.add(orderProduct.getMember_id());
+            objectList.add(orderProduct.getMember_path());
             objectList.add(orderProduct.getProduct_attribute());
             objectList.add(orderProduct.getProduct_market_price());
             objectList.add(orderProduct.getProduct_price());
@@ -92,11 +96,10 @@ public class OrderProductDao extends Dao {
         return order_product.update();
     }
 
-    public boolean updateByOrder_idAndOrder_status(String order_id, String request_user_id) {
+    public boolean updateByOrder_idAndOrder_status(String order_id, Boolean order_status) {
         JMap map = JMap.create();
         map.put(OrderProduct.ORDER_ID, order_id);
-        map.put(OrderProduct.ORDER_STATUS, OrderStatusEnum.PAYED.getKey());
-        map.put(OrderProduct.SYSTEM_UPDATE_USER_ID, request_user_id);
+        map.put(OrderProduct.ORDER_STATUS, order_status);
         map.put(OrderProduct.SYSTEM_UPDATE_TIME, new Date());
         SqlPara sqlPara = Db.getSqlPara("order_product.updateByOrder_idAndOrder_status", map);
 

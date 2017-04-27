@@ -25,6 +25,7 @@
     INSERT INTO table_order_product (
       order_product_id,
       order_id,
+      order_status,
       product_id,
       category_id,
       category_name,
@@ -40,6 +41,9 @@
       product_is_sale,
       product_content,
       sku_id,
+      commission_id,
+      member_id,
+      member_path,
       product_attribute,
       product_market_price,
       product_price,
@@ -51,6 +55,10 @@
       system_update_time,
       system_status
     ) VALUES (
+      ?,
+      ?,
+      ?,
+      ?,
       ?,
       ?,
       ?,

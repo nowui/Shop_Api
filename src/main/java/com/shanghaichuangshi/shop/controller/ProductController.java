@@ -56,43 +56,43 @@ public class ProductController extends Controller {
 
     @ActionKey(Url.PRODUCT_ALL_LIST)
     public void allList() {
-        List<Category> categoryList = productService.categoryList();
+//        List<Category> categoryList = productService.categoryList();
+//
+//        List<Product> productList = productService.listAll();
+//
+//        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
         List<Product> productList = productService.listAll();
 
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-
-        List<Product> hotProductList = productService.listAllHot();
-
-        if (hotProductList == null) {
-            hotProductList = new ArrayList<Product>();
+        if (productList == null) {
+            productList = new ArrayList<Product>();
         }
 
-        Map<String, Object> hotMap = new HashMap<String, Object>();
-        hotMap.put(Category.CATEGORY_ID, "0");
-        hotMap.put(Category.CATEGORY_NAME, "热销商品");
-        hotMap.put(Constant.CHILDREN, hotProductList);
-        list.add(hotMap);
+//        Map<String, Object> hotMap = new HashMap<String, Object>();
+//        hotMap.put(Category.CATEGORY_ID, "");
+//        hotMap.put(Category.CATEGORY_NAME, "所有商品");
+//        hotMap.put(Constant.CHILDREN, allProductList);
+//        list.add(hotMap);
+//
+//        for (Category category : categoryList) {
+//            Map<String, Object> map = new HashMap<String, Object>();
+//            map.put(Category.CATEGORY_ID, category.getCategory_id());
+//            map.put(Category.CATEGORY_NAME, category.getCategory_name());
+//
+//            List<Product> pList = new ArrayList<Product>();
+//            for (Product product : productList) {
+//                if (product.getCategory_id().equals(category.getCategory_id())) {
+//                    product.keep(Product.PRODUCT_ID, Product.PRODUCT_NAME, Product.PRODUCT_IMAGE, Product.PRODUCT_PRICE, Product.CATEGORY_ID);
+//
+//                    pList.add(product);
+//                }
+//            }
+//            map.put(Constant.CHILDREN, pList);
+//
+//            list.add(map);
+//        }
 
-        for (Category category : categoryList) {
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put(Category.CATEGORY_ID, category.getCategory_id());
-            map.put(Category.CATEGORY_NAME, category.getCategory_name());
-
-            List<Product> pList = new ArrayList<Product>();
-            for (Product product : productList) {
-                if (product.getCategory_id().equals(category.getCategory_id())) {
-                    product.keep(Product.PRODUCT_ID, Product.PRODUCT_NAME, Product.PRODUCT_IMAGE, Product.PRODUCT_PRICE, Product.CATEGORY_ID);
-
-                    pList.add(product);
-                }
-            }
-            map.put(Constant.CHILDREN, pList);
-
-            list.add(map);
-        }
-
-        renderSuccessJson(list);
+        renderSuccessJson(productList);
     }
 
     @ActionKey(Url.PRODUCT_FIND)

@@ -15,6 +15,9 @@
     delivery_id,
     delivery_name,
     delivery_phone,
+    delivery_province,
+    delivery_city,
+    delivery_area,
     delivery_address
     FROM table_delivery
     WHERE system_status = 1
@@ -33,6 +36,9 @@
     delivery_id,
     delivery_name,
     delivery_phone,
+    delivery_province,
+    delivery_city,
+    delivery_area,
     delivery_address
     FROM table_delivery
     WHERE system_status = 1

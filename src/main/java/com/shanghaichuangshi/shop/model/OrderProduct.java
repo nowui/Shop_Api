@@ -103,11 +103,11 @@ public class OrderProduct extends Model<OrderProduct> {
         set(ORDER_ID, order_id);
     }
 
-    public String getOrder_status() {
-        return getStr(ORDER_STATUS);
+    public Boolean getOrder_status() {
+        return getBoolean(ORDER_STATUS);
     }
 
-    public void setOrder_status(String order_status) {
+    public void setOrder_status(Boolean order_status) {
         set(ORDER_STATUS, order_status);
     }
 

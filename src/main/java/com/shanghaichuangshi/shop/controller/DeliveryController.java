@@ -8,7 +8,6 @@ import com.shanghaichuangshi.shop.model.Delivery;
 import com.shanghaichuangshi.shop.service.DeliveryService;
 
 import java.util.List;
-import java.util.Map;
 
 public class DeliveryController extends Controller {
 
@@ -71,7 +70,7 @@ public class DeliveryController extends Controller {
 
         Delivery delivery = deliveryService.save(model, request_user_id);
 
-        renderSuccessJson(delivery.keep(Delivery.DELIVERY_IS_DEFAULT, Delivery.DELIVERY_NAME, Delivery.DELIVERY_PHONE, Delivery.DELIVERY_ADDRESS));
+        renderSuccessJson(delivery.keep(Delivery.DELIVERY_ID, Delivery.DELIVERY_NAME, Delivery.DELIVERY_PHONE, Delivery.DELIVERY_ADDRESS, Delivery.DELIVERY_IS_DEFAULT));
     }
 
     @ActionKey(Url.DELIVERYL_UPDATE)
