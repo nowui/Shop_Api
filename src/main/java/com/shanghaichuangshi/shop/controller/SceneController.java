@@ -67,7 +67,7 @@ public class SceneController extends Controller {
     public void save() {
         String request_user_id = getRequest_user_id();
 
-        sceneService.companySave(request_user_id);
+        sceneService.platformSave(request_user_id);
 
         renderSuccessJson();
     }

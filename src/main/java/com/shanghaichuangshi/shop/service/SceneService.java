@@ -32,10 +32,10 @@ public class SceneService extends Service {
         return sceneDao.save(scene_id, object_id, scene_type, scene_is_expire, scene_qrcode, request_user_id);
     }
 
-    public Scene companySave(String request_user_id) {
+    public Scene platformSave(String request_user_id) {
         String scene_id = Util.getRandomUUID();
         String object_id = "";
-        String scene_type = SceneTypeEnum.COMPANY.getKey();
+        String scene_type = SceneTypeEnum.PLATFORM.getKey();
         Boolean scene_is_expire = false;
 
         ApiConfigKit.setThreadLocalApiConfig(WeChat.getApiConfig());

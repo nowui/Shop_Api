@@ -41,7 +41,7 @@ public class ProductService extends Service {
         return productDao.listAll();
     }
 
-    public List<Product> listAllHot() {
+    public List<Product> listHot() {
         return productDao.listAllHot();
     }
 

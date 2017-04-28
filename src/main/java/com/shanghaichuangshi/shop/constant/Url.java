@@ -3,6 +3,7 @@ package com.shanghaichuangshi.shop.constant;
 public class Url {
     public static final String WECHAT_API_MENU = "/wechat/api/menu";
     public static final String WECHAT_API_AUTH = "/wechat/api/auth";
+    public static final String WECHAT_API_LOGIN = "/wechat/api/login";
     public static final String WECHAT_API_ORCODE = "/wechat/api/orcode";
     public static final String WECHAT_API_NOTIFY = "/wechat/api/notify";
     public static final String WECHAT_MESSAGE = "/wechat/message";
@@ -42,6 +43,7 @@ public class Url {
     public static final String PRODUCT_ADMIN_LIST = "/product/admin/list";
     public static final String PRODUCT_CATEGORY_LIST = "/product/category/list";
     public static final String PRODUCT_ALL_LIST = "/product/all/list";
+    public static final String PRODUCT_HOT_LIST = "/product/hot/list";
     public static final String PRODUCT_FIND = "/product/find";
     public static final String PRODUCT_ADMIN_FIND = "/product/admin/find";
     public static final String PRODUCT_SAVE = "/product/save";

@@ -8,7 +8,6 @@ import com.shanghaichuangshi.controller.Controller;
 import com.shanghaichuangshi.shop.model.Commission;
 import com.shanghaichuangshi.shop.model.Product;
 import com.shanghaichuangshi.shop.model.Sku;
-import com.shanghaichuangshi.shop.model.Supplier;
 import com.shanghaichuangshi.shop.service.ProductService;
 
 import java.util.*;
@@ -19,15 +18,14 @@ public class ProductController extends Controller {
 
     @ActionKey(Url.PRODUCT_LIST)
     public void list() {
-        validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);
+        List<Product> productList = productService.listHot();
 
-        Supplier supplier = new Supplier();
+        renderSuccessJson(productList);
+    }
 
-        Product model = getParameter(Product.class);
-
-        model.validate(Product.PRODUCT_NAME);
-
-        List<Product> productList = productService.list(model, getM(), getN());
+    @ActionKey(Url.PRODUCT_HOT_LIST)
+    public void hotList() {
+        List<Product> productList = productService.listHot();
 
         renderSuccessJson(productList);
     }

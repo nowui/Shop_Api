@@ -48,7 +48,7 @@ public class DeliveryDao extends Dao {
             deliveryList = new Delivery().find(sqlPara.getSql(), sqlPara.getPara());
 
             if (deliveryList.size() == 0) {
-                deliveryList = null;
+
             } else {
                 CacheUtil.put(DELIVERY_LIST_CACHE, user_id, deliveryList);
             }

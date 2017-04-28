@@ -75,7 +75,7 @@ public class OrderService extends Service {
         JSONArray member_path = new JSONArray();
 
         if (member == null) {
-            throw new RuntimeException("没有改会员");
+            throw new RuntimeException("您不是我们的会员");
         }
 
         String member_id = member.getMember_id();
@@ -230,7 +230,7 @@ public class OrderService extends Service {
 
     public Map<String, String> unifiedorder(Order order, String open_id, String pay_type) {
         String appid = WeChat.app_id;
-        if (pay_type.equals("wx")) {
+        if (pay_type.equals("WX")) {
             appid = WeChat.wx_app_id;
         }
 

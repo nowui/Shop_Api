@@ -173,7 +173,7 @@ public class WeChatApiController extends ApiController {
     public void menu() {
         String url = null;
         try {
-            url = URLEncoder.encode("http://api." + WeChat.redirect_uri + "/wechat/api/auth?url=category", "UTF-8");
+            url = URLEncoder.encode("http://api." + WeChat.redirect_uri + "/wechat/api/auth?url=home", "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -182,6 +182,20 @@ public class WeChatApiController extends ApiController {
 //        ApiResult jsonResult = MenuApi.createMenu("{\"button\":[{\"type\":\"view\",\"name\":\"微信商城\",\"url\":\"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + WeChat.app_id + "&redirect_uri=" + url + "&response_type=code&scope=snsapi_base&state=123#wechat_redirect\"}]}");
 
         renderText(jsonResult.getJson());
+    }
+
+    @ActionKey(Url.WECHAT_API_LOGIN)
+    public void login() {
+        String code = getPara("code");
+
+        SnsAccessToken snsAccessToken = SnsAccessTokenApi.getSnsAccessToken(WeChat.app_id, WeChat.app_secret, code);
+
+        String open_id = snsAccessToken.getOpenid();
+
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("open_id", open_id);
+
+        renderJson(resultMap);
     }
 
     @ActionKey(Url.WECHAT_API_AUTH)
