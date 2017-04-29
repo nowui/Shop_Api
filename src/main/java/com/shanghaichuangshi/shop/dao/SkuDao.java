@@ -147,8 +147,11 @@ public class SkuDao extends Dao {
 
     public boolean deleteByProduct_id(String product_id, String request_user_id) {
         List<Sku> skuListCache = CacheUtil.get(SKU_LIST_CACHE, product_id);
-        for(Sku sku : skuListCache) {
-            CacheUtil.remove(SKU_CACHE, sku.getSku_id());
+
+        if (skuListCache != null) {
+            for(Sku sku : skuListCache) {
+                CacheUtil.remove(SKU_CACHE, sku.getSku_id());
+            }
         }
 
         CacheUtil.remove(SKU_LIST_CACHE, product_id);
@@ -157,7 +160,7 @@ public class SkuDao extends Dao {
         map.put(Sku.PRODUCT_ID, product_id);
         map.put(Sku.SYSTEM_UPDATE_USER_ID, request_user_id);
         map.put(Sku.SYSTEM_UPDATE_TIME, new Date());
-        SqlPara sqlPara = Db.getSqlPara("scene.deleteByProduct_id", map);
+        SqlPara sqlPara = Db.getSqlPara("sku.deleteByProduct_id", map);
 
         return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }

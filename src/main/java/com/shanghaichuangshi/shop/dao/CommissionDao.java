@@ -114,11 +114,13 @@ public class CommissionDao extends Dao {
     public boolean deleteByProduct_id(String product_id, String request_user_id) {
         List<String> keyList = CacheUtil.getKeys(COMMISSION_CACHE);
 
-        for(String key : keyList) {
-            Commission commission = CacheUtil.get(COMMISSION_CACHE, key);
+        if (keyList != null) {
+            for(String key : keyList) {
+                Commission commission = CacheUtil.get(COMMISSION_CACHE, key);
 
-            if (commission.getProduct_id().equals(product_id)) {
-                CacheUtil.remove(COMMISSION_CACHE, product_id);
+                if (commission.getProduct_id().equals(product_id)) {
+                    CacheUtil.remove(COMMISSION_CACHE, product_id);
+                }
             }
         }
 
@@ -128,7 +130,7 @@ public class CommissionDao extends Dao {
         map.put(Commission.PRODUCT_ID, product_id);
         map.put(Commission.SYSTEM_UPDATE_USER_ID, request_user_id);
         map.put(Commission.SYSTEM_UPDATE_TIME, new Date());
-        SqlPara sqlPara = Db.getSqlPara("scene.deleteByProduct_id", map);
+        SqlPara sqlPara = Db.getSqlPara("commission.deleteByProduct_id", map);
 
         return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }
