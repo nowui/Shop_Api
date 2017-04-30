@@ -6,7 +6,7 @@ import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.model.OrderProduct;
-import com.shanghaichuangshi.shop.type.OrderStatusEnum;
+import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.util.Util;
 
 import java.util.ArrayList;

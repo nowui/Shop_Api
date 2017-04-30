@@ -25,6 +25,20 @@
     #end
   #end
 
+  #sql("teamList")
+    SELECT
+    member_id,
+    member_name,
+    member_status
+    FROM table_member
+    WHERE system_status = 1
+    AND parent_id = #p(parent_id)
+    ORDER BY system_create_time DESC
+    #if(n > 0)
+      LIMIT #p(m), #p(n)
+    #end
+  #end
+
   #sql("find")
     SELECT
     table_member.*,
@@ -44,9 +58,10 @@
     WHERE member_id = #p(member_id)
   #end
 
-  #sql("updateByMember_idAndParent_idAndMember_level_id")
+  #sql("updateByMember_idAndParent_idAndParent_pathAndMember_level_id")
     UPDATE table_member SET
     parent_id = #p(parent_id),
+    parent_path = #p(parent_path),
     member_level_id = #p(member_level_id)
     WHERE member_id = #p(member_id)
   #end

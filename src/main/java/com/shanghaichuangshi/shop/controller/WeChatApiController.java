@@ -10,7 +10,7 @@ import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.shop.model.Order;
 import com.shanghaichuangshi.shop.service.OrderProductService;
 import com.shanghaichuangshi.shop.service.OrderService;
-import com.shanghaichuangshi.shop.type.OrderStatusEnum;
+import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.shop.type.PayTypeEnum;
 
 import java.io.UnsupportedEncodingException;
@@ -148,7 +148,7 @@ public class WeChatApiController extends ApiController {
             String order_pay_account = openid;
             String order_pay_time = time_end;
             String order_pay_result = result;
-            String order_flow = OrderStatusEnum.WAIT_SEND.getKey();
+            String order_flow = OrderFlowEnum.WAIT_SEND.getKey();
             Boolean order_status = true;
 
             Order order = orderService.findByOrder_number(order_number);

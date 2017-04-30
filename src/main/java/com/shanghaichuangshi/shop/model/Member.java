@@ -39,6 +39,9 @@ public class Member extends Model<Member> {
     @Column(type = ColumnType.VARCHAR, length = 250, comment = "会员备注")
     public static final String MEMBER_REMARK = "member_remark";
 
+    @Column(type = ColumnType.BOOLEAN, length = 1, comment = "会员状态", findable = false)
+    public static final String MEMBER_STATUS = "member_status";
+
     public String getMember_id() {
         return getStr(MEMBER_ID);
     }
@@ -125,6 +128,14 @@ public class Member extends Model<Member> {
 
     public void setMember_remark(String member_remark) {
         set(MEMBER_REMARK, member_remark);
+    }
+
+    public Boolean getMember_status() {
+        return getBoolean(MEMBER_STATUS);
+    }
+
+    public void setMember_status(Boolean member_status) {
+        set(MEMBER_STATUS, member_status);
     }
 
 }

@@ -43,6 +43,12 @@ public class MemberService extends Service {
         return memberDao.list(member.getMember_name(), m, n);
     }
 
+    public List<Member> teamList(String user_id, int m, int n) {
+        Member member = findByUser_id(user_id);
+
+        return memberDao.teamList(member.getMember_id(), m, n);
+    }
+
     public Member find(String member_id) {
         Member member = memberDao.find(member_id);
 
@@ -105,7 +111,7 @@ public class MemberService extends Service {
 //        return member;
 //    }
 
-    public Member saveByWechat_open_idAndFrom_scene_idAndParent_id(String wechat_open_id, String from_scene_id, String parent_id) {
+    public Member saveByWechat_open_idAndFrom_scene_idAndMember_status(String wechat_open_id, String from_scene_id, Boolean member_status) {
         User user = userService.findByWechat_open_idAndUser_type(wechat_open_id, UserType.MEMBER.getKey());
         if (user == null) {
             ApiResult apiResult = UserApi.getUserInfo(wechat_open_id);
@@ -113,23 +119,14 @@ public class MemberService extends Service {
             String user_avatar = apiResult.getStr("headimgurl");
 
             String user_id = Util.getRandomUUID();
-            String parent_path = "";
+            String parent_id = "";
+            String parent_path = (new JSONArray()).toJSONString();
             String scene_id = "";
             String scene_qrcode = "";
             String member_level_id = "";
             String request_user_id = "";
             String member_phone = "";
             String member_remark = "";
-
-            if (Util.isNullOrEmpty(parent_id)) {
-                parent_path = (new JSONArray()).toJSONString();
-            } else {
-                Member parentMember = memberDao.find(parent_id);
-                JSONArray jsonArray = JSON.parseArray(parentMember.getParent_path());
-                jsonArray.add(parent_id);
-
-                parent_path = jsonArray.toJSONString();
-            }
 
             Member member = new Member();
             member.setParent_id(parent_id);
@@ -143,6 +140,7 @@ public class MemberService extends Service {
             member.setMember_name(user_name);
             member.setMember_phone(member_phone);
             member.setMember_remark(member_remark);
+            member.setMember_status(member_status);
 
             memberDao.save(member, request_user_id);
 
@@ -166,8 +164,8 @@ public class MemberService extends Service {
 //        return result;
 //    }
 
-    public boolean updateByMember_idAndParent_idAndMember_level_id(String member_id, String parent_id, String member_level_id) {
-        return memberDao.updateByMember_idAndParent_idAndMember_level_id(member_id, parent_id, member_level_id);
+    public boolean updateByMember_idAndParent_idAndParent_pathAndMember_level_id(String member_id, String parent_id, String parent_path, String member_level_id) {
+        return memberDao.updateByMember_idAndParent_idAndParent_pathAndMember_level_id(member_id, parent_id, parent_path, member_level_id);
     }
 
     public boolean delete(Member member, String request_user_id) {

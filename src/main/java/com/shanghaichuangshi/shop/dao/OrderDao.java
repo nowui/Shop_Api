@@ -5,7 +5,6 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.model.Order;
-import com.shanghaichuangshi.shop.type.OrderStatusEnum;
 import com.shanghaichuangshi.util.CacheUtil;
 import com.shanghaichuangshi.util.DateUtil;
 import com.shanghaichuangshi.util.Util;

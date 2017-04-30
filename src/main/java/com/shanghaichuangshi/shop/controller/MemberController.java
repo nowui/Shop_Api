@@ -46,6 +46,17 @@ public class MemberController extends Controller {
         renderSuccessJson(count, memberList);
     }
 
+    @ActionKey(Url.MEMBER_TEAM_LIST)
+    public void teamList() {
+        validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);
+
+        String request_user_id = getRequest_user_id();
+
+        List<Member> memberList = memberService.teamList(request_user_id, getM(), getN());
+
+        renderSuccessJson(memberList);
+    }
+
     @ActionKey(Url.MEMBER_FIND)
     public void find() {
         Member model = getParameter(Member.class);

@@ -34,6 +34,16 @@ public class MemberDao extends Dao {
         return new Member().find(sqlPara.getSql(), sqlPara.getPara());
     }
 
+    public List<Member> teamList(String parent_id, Integer m, Integer n) {
+        JMap map = JMap.create();
+        map.put(Member.PARENT_ID, parent_id);
+        map.put(Member.M, m);
+        map.put(Member.N, n);
+        SqlPara sqlPara = Db.getSqlPara("member.teamList", map);
+
+        return new Member().find(sqlPara.getSql(), sqlPara.getPara());
+    }
+
     public Member find(String member_id) {
         Member member = CacheUtil.get(MEMBER_CACHE, member_id);
 
@@ -94,14 +104,15 @@ public class MemberDao extends Dao {
         return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }
 
-    public boolean updateByMember_idAndParent_idAndMember_level_id(String member_id, String parent_id, String member_level_id) {
+    public boolean updateByMember_idAndParent_idAndParent_pathAndMember_level_id(String member_id, String parent_id, String parent_path, String member_level_id) {
         CacheUtil.remove(MEMBER_CACHE, member_id);
 
         JMap map = JMap.create();
         map.put(Member.MEMBER_ID, member_id);
         map.put(Member.PARENT_ID, parent_id);
+        map.put(Member.PARENT_PATH, parent_path);
         map.put(Member.MEMBER_LEVEL_ID, member_level_id);
-        SqlPara sqlPara = Db.getSqlPara("member.updateByMember_idAndParent_idAndMember_level_id", map);
+        SqlPara sqlPara = Db.getSqlPara("member.updateByMember_idAndParent_idAndParent_pathAndMember_level_id", map);
 
         return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }

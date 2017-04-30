@@ -10,7 +10,7 @@ import com.shanghaichuangshi.service.CategoryService;
 import com.shanghaichuangshi.shop.dao.OrderDao;
 import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.service.Service;
-import com.shanghaichuangshi.shop.type.OrderStatusEnum;
+import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.util.Util;
 
 import java.math.BigDecimal;
@@ -202,7 +202,7 @@ public class OrderService extends Service {
         order.setOrder_freight_amount(order_freight_amount);
         order.setOrder_discount_amount(order_discount_amount);
         order.setOrder_amount(order_product_amount.subtract(order_freight_amount).subtract(order_discount_amount));
-        order.setOrder_flow(OrderStatusEnum.WAIT.getKey());
+        order.setOrder_flow(OrderFlowEnum.WAIT_PAY.getKey());
         order.setOrder_status(false);
 
         Order o = orderDao.save(order, request_user_id);
