@@ -61,6 +61,8 @@ public class SkuService extends Service {
             }
         }
 
+        System.out.println(sku);
+
         throw new RuntimeException("找不到价格");
     }
 
