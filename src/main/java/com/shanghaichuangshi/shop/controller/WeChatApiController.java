@@ -162,6 +162,10 @@ public class WeChatApiController extends ApiController {
                 JSONArray jsonArray = JSONArray.parseArray(orderProduct.getMember_path());
                 Commission commission = commissionService.find(orderProduct.getCommission_id());
                 JSONArray productCommissionJsonArray = JSONArray.parseArray(commission.getProduct_commission());
+                BigDecimal product_price = orderProduct.getProduct_price();
+                Integer product_quantity = orderProduct.getProduct_quantity();
+
+                BigDecimal price = product_price.multiply(BigDecimal.valueOf(product_quantity));
 
                 for (int i = 0; i < jsonArray.size(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -172,10 +176,6 @@ public class WeChatApiController extends ApiController {
                     if (!member_id.equals(order.getMember_id())) {
                         Member member = memberService.find(member_id);
                         String member_level_id = jsonObject.getString(MemberLevel.MEMBER_LEVEL_ID);
-                        BigDecimal product_price = orderProduct.getProduct_price();
-                        Integer product_quantity = orderProduct.getProduct_quantity();
-
-                        BigDecimal price = product_price.multiply(BigDecimal.valueOf(product_quantity));
 
                         for (int j = 0; j < productCommissionJsonArray.size(); j++) {
                             JSONObject productCommissionJsonObject = productCommissionJsonArray.getJSONObject(j);
@@ -183,6 +183,7 @@ public class WeChatApiController extends ApiController {
                             if (member_level_id.equals(productCommissionJsonObject.getString(MemberLevel.MEMBER_LEVEL_ID))) {
                                 BigDecimal product_commission = productCommissionJsonObject.getBigDecimal(Commission.PRODUCT_COMMISSION);
 
+                                //上级分享账单
                                 Bill bill = new Bill();
                                 bill.setUser_id(member.getUser_id());
                                 bill.setObject_id(orderProduct.getProduct_id());
@@ -202,6 +203,24 @@ public class WeChatApiController extends ApiController {
                         }
                     }
                 }
+
+                Member member = memberService.find(orderProduct.getMember_id());
+
+                //本人下单账单
+                Bill bill = new Bill();
+                bill.setUser_id(member.getUser_id());
+                bill.setObject_id(orderProduct.getProduct_id());
+                bill.setBill_type(BillTypeEnum.ORDER.getKey());
+                bill.setBill_image(orderProduct.getProduct_image());
+                bill.setBill_amount(price);
+                bill.setBill_name("新订单[" + order_number + "]支出¥" + price);
+                bill.setBill_is_income(false);
+                bill.setBill_time(new Date());
+                bill.setBill_flow("");
+                bill.setBill_status(true);
+                String request_user_id = "";
+
+                billService.save(bill, request_user_id);
             }
 
             if (is_update) {
