@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
 import com.jfinal.weixin.sdk.kit.PaymentKit;
+import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.constant.WeChat;
 import com.shanghaichuangshi.model.Category;
 import com.shanghaichuangshi.service.CategoryService;
@@ -100,16 +101,18 @@ public class OrderService extends Service {
         for (int i = 0; i < parentPathArray.size(); i++) {
             String m_id = parentPathArray.getString(i);
 
-            Member m = memberService.find(m_id);
-            MemberLevel mLevel = memberLevelService.find(m.getMember_level_id());
+            if (!m_id.equals(Constant.father_id)) {
+                Member m = memberService.find(m_id);
+                MemberLevel mLevel = memberLevelService.find(m.getMember_level_id());
 
-            JSONObject mObject = new JSONObject();
-            mObject.put(Member.MEMBER_ID, m_id);
-            mObject.put(MemberLevel.MEMBER_LEVEL_ID, mLevel.getMember_level_id());
-            mObject.put(MemberLevel.MEMBER_LEVEL_NAME, mLevel.getMember_level_name());
-            mObject.put(MemberLevel.MEMBER_LEVEL_VALUE, mLevel.getMember_level_value());
+                JSONObject mObject = new JSONObject();
+                mObject.put(Member.MEMBER_ID, m_id);
+                mObject.put(MemberLevel.MEMBER_LEVEL_ID, mLevel.getMember_level_id());
+                mObject.put(MemberLevel.MEMBER_LEVEL_NAME, mLevel.getMember_level_name());
+                mObject.put(MemberLevel.MEMBER_LEVEL_VALUE, mLevel.getMember_level_value());
 
-            member_path.add(mObject);
+                member_path.add(mObject);
+            }
         }
 
         //添加自己

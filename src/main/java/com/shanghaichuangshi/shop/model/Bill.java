@@ -4,10 +4,16 @@ import com.shanghaichuangshi.annotation.Column;
 import com.shanghaichuangshi.model.Model;
 import com.shanghaichuangshi.type.ColumnType;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 public class Bill extends Model<Bill> {
 
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "账单编号")
     public static final String BILL_ID = "bill_id";
+
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "用户编号")
+    public static final String USER_ID = "user_id";
 
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "外键编号")
     public static final String OBJECT_ID = "object_id";
@@ -45,6 +51,14 @@ public class Bill extends Model<Bill> {
         set(BILL_ID, bill_id);
     }
 
+    public String getUser_id() {
+        return getStr(USER_ID);
+    }
+
+    public void setUser_id(String user_id) {
+        set(USER_ID, user_id);
+    }
+
     public String getObject_id() {
         return getStr(OBJECT_ID);
     }
@@ -77,27 +91,27 @@ public class Bill extends Model<Bill> {
         set(BILL_NAME, bill_name);
     }
 
-    public String getBill_amount() {
-        return getStr(BILL_AMOUNT);
+    public BigDecimal getBill_amount() {
+        return getBigDecimal(BILL_AMOUNT);
     }
 
-    public void setBill_amount(String bill_amount) {
+    public void setBill_amount(BigDecimal bill_amount) {
         set(BILL_AMOUNT, bill_amount);
     }
 
-    public String getBill_is_income() {
-        return getStr(BILL_IS_INCOME);
+    public Boolean getBill_is_income() {
+        return getBoolean(BILL_IS_INCOME);
     }
 
-    public void setBill_is_income(String bill_is_income) {
+    public void setBill_is_income(Boolean bill_is_income) {
         set(BILL_IS_INCOME, bill_is_income);
     }
 
-    public String getBill_time() {
-        return getStr(BILL_TIME);
+    public Date getBill_time() {
+        return getDate(BILL_TIME);
     }
 
-    public void setBill_time(String bill_time) {
+    public void setBill_time(Date bill_time) {
         set(BILL_TIME, bill_time);
     }
 

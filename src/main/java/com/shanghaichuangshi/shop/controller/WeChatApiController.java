@@ -1,5 +1,7 @@
 package com.shanghaichuangshi.shop.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.jfinal.core.ActionKey;
 import com.jfinal.kit.HttpKit;
 import com.jfinal.weixin.sdk.api.*;
@@ -7,9 +9,9 @@ import com.jfinal.weixin.sdk.jfinal.ApiController;
 import com.jfinal.weixin.sdk.kit.PaymentKit;
 import com.shanghaichuangshi.constant.WeChat;
 import com.shanghaichuangshi.shop.constant.Url;
-import com.shanghaichuangshi.shop.model.Order;
-import com.shanghaichuangshi.shop.service.OrderProductService;
-import com.shanghaichuangshi.shop.service.OrderService;
+import com.shanghaichuangshi.shop.model.*;
+import com.shanghaichuangshi.shop.service.*;
+import com.shanghaichuangshi.shop.type.BillTypeEnum;
 import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.shop.type.PayTypeEnum;
 
@@ -24,6 +26,9 @@ public class WeChatApiController extends ApiController {
 
     private final OrderService orderService = new OrderService();
     private final OrderProductService orderProductService = new OrderProductService();
+    private final MemberService memberService = new MemberService();
+    private final CommissionService commissionService = new CommissionService();
+    private final BillService billService = new BillService();
 
     public ApiConfig getApiConfig() {
         return WeChat.getApiConfig();
@@ -54,19 +59,14 @@ public class WeChatApiController extends ApiController {
                 "&url=" + url;
         System.out.println(string1);
 
-        try
-        {
+        try {
             MessageDigest crypt = MessageDigest.getInstance("SHA-1");
             crypt.reset();
             crypt.update(string1.getBytes("UTF-8"));
             signature = byteToHex(crypt.digest());
-        }
-        catch (NoSuchAlgorithmException e)
-        {
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-        }
-        catch (UnsupportedEncodingException e)
-        {
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
@@ -81,8 +81,7 @@ public class WeChatApiController extends ApiController {
 
     private static String byteToHex(final byte[] hash) {
         Formatter formatter = new Formatter();
-        for (byte b : hash)
-        {
+        for (byte b : hash) {
             formatter.format("%02x", b);
         }
         String result = formatter.toString();
@@ -156,6 +155,54 @@ public class WeChatApiController extends ApiController {
             boolean is_update = orderService.update(order.getOrder_id(), order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result, order_flow, order_status);
 
             orderProductService.updateByOrder_idAndOrder_status(order.getOrder_id(), order_status);
+
+            List<OrderProduct> orderProductList = orderProductService.list(order.getOrder_id());
+
+            for (OrderProduct orderProduct : orderProductList) {
+                JSONArray jsonArray = JSONArray.parseArray(orderProduct.getMember_path());
+                Commission commission = commissionService.find(orderProduct.getCommission_id());
+                JSONArray productCommissionJsonArray = JSONArray.parseArray(commission.getProduct_commission());
+
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                    String member_id = jsonObject.getString(Member.MEMBER_ID);
+
+                    //如果不是本人，就计算佣金
+                    if (!member_id.equals(order.getMember_id())) {
+                        Member member = memberService.find(member_id);
+                        String member_level_id = jsonObject.getString(MemberLevel.MEMBER_LEVEL_ID);
+                        BigDecimal product_price = orderProduct.getProduct_price();
+                        Integer product_quantity = orderProduct.getProduct_quantity();
+
+                        BigDecimal price = product_price.multiply(BigDecimal.valueOf(product_quantity));
+
+                        for (int j = 0; j < productCommissionJsonArray.size(); j++) {
+                            JSONObject productCommissionJsonObject = productCommissionJsonArray.getJSONObject(j);
+
+                            if (member_level_id.equals(productCommissionJsonObject.getString(MemberLevel.MEMBER_LEVEL_ID))) {
+                                BigDecimal product_commission = productCommissionJsonObject.getBigDecimal(Commission.PRODUCT_COMMISSION);
+
+                                Bill bill = new Bill();
+                                bill.setUser_id(member.getUser_id());
+                                bill.setObject_id(orderProduct.getProduct_id());
+                                bill.setBill_type(BillTypeEnum.COMMISSION.getKey());
+                                bill.setBill_image(orderProduct.getProduct_image());
+                                BigDecimal bill_amount = price.multiply(product_commission).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                bill.setBill_amount(bill_amount);
+                                bill.setBill_name("新订单[" + order_number + "]分销收入¥" + bill_amount);
+                                bill.setBill_is_income(true);
+                                bill.setBill_time(new Date());
+                                bill.setBill_flow("");
+                                bill.setBill_status(true);
+                                String request_user_id = "";
+
+                                billService.save(bill, request_user_id);
+                            }
+                        }
+                    }
+                }
+            }
 
             if (is_update) {
                 renderText("<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>");
