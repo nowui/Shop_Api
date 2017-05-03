@@ -29,15 +29,6 @@ public class Product extends Model<Product> {
     @Column(type = ColumnType.VARCHAR, length = 100, comment = "商品图片")
     public static final String PRODUCT_IMAGE_ORIGINAL = "product_image_original";
 
-    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品图片")
-    public static final String PRODUCT_IMAGE_LIST = "product_image_list";
-
-    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品图片", findable = false)
-    public static final String PRODUCT_IMAGE_LIST_THUMBNAIL = "product_image_list_thumbnail";
-
-    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品图片")
-    public static final String PRODUCT_IMAGE_LIST_ORIGINAL = "product_image_list_original";
-
     @Column(type = ColumnType.DECIMAL, length = 0, comment = "市场价格")
     public static final String PRODUCT_MARKET_PRICE = "product_market_price";
 
@@ -66,6 +57,7 @@ public class Product extends Model<Product> {
     public static final String PRODUCT_CONTENT = "product_content";
 
     public static final String PRODUCT_LIST = "product_list";
+    public static final String PRODUCT_IMAGE_LIST = "product_image_list";
 
     
     public String getProduct_id() {
@@ -108,10 +100,6 @@ public class Product extends Model<Product> {
         set(PRODUCT_IMAGE, product_image);
     }
 
-    public String getProduct_image_list() {
-        return getStr(PRODUCT_IMAGE_LIST);
-    }
-
     public String getProduct_image_thumbnail() {
         return getStr(PRODUCT_IMAGE_THUMBNAIL);
     }
@@ -126,26 +114,6 @@ public class Product extends Model<Product> {
 
     public void setProduct_image_original(String product_image_original) {
         set(PRODUCT_IMAGE_ORIGINAL, product_image_original);
-    }
-
-    public void setProduct_image_list(String product_image_list) {
-        set(PRODUCT_IMAGE_LIST, product_image_list);
-    }
-
-    public String getProduct_image_list_thumbnail() {
-        return getStr(PRODUCT_IMAGE_LIST_THUMBNAIL);
-    }
-
-    public void setProduct_image_list_thumbnail(String product_image_list_thumbnail) {
-        set(PRODUCT_IMAGE_LIST_THUMBNAIL, product_image_list_thumbnail);
-    }
-
-    public String getProduct_image_list_original() {
-        return getStr(PRODUCT_IMAGE_LIST_ORIGINAL);
-    }
-
-    public void setProduct_image_list_original(String product_image_list_original) {
-        set(PRODUCT_IMAGE_LIST_ORIGINAL, product_image_list_original);
     }
 
     public BigDecimal getProduct_market_price() {

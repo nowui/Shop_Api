@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.jfinal.kit.JMap;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
+import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.model.Product;
 import com.shanghaichuangshi.util.CacheUtil;
@@ -87,41 +88,12 @@ public class ProductDao extends Dao {
     }
 
     private void setImage(Product product) {
-        JSONArray product_image_thumbnail = new JSONArray();
-        JSONArray thumbnailJsonArray = JSON.parseArray(product.getProduct_image());
-        for (int i = 0; i < thumbnailJsonArray.size(); i++) {
-            String url = (String) thumbnailJsonArray.get(i);
-            url = getImageUrl(url, "thumbnail");
-            product_image_thumbnail.add(url);
-        }
-        product.setProduct_image_thumbnail(product_image_thumbnail.toJSONString());
+        String product_image = product.getProduct_image();
+        String product_image_thumbnail = getImageUrl(product_image, Constant.THUMBNAIL);
+        String product_image_original = getImageUrl(product_image, Constant.ORIGINAL);
 
-        JSONArray product_image_original = new JSONArray();
-        JSONArray originalJsonArray = JSON.parseArray(product.getProduct_image());
-        for (int i = 0; i < originalJsonArray.size(); i++) {
-            String url = (String) originalJsonArray.get(i);
-            url = getImageUrl(url, "original");
-            product_image_original.add(url);
-        }
-        product.setProduct_image_original(product_image_original.toJSONString());
-
-        JSONArray product_image_list_thumbnail = new JSONArray();
-        JSONArray thumbnailListJsonArray = JSON.parseArray(product.getProduct_image_list());
-        for (int i = 0; i < thumbnailListJsonArray.size(); i++) {
-            String url = (String) thumbnailListJsonArray.get(i);
-            url = getImageUrl(url, "thumbnail");
-            product_image_list_thumbnail.add(url);
-        }
-        product.setProduct_image_list_thumbnail(product_image_list_thumbnail.toJSONString());
-
-        JSONArray product_image_list_original = new JSONArray();
-        JSONArray originalListJsonArray = JSON.parseArray(product.getProduct_image_list());
-        for (int i = 0; i < originalListJsonArray.size(); i++) {
-            String url = (String) originalListJsonArray.get(i);
-            url = getImageUrl(url, "original");
-            product_image_list_original.add(url);
-        }
-        product.setProduct_image_list_original(product_image_list_original.toJSONString());
+        product.setProduct_image_thumbnail(product_image_thumbnail);
+        product.setProduct_image_original(product_image_original);
     }
 
     private String getImageUrl(String url, String file) {

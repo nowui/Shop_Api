@@ -31,6 +31,7 @@ public class OrderService extends Service {
     private final OrderProductService orderProductService = new OrderProductService();
     private final CommissionService commissionService = new CommissionService();
     private final DeliveryService deliveryService = new DeliveryService();
+    private final ProductFileService productFileService = new ProductFileService();
 
     public int count(Order order) {
         return orderDao.count(order.getOrder_number());
@@ -168,6 +169,8 @@ public class OrderService extends Service {
             Category category = categoryService.find(product.getCategory_id());
             Brand brand = brandService.find(product.getBrand_id());
 
+            List<ProductFile> productFileList = productFileService.list(product.getProduct_id());
+
             OrderProduct orderProduct = new OrderProduct();
             orderProduct.setOrder_status(false);
             orderProduct.setProduct_id(product.getProduct_id());
@@ -177,7 +180,7 @@ public class OrderService extends Service {
             orderProduct.setBrand_name(brand.getBrand_name());
             orderProduct.setProduct_name(product.getProduct_name());
             orderProduct.setProduct_image(product.getProduct_image());
-            orderProduct.setProduct_image_list(product.getProduct_image_list());
+            orderProduct.setProduct_image_list(JSONArray.toJSONString(productFileList));
             orderProduct.setProduct_is_new(product.getProduct_is_new());
             orderProduct.setProduct_is_recommend(product.getProduct_is_recommend());
             orderProduct.setProduct_is_bargain(product.getProduct_is_bargain());
