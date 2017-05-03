@@ -31,6 +31,16 @@ public class BillDao extends Dao {
         return new Bill().find(sqlPara.getSql(), sqlPara.getPara());
     }
 
+    public List<Bill> listByUser_id(String user_id, Integer m, Integer n) {
+        JMap map = JMap.create();
+        map.put(Bill.USER_ID, user_id);
+        map.put(Bill.M, m);
+        map.put(Bill.N, n);
+        SqlPara sqlPara = Db.getSqlPara("bill.listByUser_id", map);
+
+        return new Bill().find(sqlPara.getSql(), sqlPara.getPara());
+    }
+
     public Bill find(String bill_id) {
         JMap map = JMap.create();
         map.put(Bill.BILL_ID, bill_id);

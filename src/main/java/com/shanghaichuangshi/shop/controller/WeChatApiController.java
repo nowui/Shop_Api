@@ -14,6 +14,7 @@ import com.shanghaichuangshi.shop.service.*;
 import com.shanghaichuangshi.shop.type.BillTypeEnum;
 import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.shop.type.PayTypeEnum;
+import com.shanghaichuangshi.util.Util;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -159,50 +160,57 @@ public class WeChatApiController extends ApiController {
             List<OrderProduct> orderProductList = orderProductService.list(order.getOrder_id());
 
             for (OrderProduct orderProduct : orderProductList) {
-                JSONArray jsonArray = JSONArray.parseArray(orderProduct.getMember_path());
-                Commission commission = commissionService.find(orderProduct.getCommission_id());
-                JSONArray productCommissionJsonArray = JSONArray.parseArray(commission.getProduct_commission());
+                String commission_id = orderProduct.getCommission_id();
                 BigDecimal product_price = orderProduct.getProduct_price();
                 Integer product_quantity = orderProduct.getProduct_quantity();
 
                 BigDecimal price = product_price.multiply(BigDecimal.valueOf(product_quantity));
 
-                for (int i = 0; i < jsonArray.size(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                //如果要分成
+                if (!Util.isNullOrEmpty(commission_id)) {
+                    JSONArray jsonArray = JSONArray.parseArray(orderProduct.getMember_path());
+                    Commission commission = commissionService.find(commission_id);
+                    JSONArray productCommissionJsonArray = JSONArray.parseArray(commission.getProduct_commission());
 
-                    String member_id = jsonObject.getString(Member.MEMBER_ID);
+                    for (int i = 0; i < jsonArray.size(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                    //如果不是本人，就计算佣金
-                    if (!member_id.equals(order.getMember_id())) {
-                        Member member = memberService.find(member_id);
-                        String member_level_id = jsonObject.getString(MemberLevel.MEMBER_LEVEL_ID);
+                        String member_id = jsonObject.getString(Member.MEMBER_ID);
 
-                        for (int j = 0; j < productCommissionJsonArray.size(); j++) {
-                            JSONObject productCommissionJsonObject = productCommissionJsonArray.getJSONObject(j);
+                        //如果不是本人，就计算佣金
+                        if (!member_id.equals(order.getMember_id())) {
+                            Member member = memberService.find(member_id);
+                            String member_level_id = jsonObject.getString(MemberLevel.MEMBER_LEVEL_ID);
 
-                            if (member_level_id.equals(productCommissionJsonObject.getString(MemberLevel.MEMBER_LEVEL_ID))) {
-                                BigDecimal product_commission = productCommissionJsonObject.getBigDecimal(Commission.PRODUCT_COMMISSION);
+                            for (int j = 0; j < productCommissionJsonArray.size(); j++) {
+                                JSONObject productCommissionJsonObject = productCommissionJsonArray.getJSONObject(j);
 
-                                //上级分享账单
-                                Bill bill = new Bill();
-                                bill.setUser_id(member.getUser_id());
-                                bill.setObject_id(orderProduct.getProduct_id());
-                                bill.setBill_type(BillTypeEnum.COMMISSION.getKey());
-                                bill.setBill_image(orderProduct.getProduct_image());
-                                BigDecimal bill_amount = price.multiply(product_commission).setScale(2, BigDecimal.ROUND_HALF_UP);
-                                bill.setBill_amount(bill_amount);
-                                bill.setBill_name("新订单[" + order_number + "]分销收入¥" + bill_amount);
-                                bill.setBill_is_income(true);
-                                bill.setBill_time(new Date());
-                                bill.setBill_flow("");
-                                bill.setBill_status(true);
-                                String request_user_id = "";
+                                if (member_level_id.equals(productCommissionJsonObject.getString(MemberLevel.MEMBER_LEVEL_ID))) {
+                                    BigDecimal product_commission = productCommissionJsonObject.getBigDecimal(Commission.PRODUCT_COMMISSION);
+                                    BigDecimal bill_amount = price.multiply(product_commission).divide(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
 
-                                billService.save(bill, request_user_id);
+                                    //上级分享账单
+                                    Bill bill = new Bill();
+                                    bill.setUser_id(member.getUser_id());
+                                    bill.setObject_id(orderProduct.getProduct_id());
+                                    bill.setBill_type(BillTypeEnum.COMMISSION.getKey());
+                                    bill.setBill_image(orderProduct.getProduct_image());
+                                    bill.setBill_amount(bill_amount);
+                                    bill.setBill_name("商品[" + orderProduct.getProduct_name() + "]分销收入¥" + bill_amount);
+                                    bill.setBill_is_income(true);
+                                    bill.setBill_time(new Date());
+                                    bill.setBill_flow("");
+                                    bill.setBill_status(true);
+                                    String request_user_id = "";
+
+                                    billService.save(bill, request_user_id);
+                                }
                             }
                         }
                     }
                 }
+
+
 
                 Member member = memberService.find(orderProduct.getMember_id());
 
@@ -213,7 +221,7 @@ public class WeChatApiController extends ApiController {
                 bill.setBill_type(BillTypeEnum.ORDER.getKey());
                 bill.setBill_image(orderProduct.getProduct_image());
                 bill.setBill_amount(price);
-                bill.setBill_name("新订单[" + order_number + "]支出¥" + price);
+                bill.setBill_name("订单[" + order_number + "]支付¥" + price);
                 bill.setBill_is_income(false);
                 bill.setBill_time(new Date());
                 bill.setBill_flow("");

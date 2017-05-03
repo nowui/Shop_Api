@@ -18,6 +18,10 @@ public class BillService extends Service {
         return billDao.list(bill.getBill_name(), m, n);
     }
 
+    public List<Bill> listByUser_id(String user_id, int m, int n) {
+        return billDao.listByUser_id(user_id, m, n);
+    }
+
     public Bill find(String bill_id) {
         return billDao.find(bill_id);
     }

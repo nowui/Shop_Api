@@ -15,13 +15,11 @@ public class BillController extends Controller {
 
     @ActionKey(Url.BILL_LIST)
     public void list() {
+        String request_user_id = getRequest_user_id();
+
         validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);
 
-        Bill model = getParameter(Bill.class);
-
-        model.validate(Bill.BILL_NAME);
-
-        List<Bill> billListvice = billService.list(model, getM(), getN());
+        List<Bill> billListvice = billService.listByUser_id(request_user_id, getM(), getN());
 
         renderSuccessJson(billListvice);
     }

@@ -12,13 +12,42 @@
   #sql("list")
     SELECT
     bill_id,
-    bill_name
+    object_id,
+    bill_type,
+    bill_image,
+    bill_name,
+    bill_amount,
+    bill_is_income,
+    bill_time,
+    bill_flow,
+    bill_status
     FROM table_bill
     WHERE system_status = 1
     #if(bill_name)
       #set(bill_name = "%" + bill_name + "%")
       AND bill_name LIKE #p(bill_name)
     #end
+    ORDER BY system_create_time DESC
+    #if(n > 0)
+      LIMIT #p(m), #p(n)
+    #end
+  #end
+
+  #sql("listByUser_id")
+    SELECT
+    bill_id,
+    object_id,
+    bill_type,
+    bill_image,
+    bill_name,
+    bill_amount,
+    bill_is_income,
+    bill_time,
+    bill_flow,
+    bill_status
+    FROM table_bill
+    WHERE system_status = 1
+    AND user_id = #p(user_id)
     ORDER BY system_create_time DESC
     #if(n > 0)
       LIMIT #p(m), #p(n)

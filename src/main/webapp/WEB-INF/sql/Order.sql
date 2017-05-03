@@ -82,6 +82,7 @@
     order_pay_account = #p(order_pay_account),
     order_pay_time = #p(order_pay_time),
     order_pay_result = #p(order_pay_result),
+    order_flow = #p(order_flow),
     order_status = #p(order_status),
     system_update_time = #p(system_update_time)
     WHERE order_id = #p(order_id)
@@ -89,7 +90,7 @@
 
   #sql("updateByOrder_idAndOrder_is_confirm")
     UPDATE table_order SET
-    order_is_pay = 1
+    order_is_confirm = 1
     WHERE order_id = #p(order_id)
   #end
 

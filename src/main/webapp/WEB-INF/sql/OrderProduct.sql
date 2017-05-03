@@ -6,6 +6,11 @@
     product_name,
     product_image,
     product_price,
+    product_quantity,
+    commission_id,
+    member_id,
+    member_path,
+    product_price,
     product_quantity
     FROM table_order_product
     WHERE system_status = 1
@@ -92,7 +97,6 @@
   #sql("updateByOrder_idAndOrder_status")
     UPDATE table_order_product SET
     order_status = #p(order_status),
-    system_update_user_id = #p(system_update_user_id),
     system_update_time = #p(system_update_time)
     WHERE order_id = #p(order_id)
   #end
