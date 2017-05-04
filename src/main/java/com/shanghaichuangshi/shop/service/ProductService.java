@@ -3,16 +3,15 @@ package com.shanghaichuangshi.shop.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.shanghaichuangshi.model.Category;
+import com.shanghaichuangshi.model.File;
 import com.shanghaichuangshi.service.CategoryService;
+import com.shanghaichuangshi.service.FileService;
 import com.shanghaichuangshi.shop.dao.ProductDao;
 import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.type.CategoryType;
-import com.shanghaichuangshi.type.FileType;
-import com.shanghaichuangshi.util.Util;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class ProductService extends Service {
@@ -23,7 +22,7 @@ public class ProductService extends Service {
     private final SkuService skuService = new SkuService();
     private final CommissionService commissionService = new CommissionService();
     private final MemberService memberService = new MemberService();
-    private final ProductFileService productFileService = new ProductFileService();
+    private final FileService fileService = new FileService();
 
     public int count(Product product) {
         return productDao.count(product.getProduct_name());
@@ -38,15 +37,44 @@ public class ProductService extends Service {
     }
 
     public List<Product> listAll() {
-        return productDao.listAll();
+        List<Product> productList = productDao.listAll();
+
+        for (Product product : productList) {
+            File file = fileService.find(product.getProduct_image());
+            product.put(Product.PRODUCT_IMAGE_FILE, file.getFile_original_path());
+            product.remove(Product.PRODUCT_IMAGE);
+        }
+
+        return productList;
     }
 
     public List<Product> listHot() {
-        return productDao.listAllHot();
+        List<Product> productList = productDao.listAllHot();
+
+        for (Product product : productList) {
+            File file = fileService.find(product.getProduct_image());
+            product.put(Product.PRODUCT_IMAGE_FILE, file.getFile_original_path());
+            product.remove(Product.PRODUCT_IMAGE);
+        }
+
+        return productList;
     }
 
     public Product find(String product_id) {
-        return productDao.find(product_id);
+        Product product = productDao.find(product_id);
+
+        File productImageFile = fileService.find(product.getProduct_image());
+        product.put(Product.PRODUCT_IMAGE_FILE, productImageFile.getFile_thumbnail_path());
+
+        List<String> productImageFileList = new ArrayList<String>();
+        JSONArray productImageList = JSONArray.parseArray(product.getProduct_image_list().toString());
+        for (int i = 0; i < productImageList.size(); i++) {
+            File file = fileService.find(productImageList.getString(i));
+            productImageFileList.add(file.getFile_original_path());
+        }
+        product.put(Product.PRODUCT_IMAGE_FILE_LIST, productImageFileList);
+
+        return product;
     }
 
     public Product findByUser_id(String product_id, String user_id) {
@@ -79,8 +107,17 @@ public class ProductService extends Service {
     public Product adminFind(String product_id) {
         Product product = find(product_id);
 
-        List<ProductFile> productFileList = productFileService.list(product_id);
-        product.put(Product.PRODUCT_IMAGE_LIST, productFileList);
+        File productImageFile = fileService.find(product.getProduct_image());
+        product.put(Product.PRODUCT_IMAGE_FILE, productImageFile);
+
+        List<File> productImageFileList = new ArrayList<File>();
+        JSONArray productImageList = JSONArray.parseArray(product.getProduct_image_list().toString());
+        for (int i = 0; i < productImageList.size(); i++) {
+            File file = fileService.find(productImageList.getString(i));
+            file.keep(File.FILE_ID, File.FILE_PATH);
+            productImageFileList.add(file);
+        }
+        product.put(Product.PRODUCT_IMAGE_FILE_LIST, productImageFileList);
 
         List<Sku> skuList = skuService.list(product_id);
         product.put(Sku.SKU_LIST, skuList);
@@ -89,28 +126,6 @@ public class ProductService extends Service {
         product.put(Commission.COMMISSION_LIST, commissionList);
 
         return product;
-    }
-
-    private List<ProductFile> getProductImageList(String product_id, JSONObject jsonObject) {
-        JSONArray productImageListJsonArray = jsonObject.getJSONArray(Product.PRODUCT_IMAGE_LIST);
-
-        List<ProductFile> productFileList = new ArrayList<ProductFile>();
-
-        for (int i = 0; i < productImageListJsonArray.size(); i++) {
-            String product_file_path = productImageListJsonArray.getString(i);
-
-            ProductFile productFile = new ProductFile();
-            productFile.setProduct_id(product_id);
-            productFile.setProduct_file_type(FileType.IMAGE.getKey());
-            productFile.setProduct_file_name("");
-            productFile.setProduct_file_path(product_file_path);
-            productFile.setProduct_file_thumbnail_path(Util.getThumbnail_path(product_file_path));
-            productFile.setProduct_file_original_path(Util.getOriginal_path(product_file_path));
-            productFile.setProduct_file_remark("");
-            productFileList.add(productFile);
-        }
-
-        return productFileList;
     }
 
     private List<Sku> getSkuList(String product_id, JSONObject jsonObject) {
@@ -153,9 +168,6 @@ public class ProductService extends Service {
     public Product save(Product product, JSONObject jsonObject, String request_user_id) {
         Product p = productDao.save(product, request_user_id);
 
-        List<ProductFile> productFileSaveList = getProductImageList(p.getProduct_id(), jsonObject);
-        productFileService.save(productFileSaveList, request_user_id);
-
         List<Sku> skuSaveList = getSkuList(p.getProduct_id(), jsonObject);
         skuService.save(skuSaveList, request_user_id);
 
@@ -166,48 +178,6 @@ public class ProductService extends Service {
     }
 
     public boolean update(Product product, JSONObject jsonObject, String request_user_id) {
-        List<ProductFile> productFileAllList = productFileService.list(product.getProduct_id());
-        List<ProductFile> productFileList = getProductImageList(product.getProduct_id(), jsonObject);
-        List<ProductFile> productFileSaveList = new ArrayList<ProductFile>();
-        List<ProductFile> productFileDeleteList = new ArrayList<ProductFile>();
-
-        for (ProductFile productFile : productFileAllList) {
-            boolean isExit = false;
-
-            for (ProductFile p : productFileList) {
-                if (productFile.getProduct_file_path().equals(p.getProduct_file_path())) {
-                    isExit = true;
-
-                    //dsf
-
-                    break;
-                }
-            }
-
-            if (!isExit) {
-                productFileDeleteList.add(productFile);
-            }
-        }
-
-        for (ProductFile productFile : productFileList) {
-            boolean isNotExit = true;
-
-            for (ProductFile p : productFileAllList) {
-                if (productFile.getProduct_file_path().equals(p.getProduct_file_path())) {
-                    isNotExit = false;
-
-                    break;
-                }
-            }
-
-            if (isNotExit) {
-                productFileSaveList.add(productFile);
-            }
-        }
-
-        productFileService.delete(productFileDeleteList, product.getProduct_id(), request_user_id);
-        productFileService.save(productFileSaveList, request_user_id);
-
         List<Sku> skuAllList = skuService.list(product.getProduct_id());
         List<Sku> skuList = getSkuList(product.getProduct_id(), jsonObject);
         List<Sku> skuSaveList = new ArrayList<Sku>();

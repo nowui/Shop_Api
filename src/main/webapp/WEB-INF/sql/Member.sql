@@ -66,6 +66,13 @@
     WHERE member_id = #p(member_id)
   #end
 
+  #sql("updateByMember_total_amountAndMember_withdrawal_amount")
+    UPDATE table_member SET
+    member_total_amount = #p(member_total_amount),
+    member_withdrawal_amount = #p(member_withdrawal_amount)
+    WHERE member_id = #p(member_id)
+  #end
+
   #sql("delete")
     UPDATE table_member SET
     system_update_user_id = #p(system_update_user_id),

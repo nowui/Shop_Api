@@ -61,7 +61,7 @@ public class DistributorController extends Controller {
 
         Distributor distributor = distributorService.find(model.getDistributor_id());
 
-        renderSuccessJson(distributor);
+        renderSuccessJson(distributor.removeSystemInfo());
     }
 
     @ActionKey(Url.DISTRIBUTOR_SAVE)

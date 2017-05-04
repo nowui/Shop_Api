@@ -21,6 +21,7 @@ import com.shanghaichuangshi.shop.type.SceneTypeEnum;
 import com.shanghaichuangshi.type.UserType;
 import com.shanghaichuangshi.util.Util;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -123,6 +124,8 @@ public class MemberService extends Service {
             String parent_path = (new JSONArray()).toJSONString();
             String scene_id = "";
             String scene_qrcode = "";
+            BigDecimal member_total_amount = BigDecimal.valueOf(0);
+            BigDecimal member_withdrawal_amount = BigDecimal.valueOf(0);
             String member_level_id = "";
             String request_user_id = "";
             String member_phone = "";
@@ -136,6 +139,8 @@ public class MemberService extends Service {
             member.setFrom_scene_id(from_scene_id);
             member.setScene_id(scene_id);
             member.setScene_qrcode(scene_qrcode);
+            member.setMember_total_amount(member_total_amount);
+            member.setMember_withdrawal_amount(member_withdrawal_amount);
             member.setMember_level_id(member_level_id);
             member.setMember_name(user_name);
             member.setMember_phone(member_phone);
@@ -154,16 +159,6 @@ public class MemberService extends Service {
         }
     }
 
-//    public boolean update(Member member, User user, String request_user_id) {
-//        boolean result = memberDao.update(member, request_user_id);
-//
-//        userService.updateByObject_idAndUser_phoneAndUser_type(member.getMember_id(), user.getUser_phone(), UserType.MEMBER.getKey(), request_user_id);
-//
-//        userService.updateByObject_idAndUser_passwordAndUser_type(member.getMember_id(), user.getUser_password(), UserType.MEMBER.getKey(), request_user_id);
-//
-//        return result;
-//    }
-
     public boolean updateByMember_idAndParent_idAndParent_pathAndMember_level_id(String member_id, String parent_id, String parent_path, String member_level_id) {
         return memberDao.updateByMember_idAndParent_idAndParent_pathAndMember_level_id(member_id, parent_id, parent_path, member_level_id);
     }
@@ -178,24 +173,6 @@ public class MemberService extends Service {
 
     public Map<String, Object> login(User user, String platform, String version, String ip_address, String request_user_id) {
         User u = userService.findByUser_phoneAndUser_passwordAndUser_type(user.getUser_phone(), user.getUser_password(), UserType.MEMBER.getKey());
-
-//        Member member = memberDao.find(u.getObject_id());
-//
-//        Delivery delivery = deliveryService.findDefaultByUser_id(u.getUser_id());
-//
-//        String token = authorizationService.saveByUser_id(u.getUser_id(), platform, version, ip_address, request_user_id);
-//
-//        Map<String, Object> resultMap = new HashMap<String, Object>();
-//        resultMap.put(Constant.TOKEN.toLowerCase(), token);
-//        resultMap.put(Member.MEMBER_LEVEL_ID, member.getMember_level_id());
-//
-//        if (delivery == null) {
-//            resultMap.put("delivery", new JSONObject());
-//        } else {
-//            resultMap.put("delivery", delivery.format());
-//        }
-//
-//        return resultMap;
 
         return getMember(u, platform, version, ip_address, request_user_id);
     }

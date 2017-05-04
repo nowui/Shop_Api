@@ -4,6 +4,8 @@ import com.shanghaichuangshi.annotation.Column;
 import com.shanghaichuangshi.model.Model;
 import com.shanghaichuangshi.type.ColumnType;
 
+import java.math.BigDecimal;
+
 public class Member extends Model<Member> {
 
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "会员编号")
@@ -26,6 +28,12 @@ public class Member extends Model<Member> {
 
     @Column(type = ColumnType.VARCHAR, length = 250, comment = "二维码")
     public static final String SCENE_QRCODE = "scene_qrcode";
+
+    @Column(type = ColumnType.DECIMAL, length = 0, comment = "总金额")
+    public static final String MEMBER_TOTAL_AMOUNT = "member_total_amount";
+
+    @Column(type = ColumnType.DECIMAL, length = 0, comment = "可提现金额")
+    public static final String MEMBER_WITHDRAWAL_AMOUNT = "member_withdrawal_amount";
 
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "会员等级")
     public static final String MEMBER_LEVEL_ID = "member_level_id";
@@ -96,6 +104,22 @@ public class Member extends Model<Member> {
 
     public void setScene_qrcode(String scene_qrcode) {
         set(SCENE_QRCODE, scene_qrcode);
+    }
+
+    public BigDecimal getMember_total_amount() {
+        return getBigDecimal(MEMBER_TOTAL_AMOUNT);
+    }
+
+    public void setMember_total_amount(BigDecimal member_total_amount) {
+        set(MEMBER_TOTAL_AMOUNT, member_total_amount);
+    }
+
+    public BigDecimal getMember_withdrawal_amount() {
+        return getBigDecimal(MEMBER_WITHDRAWAL_AMOUNT);
+    }
+
+    public void setMember_withdrawal_amount(BigDecimal member_withdrawal_amount) {
+        set(MEMBER_WITHDRAWAL_AMOUNT, member_withdrawal_amount);
     }
 
     public String getMember_level_id() {

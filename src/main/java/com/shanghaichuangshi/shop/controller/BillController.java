@@ -58,7 +58,7 @@ public class BillController extends Controller {
 
         Bill bill = billService.find(model.getBill_id());
 
-        renderSuccessJson(bill);
+        renderSuccessJson(bill.removeSystemInfo());
     }
 
     @ActionKey(Url.BILL_SAVE)

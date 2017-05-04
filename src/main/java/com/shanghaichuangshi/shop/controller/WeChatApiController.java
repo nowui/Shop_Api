@@ -166,6 +166,9 @@ public class WeChatApiController extends ApiController {
 
                 BigDecimal price = product_price.multiply(BigDecimal.valueOf(product_quantity));
 
+                List<Bill> billList = new ArrayList<Bill>();
+                String request_user_id = "";
+
                 //如果要分成
                 if (!Util.isNullOrEmpty(commission_id)) {
                     JSONArray jsonArray = JSONArray.parseArray(orderProduct.getMember_path());
@@ -192,7 +195,7 @@ public class WeChatApiController extends ApiController {
                                     //上级分享账单
                                     Bill bill = new Bill();
                                     bill.setUser_id(member.getUser_id());
-                                    bill.setObject_id(orderProduct.getProduct_id());
+                                    bill.setObject_id(orderProduct.getOrder_product_id());
                                     bill.setBill_type(BillTypeEnum.COMMISSION.getKey());
                                     bill.setBill_image(orderProduct.getProduct_image());
                                     bill.setBill_amount(bill_amount);
@@ -201,9 +204,7 @@ public class WeChatApiController extends ApiController {
                                     bill.setBill_time(new Date());
                                     bill.setBill_flow("");
                                     bill.setBill_status(true);
-                                    String request_user_id = "";
-
-                                    billService.save(bill, request_user_id);
+                                    billList.add(bill);
                                 }
                             }
                         }
@@ -211,13 +212,12 @@ public class WeChatApiController extends ApiController {
                 }
 
 
-
                 Member member = memberService.find(orderProduct.getMember_id());
 
                 //本人下单账单
                 Bill bill = new Bill();
                 bill.setUser_id(member.getUser_id());
-                bill.setObject_id(orderProduct.getProduct_id());
+                bill.setObject_id(orderProduct.getOrder_id());
                 bill.setBill_type(BillTypeEnum.ORDER.getKey());
                 bill.setBill_image(orderProduct.getProduct_image());
                 bill.setBill_amount(price);
@@ -226,9 +226,9 @@ public class WeChatApiController extends ApiController {
                 bill.setBill_time(new Date());
                 bill.setBill_flow("");
                 bill.setBill_status(true);
-                String request_user_id = "";
+                billList.add(bill);
 
-                billService.save(bill, request_user_id);
+                billService.save(billList, request_user_id);
             }
 
             if (is_update) {

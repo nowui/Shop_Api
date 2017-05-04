@@ -61,7 +61,7 @@ public class SupplierController extends Controller {
 
         Supplier supplier = supplierService.find(model.getSupplier_id());
 
-        renderSuccessJson(supplier);
+        renderSuccessJson(supplier.removeSystemInfo());
     }
 
     @ActionKey(Url.SUPPLIER_SAVE)

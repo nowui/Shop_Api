@@ -16,6 +16,7 @@
     order_delivery_name,
     order_delivery_phone,
     order_product_amount,
+    order_delivery_address,
     order_flow,
     order_status
     FROM table_order

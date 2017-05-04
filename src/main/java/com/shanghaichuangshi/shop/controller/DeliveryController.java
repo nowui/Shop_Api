@@ -58,7 +58,7 @@ public class DeliveryController extends Controller {
 
         Delivery delivery = deliveryService.find(model.getDelivery_id());
 
-        renderSuccessJson(delivery);
+        renderSuccessJson(delivery.removeSystemInfo());
     }
 
     @ActionKey(Url.DELIVERY_SAVE)

@@ -3,10 +3,12 @@ package com.shanghaichuangshi.shop.dao;
 import com.jfinal.kit.JMap;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
+import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.model.Bill;
 import com.shanghaichuangshi.util.Util;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -54,37 +56,59 @@ public class BillDao extends Dao {
         }
     }
 
-    public Bill save(Bill bill, String request_user_id) {
-        bill.setBill_id(Util.getRandomUUID());
-        bill.setSystem_create_user_id(request_user_id);
-        bill.setSystem_create_time(new Date());
-        bill.setSystem_update_user_id(request_user_id);
-        bill.setSystem_update_time(new Date());
-        bill.setSystem_status(true);
-
-        bill.save();
-
-        return bill;
-    }
-
-    public boolean update(Bill bill, String request_user_id) {
-        bill.remove(Bill.SYSTEM_CREATE_USER_ID);
-        bill.remove(Bill.SYSTEM_CREATE_TIME);
-        bill.setSystem_update_user_id(request_user_id);
-        bill.setSystem_update_time(new Date());
-        bill.remove(Bill.SYSTEM_STATUS);
-
-        return bill.update();
-    }
-
-    public boolean delete(String bill_id, String request_user_id) {
+    public void save(List<Bill> billList, String request_user_id) {
         JMap map = JMap.create();
-        map.put(Bill.BILL_ID, bill_id);
-        map.put(Bill.SYSTEM_UPDATE_USER_ID, request_user_id);
-        map.put(Bill.SYSTEM_UPDATE_TIME, new Date());
-        SqlPara sqlPara = Db.getSqlPara("bill.delete", map);
+        SqlPara sqlPara = Db.getSqlPara("bill.save", map);
 
-        return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
+        List<Object[]> parameterList = new ArrayList<Object[]>();
+        for(Bill bill : billList) {
+            List<Object> objectList = new ArrayList<Object>();
+            objectList.add(Util.getRandomUUID());
+            objectList.add(bill.getUser_id());
+            objectList.add(bill.getObject_id());
+            objectList.add(bill.getBill_type());
+            objectList.add(bill.getBill_image());
+            objectList.add(bill.getBill_name());
+            objectList.add(bill.getBill_amount());
+            objectList.add(bill.getBill_is_income());
+            objectList.add(bill.getBill_time());
+            objectList.add(bill.getBill_flow());
+            objectList.add(bill.getBill_status());
+            objectList.add(request_user_id);
+            objectList.add(new Date());
+            objectList.add(request_user_id);
+            objectList.add(new Date());
+            objectList.add(true);
+            parameterList.add(objectList.toArray());
+        }
+
+        int[] result = Db.batch(sqlPara.getSql(), Util.getObjectArray(parameterList), Constant.BATCH_SIZE);
+
+        for (int i : result) {
+            if (i == 0) {
+                throw new RuntimeException("SKU保存不成功");
+            }
+        }
     }
+
+//    public boolean update(Bill bill, String request_user_id) {
+//        bill.remove(Bill.SYSTEM_CREATE_USER_ID);
+//        bill.remove(Bill.SYSTEM_CREATE_TIME);
+//        bill.setSystem_update_user_id(request_user_id);
+//        bill.setSystem_update_time(new Date());
+//        bill.remove(Bill.SYSTEM_STATUS);
+//
+//        return bill.update();
+//    }
+
+//    public boolean delete(String bill_id, String request_user_id) {
+//        JMap map = JMap.create();
+//        map.put(Bill.BILL_ID, bill_id);
+//        map.put(Bill.SYSTEM_UPDATE_USER_ID, request_user_id);
+//        map.put(Bill.SYSTEM_UPDATE_TIME, new Date());
+//        SqlPara sqlPara = Db.getSqlPara("bill.delete", map);
+//
+//        return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
+//    }
 
 }

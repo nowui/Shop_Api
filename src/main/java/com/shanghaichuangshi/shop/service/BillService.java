@@ -26,16 +26,16 @@ public class BillService extends Service {
         return billDao.find(bill_id);
     }
 
-    public Bill save(Bill bill, String request_user_id) {
-        return billDao.save(bill, request_user_id);
+    public void save(List<Bill> billList, String request_user_id) {
+        billDao.save(billList, request_user_id);
     }
 
-    public boolean update(Bill bill, String request_user_id) {
-        return billDao.update(bill, request_user_id);
-    }
+//    public boolean update(Bill bill, String request_user_id) {
+//        return billDao.update(bill, request_user_id);
+//    }
 
-    public boolean delete(Bill bill, String request_user_id) {
-        return billDao.delete(bill.getBill_id(), request_user_id);
-    }
+//    public boolean delete(Bill bill, String request_user_id) {
+//        return billDao.delete(bill.getBill_id(), request_user_id);
+//    }
 
 }

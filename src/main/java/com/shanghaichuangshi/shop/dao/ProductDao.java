@@ -80,28 +80,9 @@ public class ProductDao extends Dao {
         product.setSystem_update_time(new Date());
         product.setSystem_status(true);
 
-        setImage(product);
-
         product.save();
 
         return product;
-    }
-
-    private void setImage(Product product) {
-        String product_image = product.getProduct_image();
-        String product_image_thumbnail = getImageUrl(product_image, Constant.THUMBNAIL);
-        String product_image_original = getImageUrl(product_image, Constant.ORIGINAL);
-
-        product.setProduct_image_thumbnail(product_image_thumbnail);
-        product.setProduct_image_original(product_image_original);
-    }
-
-    private String getImageUrl(String url, String file) {
-        if (url.startsWith("/upload/")) {
-            return url.substring(0, url.lastIndexOf("/")) + "/" + file + "/" + url.substring(url.lastIndexOf("/") + 1);
-        } else {
-            return url;
-        }
     }
 
     public boolean update(Product product, String request_user_id) {
@@ -112,8 +93,6 @@ public class ProductDao extends Dao {
         product.setSystem_update_user_id(request_user_id);
         product.setSystem_update_time(new Date());
         product.remove(Product.SYSTEM_STATUS);
-
-        setImage(product);
 
         return product.update();
     }

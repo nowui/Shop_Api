@@ -60,7 +60,7 @@ public class OrderController extends Controller {
 
         Order order = orderService.adminFind(model.getOrder_id());
 
-        renderSuccessJson(order);
+        renderSuccessJson(order.removeSystemInfo());
     }
 
     @ActionKey(Url.ORDER_SAVE)

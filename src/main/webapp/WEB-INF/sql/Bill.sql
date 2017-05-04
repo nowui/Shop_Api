@@ -62,6 +62,44 @@
     AND bill_id = #p(bill_id)
   #end
 
+  #sql("save")
+    INSERT INTO table_bill (
+      bill_id,
+      user_id,
+      object_id,
+      bill_type,
+      bill_image,
+      bill_name,
+      bill_amount,
+      bill_is_income,
+      bill_time,
+      bill_flow,
+      bill_status,
+      system_create_user_id,
+      system_create_time,
+      system_update_user_id,
+      system_update_time,
+      system_status
+    ) VALUES (
+      ?,
+      ?,
+      ?,
+      ?,
+      ?,
+      ?,
+      ?,
+      ?,
+      ?,
+      ?,
+      ?,
+      ?,
+      ?,
+      ?,
+      ?,
+      ?
+    )
+  #end
+
   #sql("delete")
     UPDATE table_bill SET
     system_update_user_id = #p(system_update_user_id),

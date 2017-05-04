@@ -8,6 +8,7 @@ import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.util.CacheUtil;
 import com.shanghaichuangshi.util.Util;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -81,6 +82,8 @@ public class MemberDao extends Dao {
     public boolean update(Member member, String request_user_id) {
         CacheUtil.remove(MEMBER_CACHE, member.getMember_id());
 
+        member.remove(Member.MEMBER_TOTAL_AMOUNT);
+        member.remove(Member.MEMBER_WITHDRAWAL_AMOUNT);
         member.remove(Member.SYSTEM_CREATE_USER_ID);
         member.remove(Member.SYSTEM_CREATE_TIME);
         member.setSystem_update_user_id(request_user_id);
@@ -113,6 +116,18 @@ public class MemberDao extends Dao {
         map.put(Member.PARENT_PATH, parent_path);
         map.put(Member.MEMBER_LEVEL_ID, member_level_id);
         SqlPara sqlPara = Db.getSqlPara("member.updateByMember_idAndParent_idAndParent_pathAndMember_level_id", map);
+
+        return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
+    }
+
+    public boolean updateByMember_total_amountAndMember_withdrawal_amountAndMember_id(BigDecimal member_total_amount, BigDecimal member_withdrawal_amount, String member_id) {
+        CacheUtil.remove(MEMBER_CACHE, member_id);
+
+        JMap map = JMap.create();
+        map.put(Member.MEMBER_ID, member_id);
+        map.put(Member.MEMBER_TOTAL_AMOUNT, member_total_amount);
+        map.put(Member.MEMBER_WITHDRAWAL_AMOUNT, member_withdrawal_amount);
+        SqlPara sqlPara = Db.getSqlPara("member.updateByMember_total_amountAndMember_withdrawal_amount", map);
 
         return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }

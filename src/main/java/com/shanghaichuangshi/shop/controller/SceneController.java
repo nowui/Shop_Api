@@ -60,7 +60,7 @@ public class SceneController extends Controller {
 
         Scene scene = sceneService.find(model.getScene_id());
 
-        renderSuccessJson(scene);
+        renderSuccessJson(scene.removeSystemInfo());
     }
 
     @ActionKey(Url.SCENE_SAVE)

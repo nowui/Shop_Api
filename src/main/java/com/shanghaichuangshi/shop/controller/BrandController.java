@@ -67,7 +67,7 @@ public class BrandController extends Controller {
 
         Brand brand = brandService.find(model.getBrand_id());
 
-        renderSuccessJson(brand);
+        renderSuccessJson(brand.removeSystemInfo());
     }
 
     @ActionKey(Url.BRAND_SAVE)

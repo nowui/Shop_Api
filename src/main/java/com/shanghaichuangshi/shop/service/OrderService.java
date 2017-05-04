@@ -7,7 +7,9 @@ import com.jfinal.weixin.sdk.kit.PaymentKit;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.constant.WeChat;
 import com.shanghaichuangshi.model.Category;
+import com.shanghaichuangshi.model.File;
 import com.shanghaichuangshi.service.CategoryService;
+import com.shanghaichuangshi.service.FileService;
 import com.shanghaichuangshi.shop.dao.OrderDao;
 import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.service.Service;
@@ -31,7 +33,7 @@ public class OrderService extends Service {
     private final OrderProductService orderProductService = new OrderProductService();
     private final CommissionService commissionService = new CommissionService();
     private final DeliveryService deliveryService = new DeliveryService();
-    private final ProductFileService productFileService = new ProductFileService();
+    private final FileService fileService = new FileService();
 
     public int count(Order order) {
         return orderDao.count(order.getOrder_number());
@@ -49,6 +51,12 @@ public class OrderService extends Service {
         Order order = orderDao.find(order_id);
 
         List<OrderProduct> orderProductList = orderProductService.list(order_id);
+        for(OrderProduct orderProduct : orderProductList) {
+            File productImageFile = fileService.find(orderProduct.getProduct_image());
+            orderProduct.put(Product.PRODUCT_IMAGE_FILE, productImageFile.getFile_thumbnail_path());
+
+            orderProduct.keep(OrderProduct.PRODUCT_ID, OrderProduct.PRODUCT_NAME, Product.PRODUCT_IMAGE_FILE, OrderProduct.PRODUCT_PRICE, OrderProduct.PRODUCT_QUANTITY);
+        }
         order.put("product", orderProductList);
 
         return order;
@@ -169,8 +177,6 @@ public class OrderService extends Service {
             Category category = categoryService.find(product.getCategory_id());
             Brand brand = brandService.find(product.getBrand_id());
 
-            List<ProductFile> productFileList = productFileService.list(product.getProduct_id());
-
             OrderProduct orderProduct = new OrderProduct();
             orderProduct.setOrder_status(false);
             orderProduct.setProduct_id(product.getProduct_id());
@@ -180,7 +186,7 @@ public class OrderService extends Service {
             orderProduct.setBrand_name(brand.getBrand_name());
             orderProduct.setProduct_name(product.getProduct_name());
             orderProduct.setProduct_image(product.getProduct_image());
-            orderProduct.setProduct_image_list(JSONArray.toJSONString(productFileList));
+            orderProduct.setProduct_image_list(product.getProduct_image_list());
             orderProduct.setProduct_is_new(product.getProduct_is_new());
             orderProduct.setProduct_is_recommend(product.getProduct_is_recommend());
             orderProduct.setProduct_is_bargain(product.getProduct_is_bargain());

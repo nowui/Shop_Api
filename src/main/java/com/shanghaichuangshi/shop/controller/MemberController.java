@@ -76,7 +76,7 @@ public class MemberController extends Controller {
 
         Member member = memberService.find(model.getMember_id());
 
-        renderSuccessJson(member);
+        renderSuccessJson(member.removeSystemInfo());
     }
 
     @ActionKey(Url.MEMBER_QRCODE_FIND)
