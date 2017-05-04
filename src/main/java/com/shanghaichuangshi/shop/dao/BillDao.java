@@ -86,7 +86,7 @@ public class BillDao extends Dao {
 
         for (int i : result) {
             if (i == 0) {
-                throw new RuntimeException("SKU保存不成功");
+                throw new RuntimeException("账单保存不成功");
             }
         }
     }

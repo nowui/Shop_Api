@@ -61,40 +61,4 @@ public class BillController extends Controller {
         renderSuccessJson(bill.removeSystemInfo());
     }
 
-    @ActionKey(Url.BILL_SAVE)
-    public void save() {
-        Bill model = getParameter(Bill.class);
-        String request_user_id = getRequest_user_id();
-
-        model.validate(Bill.BILL_NAME);
-
-        billService.save(model, request_user_id);
-
-        renderSuccessJson();
-    }
-
-    @ActionKey(Url.BILLL_UPDATE)
-    public void update() {
-        Bill model = getParameter(Bill.class);
-        String request_user_id = getRequest_user_id();
-
-        model.validate(Bill.BILL_ID, Bill.BILL_NAME);
-
-        billService.update(model, request_user_id);
-
-        renderSuccessJson();
-    }
-
-    @ActionKey(Url.BILL_DELETE)
-    public void delete() {
-        Bill model = getParameter(Bill.class);
-        String request_user_id = getRequest_user_id();
-
-        model.validate(Bill.BILL_ID);
-
-        billService.delete(model, request_user_id);
-
-        renderSuccessJson();
-    }
-
 }

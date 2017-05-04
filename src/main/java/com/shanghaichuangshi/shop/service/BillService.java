@@ -27,7 +27,9 @@ public class BillService extends Service {
     }
 
     public void save(List<Bill> billList, String request_user_id) {
-        billDao.save(billList, request_user_id);
+        if (billList.size() > 0) {
+            billDao.save(billList, request_user_id);
+        }
     }
 
 //    public boolean update(Bill bill, String request_user_id) {

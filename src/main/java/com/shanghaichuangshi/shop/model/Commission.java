@@ -19,6 +19,7 @@ public class Commission extends Model<Commission> {
     public static final String PRODUCT_COMMISSION = "product_commission";
 
     public static final String COMMISSION_LIST = "commission_list";
+    public static final String COMMISSION_AMOUNT = "commission_amount";
 
     
     public String getCommission_id() {

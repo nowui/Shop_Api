@@ -66,11 +66,11 @@
     WHERE member_id = #p(member_id)
   #end
 
-  #sql("updateByMember_total_amountAndMember_withdrawal_amount")
+  #sql("updateAmount")
     UPDATE table_member SET
-    member_total_amount = #p(member_total_amount),
-    member_withdrawal_amount = #p(member_withdrawal_amount)
-    WHERE member_id = #p(member_id)
+    member_total_amount = ?,
+    member_withdrawal_amount = ?
+    WHERE member_id = ?
   #end
 
   #sql("delete")

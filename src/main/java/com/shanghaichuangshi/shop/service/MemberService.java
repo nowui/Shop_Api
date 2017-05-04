@@ -163,6 +163,10 @@ public class MemberService extends Service {
         return memberDao.updateByMember_idAndParent_idAndParent_pathAndMember_level_id(member_id, parent_id, parent_path, member_level_id);
     }
 
+    public void updateAmount(List<Member> memberList) {
+        memberDao.updateAmount(memberList);
+    }
+
     public boolean delete(Member member, String request_user_id) {
         boolean result = memberDao.delete(member.getMember_id(), request_user_id);
 

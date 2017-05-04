@@ -3,12 +3,14 @@ package com.shanghaichuangshi.shop.dao;
 import com.jfinal.kit.JMap;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
+import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.util.CacheUtil;
 import com.shanghaichuangshi.util.Util;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -120,16 +122,26 @@ public class MemberDao extends Dao {
         return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }
 
-    public boolean updateByMember_total_amountAndMember_withdrawal_amountAndMember_id(BigDecimal member_total_amount, BigDecimal member_withdrawal_amount, String member_id) {
-        CacheUtil.remove(MEMBER_CACHE, member_id);
-
+    public void updateAmount(List<Member> memberList) {
         JMap map = JMap.create();
-        map.put(Member.MEMBER_ID, member_id);
-        map.put(Member.MEMBER_TOTAL_AMOUNT, member_total_amount);
-        map.put(Member.MEMBER_WITHDRAWAL_AMOUNT, member_withdrawal_amount);
-        SqlPara sqlPara = Db.getSqlPara("member.updateByMember_total_amountAndMember_withdrawal_amount", map);
+        SqlPara sqlPara = Db.getSqlPara("member.updateAmount", map);
 
-        return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
+        List<Object[]> parameterList = new ArrayList<Object[]>();
+        for(Member member : memberList) {
+            List<Object> objectList = new ArrayList<Object>();
+            objectList.add(member.getMember_total_amount());
+            objectList.add(member.getMember_withdrawal_amount());
+            objectList.add(member.getMember_id());
+            parameterList.add(objectList.toArray());
+        }
+
+        int[] result = Db.batch(sqlPara.getSql(), Util.getObjectArray(parameterList), Constant.BATCH_SIZE);
+
+        for (int i : result) {
+            if (i == 0) {
+                throw new RuntimeException("金额更新不成功");
+            }
+        }
     }
 
     public boolean delete(String member_id, String request_user_id) {

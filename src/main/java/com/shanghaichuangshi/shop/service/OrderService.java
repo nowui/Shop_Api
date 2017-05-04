@@ -13,6 +13,8 @@ import com.shanghaichuangshi.service.FileService;
 import com.shanghaichuangshi.shop.dao.OrderDao;
 import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.service.Service;
+import com.shanghaichuangshi.shop.type.BillFlowEnum;
+import com.shanghaichuangshi.shop.type.BillTypeEnum;
 import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.util.Util;
 
@@ -67,12 +69,12 @@ public class OrderService extends Service {
     }
 
     public Map<String, String> save(Order order, JSONObject jsonObject, String request_user_id) {
-        JSONArray productJSONArray = jsonObject.getJSONArray(Product.PRODUCT_LIST);
+        JSONArray productListJSONArray = jsonObject.getJSONArray(Product.PRODUCT_LIST);
 
         String open_id = jsonObject.getString("open_id");
         String pay_type = jsonObject.getString("pay_type");
 
-        if (productJSONArray.size() == 0) {
+        if (productListJSONArray.size() == 0) {
             throw new RuntimeException("请选购商品");
         }
 
@@ -82,12 +84,13 @@ public class OrderService extends Service {
         BigDecimal order_discount_amount = BigDecimal.valueOf(0);
 
         Member member = memberService.findByUser_id(request_user_id);
-        JSONArray member_path = new JSONArray();
+        JSONArray fatherMemberJSONArray = new JSONArray();
 
         if (member == null) {
             throw new RuntimeException("您不是我们的会员");
         }
 
+        //会员信息
         String member_id = member.getMember_id();
         String member_level_id = member.getMember_level_id();
         String member_level_name = "";
@@ -106,7 +109,7 @@ public class OrderService extends Service {
             parentPathArray = JSONArray.parseArray(member.getParent_path());
         }
 
-        //添加上一级
+        //上一级信息
         for (int i = 0; i < parentPathArray.size(); i++) {
             String m_id = parentPathArray.getString(i);
 
@@ -116,30 +119,30 @@ public class OrderService extends Service {
 
                 JSONObject mObject = new JSONObject();
                 mObject.put(Member.MEMBER_ID, m_id);
+                mObject.put(Member.MEMBER_NAME, m.getMember_name());
                 mObject.put(MemberLevel.MEMBER_LEVEL_ID, mLevel.getMember_level_id());
                 mObject.put(MemberLevel.MEMBER_LEVEL_NAME, mLevel.getMember_level_name());
-                mObject.put(MemberLevel.MEMBER_LEVEL_VALUE, mLevel.getMember_level_value());
 
-                member_path.add(mObject);
+                fatherMemberJSONArray.add(mObject);
             }
         }
 
         //添加自己
-        if (parentPathArray.size() > 0) {
-            JSONObject memberObject = new JSONObject();
-            memberObject.put(Member.MEMBER_ID, member_id);
-            memberObject.put(MemberLevel.MEMBER_LEVEL_ID, member_level_id);
-            memberObject.put(MemberLevel.MEMBER_LEVEL_NAME, member_level_name);
-            memberObject.put(MemberLevel.MEMBER_LEVEL_VALUE, member_level_value);
-            member_path.add(memberObject);
-        }
+//        if (parentPathArray.size() > 0) {
+//            JSONObject memberObject = new JSONObject();
+//            memberObject.put(Member.MEMBER_ID, member_id);
+//            memberObject.put(MemberLevel.MEMBER_LEVEL_ID, member_level_id);
+//            memberObject.put(MemberLevel.MEMBER_LEVEL_NAME, member_level_name);
+//            memberObject.put(MemberLevel.MEMBER_LEVEL_VALUE, member_level_value);
+//            member_path.add(memberObject);
+//        }
 
-
+        //商品信息
         List<OrderProduct> orderProductList = new ArrayList<OrderProduct>();
+        for (int i = 0; i < productListJSONArray.size(); i++) {
+            JSONObject productJSONObject = productListJSONArray.getJSONObject(i);
 
-        for (int i = 0; i < productJSONArray.size(); i++) {
-            JSONObject productJSONObject = productJSONArray.getJSONObject(i);
-
+            String order_product_id = Util.getRandomUUID();
             String sku_id = productJSONObject.getString(Sku.SKU_ID);
             Integer product_quantity = productJSONObject.getInteger(OrderProduct.PRODUCT_QUANTITY);
 
@@ -155,20 +158,10 @@ public class OrderService extends Service {
 //                throw new RuntimeException("库存不足:" + product.getProduct_name());
 //            }
 
-            String commission_id = "";
-
-            List<Commission> commissionList = commissionService.list(product.getProduct_id());
-
-            for (Commission commission : commissionList) {
-                if (commission.getProduct_attribute().equals(sku.getProduct_attribute())) {
-                    commission_id = commission.getCommission_id();
-                }
-            }
-
             //更新订单商品数量
             order_product_quantity += product_quantity;
 
-            //更新订单应付价格
+            //更新商品应付价格
             JSONObject productPriceJSONObject = skuService.getProduct_price(sku, member_level_id);
             BigDecimal product_price = productPriceJSONObject.getBigDecimal(Product.PRODUCT_PRICE);
             order_product_amount = order_product_amount.add(product_price.multiply(BigDecimal.valueOf(product_quantity)));
@@ -177,7 +170,43 @@ public class OrderService extends Service {
             Category category = categoryService.find(product.getCategory_id());
             Brand brand = brandService.find(product.getBrand_id());
 
+            //佣金
+            String commission_id = "";
+            Commission commission = null;
+            List<Commission> commissionList = commissionService.list(product.getProduct_id());
+            for (Commission c : commissionList) {
+                if (c.getProduct_attribute().equals(sku.getProduct_attribute())) {
+                    commission_id = c.getCommission_id();
+
+                    commission = c;
+                }
+            }
+            if (commission_id != "") {
+                JSONArray productCommissionJsonArray = JSONArray.parseArray(commission.getProduct_commission());
+
+                for (int j = 0; j < fatherMemberJSONArray.size(); j++) {
+                    JSONObject fatherMemberJSONObject = fatherMemberJSONArray.getJSONObject(j);
+                    String father_member_id = fatherMemberJSONObject.getString(Member.MEMBER_ID);
+                    String father_member_level_id = jsonObject.getString(MemberLevel.MEMBER_LEVEL_ID);
+                    Member fatherMember = memberService.find(father_member_id);
+
+                    for (int k = 0; k < productCommissionJsonArray.size(); k++) {
+                        JSONObject productCommissionJsonObject = productCommissionJsonArray.getJSONObject(k);
+
+                        if (father_member_level_id.equals(productCommissionJsonObject.getString(MemberLevel.MEMBER_LEVEL_ID))) {
+                            BigDecimal product_commission = productCommissionJsonObject.getBigDecimal(Commission.PRODUCT_COMMISSION);
+                            BigDecimal commission_amount = order_product_amount.multiply(product_commission).divide(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+
+                            fatherMemberJSONObject.put(Commission.COMMISSION_AMOUNT, commission_amount);
+
+                            break;
+                        }
+                    }
+                }
+            }
+
             OrderProduct orderProduct = new OrderProduct();
+            orderProduct.setOrder_product_id(order_product_id);
             orderProduct.setOrder_status(false);
             orderProduct.setProduct_id(product.getProduct_id());
             orderProduct.setCategory_id(category.getCategory_id());
@@ -196,12 +225,12 @@ public class OrderService extends Service {
             orderProduct.setSku_id(sku_id);
             orderProduct.setCommission_id(commission_id);
             orderProduct.setMember_id(member_id);
-            orderProduct.setMember_path(member_path.toJSONString());
             orderProduct.setProduct_attribute(sku.getProduct_attribute());
             orderProduct.setProduct_market_price(product.getProduct_market_price());
             orderProduct.setProduct_price(product.getProduct_price());
             orderProduct.setProduct_stock(product.getProduct_stock());
             orderProduct.setProduct_quantity(product_quantity);
+            orderProduct.setOrder_product_commission(fatherMemberJSONArray.toJSONString());
             orderProductList.add(orderProduct);
         }
 

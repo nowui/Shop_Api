@@ -68,8 +68,8 @@ public class OrderProduct extends Model<OrderProduct> {
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "会员编号")
     public static final String MEMBER_ID = "member_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "会员上级")
-    public static final String MEMBER_PATH = "member_path";
+    @Column(type = ColumnType.INT, length = 1000, comment = "订单商品分成")
+    public static final String ORDER_PRODUCT_COMMISSION = "order_product_commission";
 
     @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品属性")
     public static final String PRODUCT_ATTRIBUTE = "product_attribute";
@@ -85,7 +85,6 @@ public class OrderProduct extends Model<OrderProduct> {
 
     @Column(type = ColumnType.INT, length = 11, comment = "商品数量")
     public static final String PRODUCT_QUANTITY = "product_quantity";
-
     
     public String getOrder_product_id() {
         return getStr(ORDER_PRODUCT_ID);
@@ -247,12 +246,12 @@ public class OrderProduct extends Model<OrderProduct> {
         set(MEMBER_ID, member_id);
     }
 
-    public String getMember_path() {
-        return getStr(MEMBER_PATH);
+    public String getOrder_product_commission() {
+        return getStr(ORDER_PRODUCT_COMMISSION);
     }
 
-    public void setMember_path(String member_path) {
-        set(MEMBER_PATH, member_path);
+    public void setOrder_product_commission(String order_product_commission) {
+        set(ORDER_PRODUCT_COMMISSION, order_product_commission);
     }
 
     public String getProduct_attribute() {

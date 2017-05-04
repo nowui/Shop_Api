@@ -43,7 +43,7 @@ public class OrderProductDao extends Dao {
         List<Object[]> parameterList = new ArrayList<Object[]>();
         for(OrderProduct orderProduct : orderProductList) {
             List<Object> objectList = new ArrayList<Object>();
-            objectList.add(Util.getRandomUUID());
+            objectList.add(orderProduct.getOrder_product_id());
             objectList.add(orderProduct.getOrder_id());
             objectList.add(orderProduct.getOrder_status());
             objectList.add(orderProduct.getProduct_id());
@@ -63,7 +63,7 @@ public class OrderProductDao extends Dao {
             objectList.add(orderProduct.getSku_id());
             objectList.add(orderProduct.getCommission_id());
             objectList.add(orderProduct.getMember_id());
-            objectList.add(orderProduct.getMember_path());
+            objectList.add(orderProduct.getOrder_product_commission());
             objectList.add(orderProduct.getProduct_attribute());
             objectList.add(orderProduct.getProduct_market_price());
             objectList.add(orderProduct.getProduct_price());
