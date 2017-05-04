@@ -2,6 +2,8 @@
 
   #sql("list")
     SELECT
+    order_product_id,
+    order_id,
     product_id,
     product_name,
     product_image,
@@ -9,7 +11,7 @@
     product_quantity,
     commission_id,
     member_id,
-    member_path,
+    order_product_commission,
     product_price,
     product_quantity
     FROM table_order_product
@@ -48,7 +50,7 @@
       sku_id,
       commission_id,
       member_id,
-      member_path,
+      order_product_commission,
       product_attribute,
       product_market_price,
       product_price,

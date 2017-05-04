@@ -186,9 +186,7 @@ public class OrderService extends Service {
 
                 for (int j = 0; j < fatherMemberJSONArray.size(); j++) {
                     JSONObject fatherMemberJSONObject = fatherMemberJSONArray.getJSONObject(j);
-                    String father_member_id = fatherMemberJSONObject.getString(Member.MEMBER_ID);
-                    String father_member_level_id = jsonObject.getString(MemberLevel.MEMBER_LEVEL_ID);
-                    Member fatherMember = memberService.find(father_member_id);
+                    String father_member_level_id = fatherMemberJSONObject.getString(MemberLevel.MEMBER_LEVEL_ID);
 
                     for (int k = 0; k < productCommissionJsonArray.size(); k++) {
                         JSONObject productCommissionJsonObject = productCommissionJsonArray.getJSONObject(k);
@@ -198,6 +196,7 @@ public class OrderService extends Service {
                             BigDecimal commission_amount = order_product_amount.multiply(product_commission).divide(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                             fatherMemberJSONObject.put(Commission.COMMISSION_AMOUNT, commission_amount);
+                            fatherMemberJSONObject.put(Commission.PRODUCT_COMMISSION, product_commission);
 
                             break;
                         }
