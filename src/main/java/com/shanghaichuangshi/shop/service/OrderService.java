@@ -13,8 +13,6 @@ import com.shanghaichuangshi.service.FileService;
 import com.shanghaichuangshi.shop.dao.OrderDao;
 import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.service.Service;
-import com.shanghaichuangshi.shop.type.BillFlowEnum;
-import com.shanghaichuangshi.shop.type.BillTypeEnum;
 import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.util.Util;
 
@@ -42,7 +40,7 @@ public class OrderService extends Service {
     }
 
     public List<Order> list(Order order, int m, int n) {
-        return orderDao.list("", m, n);
+        return orderDao.list(order.getOrder_number(), m, n);
     }
 
     public List<Order> listByUser_id(String user_id, Integer m, Integer n) {
@@ -59,13 +57,21 @@ public class OrderService extends Service {
 
             orderProduct.keep(OrderProduct.PRODUCT_ID, OrderProduct.PRODUCT_NAME, Product.PRODUCT_IMAGE_FILE, OrderProduct.PRODUCT_PRICE, OrderProduct.PRODUCT_QUANTITY);
         }
-        order.put("product", orderProductList);
+        order.put(Product.PRODUCT_LIST, orderProductList);
 
         return order;
     }
 
     public Order adminFind(String order_id) {
-        return orderDao.find(order_id);
+        Order order = orderDao.find(order_id);
+
+        List<OrderProduct> orderProductList = orderProductService.list(order_id);
+        for(OrderProduct orderProduct : orderProductList) {
+            orderProduct.keep(OrderProduct.PRODUCT_ID, OrderProduct.PRODUCT_NAME, OrderProduct.PRODUCT_PRICE, OrderProduct.PRODUCT_QUANTITY, OrderProduct.ORDER_PRODUCT_COMMISSION);
+        }
+        order.put(Product.PRODUCT_LIST, orderProductList);
+
+        return order;
     }
 
     public Map<String, String> save(Order order, JSONObject jsonObject, String request_user_id) {

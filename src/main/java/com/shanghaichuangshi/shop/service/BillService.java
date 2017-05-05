@@ -3,12 +3,15 @@ package com.shanghaichuangshi.shop.service;
 import com.shanghaichuangshi.shop.dao.BillDao;
 import com.shanghaichuangshi.shop.model.Bill;
 import com.shanghaichuangshi.service.Service;
+import com.shanghaichuangshi.shop.model.Member;
 
 import java.util.List;
 
 public class BillService extends Service {
 
     private final BillDao billDao = new BillDao();
+
+    private final MemberService memberService = new MemberService();
 
     public int count(Bill bill) {
         return billDao.count(bill.getBill_name());
@@ -20,6 +23,12 @@ public class BillService extends Service {
 
     public List<Bill> listByUser_id(String user_id, int m, int n) {
         return billDao.listByUser_id(user_id, m, n);
+    }
+
+    public List<Bill> listByMember_id(String member_id, Integer m, Integer n) {
+        Member member = memberService.find(member_id);
+
+        return billDao.listByUser_id(member.getUser_id(), m, n);
     }
 
     public Bill find(String bill_id) {

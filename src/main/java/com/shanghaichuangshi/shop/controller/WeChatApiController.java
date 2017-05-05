@@ -159,6 +159,9 @@ public class WeChatApiController extends ApiController {
             orderProductService.updateByOrder_idAndOrder_status(order.getOrder_id(), order_status);
 
             List<OrderProduct> orderProductList = orderProductService.list(order.getOrder_id());
+            List<Bill> billList = new ArrayList<Bill>();
+            List<Member> memberList = new ArrayList<Member>();
+            String request_user_id = "";
 
             for (OrderProduct orderProduct : orderProductList) {
                 String commission_id = orderProduct.getCommission_id();
@@ -167,15 +170,9 @@ public class WeChatApiController extends ApiController {
 
                 BigDecimal price = product_price.multiply(BigDecimal.valueOf(product_quantity));
 
-                List<Bill> billList = new ArrayList<Bill>();
-                List<Member> memberList = new ArrayList<Member>();
-                String request_user_id = "";
-
                 //如果要分成
                 if (!Util.isNullOrEmpty(commission_id)) {
                     JSONArray orderProductCommissionJSONArray = JSONArray.parseArray(orderProduct.getOrder_product_commission());
-                    Commission commission = commissionService.find(commission_id);
-                    JSONArray productCommissionJsonArray = JSONArray.parseArray(commission.getProduct_commission());
 
                     for (int i = 0; i < orderProductCommissionJSONArray.size(); i++) {
                         JSONObject orderProductCommissionJSONObject = orderProductCommissionJSONArray.getJSONObject(i);
@@ -199,36 +196,51 @@ public class WeChatApiController extends ApiController {
                         bill.setBill_status(true);
                         billList.add(bill);
 
-                        BigDecimal member_total_amount = member.getMember_total_amount().add(commission_amount);
+                        //判断是否重复
+                        Boolean is_exit = false;
+                        for (Member m : memberList) {
+                            if (m.getMember_id().equals(member_id)) {
+                                is_exit = true;
 
-                        Member m = new Member();
-                        m.setMember_id(member_id);
-                        m.setMember_total_amount(member_total_amount);
-                        m.setMember_withdrawal_amount(member.getMember_withdrawal_amount());
-                        memberList.add(m);
+                                //增加增量
+                                m.setMember_total_amount(m.getMember_total_amount().add(commission_amount));
+
+                                break;
+                            }
+                        }
+
+                        if (!is_exit) {
+                            //增加存量
+                            BigDecimal member_total_amount = member.getMember_total_amount().add(commission_amount);
+
+                            Member m = new Member();
+                            m.setMember_id(member_id);
+                            m.setMember_total_amount(member_total_amount);
+                            m.setMember_withdrawal_amount(member.getMember_withdrawal_amount());
+                            memberList.add(m);
+                        }
                     }
                 }
-
-
-                Member member = memberService.find(orderProduct.getMember_id());
-
-                //本人下单账单
-                Bill bill = new Bill();
-                bill.setUser_id(member.getUser_id());
-                bill.setObject_id(orderProduct.getOrder_id());
-                bill.setBill_type(BillTypeEnum.ORDER.getKey());
-                bill.setBill_image(orderProduct.getProduct_image());
-                bill.setBill_amount(price);
-                bill.setBill_name("订单[" + order_number + "]支付¥" + price);
-                bill.setBill_is_income(false);
-                bill.setBill_time(new Date());
-                bill.setBill_flow(BillFlowEnum.FINISH.getKey());
-                bill.setBill_status(true);
-                billList.add(bill);
-
-                billService.save(billList, request_user_id);
-                memberService.updateAmount(memberList);
             }
+
+            Member member = memberService.find(order.getMember_id());
+
+            //本人下单账单
+            Bill bill = new Bill();
+            bill.setUser_id(member.getUser_id());
+            bill.setObject_id(order.getOrder_id());
+            bill.setBill_type(BillTypeEnum.ORDER.getKey());
+            bill.setBill_image("");
+            bill.setBill_amount(order.getOrder_amount());
+            bill.setBill_name("订单[" + order_number + "]支付¥" + order.getOrder_amount());
+            bill.setBill_is_income(false);
+            bill.setBill_time(new Date());
+            bill.setBill_flow(BillFlowEnum.FINISH.getKey());
+            bill.setBill_status(true);
+            billList.add(bill);
+
+            billService.save(billList, request_user_id);
+            memberService.updateAmount(memberList);
 
             if (is_update) {
                 renderText("<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>");

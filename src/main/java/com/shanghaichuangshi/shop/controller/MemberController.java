@@ -145,6 +145,15 @@ public class MemberController extends Controller {
         renderSuccessJson(resultMap);
     }
 
+    @ActionKey(Url.MEMBER_MY_FIND)
+    public void myFind() {
+        String request_user_id = getRequest_user_id();
+
+        Map<String, Object> resultMap = memberService.myFind(request_user_id);
+
+        renderSuccessJson(resultMap);
+    }
+
     @ActionKey(Url.MEMBER_LEVEL_ADMIN_LIST)
     public void levelAdminList() {
         validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);

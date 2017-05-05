@@ -17,6 +17,7 @@ import com.shanghaichuangshi.shop.model.Delivery;
 import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.shop.model.MemberLevel;
+import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.shop.type.SceneTypeEnum;
 import com.shanghaichuangshi.type.UserType;
 import com.shanghaichuangshi.util.Util;
@@ -190,6 +191,19 @@ public class MemberService extends Service {
         String ip_address = "";
 
         return getMember(user, platform, version, ip_address, request_user_id);
+    }
+
+    public Map<String, Object> myFind(String request_user_id) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+
+        Member member = findByUser_id(request_user_id);
+
+        resultMap.put(Member.MEMBER_TOTAL_AMOUNT, member.getMember_total_amount());
+        resultMap.put(OrderFlowEnum.WAIT_PAY.getKey(), 0);
+        resultMap.put(OrderFlowEnum.WAIT_SEND.getKey(), 0);
+        resultMap.put(OrderFlowEnum.WAIT_RECEIVE.getKey(), 0);
+
+        return resultMap;
     }
 
     private Map<String, Object> getMember(User user, String platform, String version, String ip_address, String request_user_id) {

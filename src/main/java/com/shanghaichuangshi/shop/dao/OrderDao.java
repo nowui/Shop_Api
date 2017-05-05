@@ -17,7 +17,7 @@ import java.util.List;
 
 public class OrderDao extends Dao {
 
-    private final String ORDER_LIST_CACHE = "order_list_cache";
+    private final String ORDER_NUMBER_LIST_CACHE = "order_number_list_cache";
     private final String ORDER_CACHE = "order_cache";
 
     public int count(String order_number) {
@@ -50,7 +50,7 @@ public class OrderDao extends Dao {
     }
 
     public List<String> listOrderNumber(String day) {
-        List<String> resultList = CacheUtil.get(ORDER_LIST_CACHE, day);
+        List<String> resultList = CacheUtil.get(ORDER_NUMBER_LIST_CACHE, day);
 
         if (resultList == null) {
             JMap map = JMap.create();
@@ -66,7 +66,7 @@ public class OrderDao extends Dao {
                     resultList.add(order.getOrder_number());
                 }
 
-                CacheUtil.put(ORDER_LIST_CACHE, day, resultList);
+                CacheUtil.put(ORDER_NUMBER_LIST_CACHE, day, resultList);
             }
         }
 
@@ -78,7 +78,7 @@ public class OrderDao extends Dao {
 
         resultList.add(order_number);
 
-        CacheUtil.put(ORDER_LIST_CACHE, day, resultList);
+        CacheUtil.put(ORDER_NUMBER_LIST_CACHE, day, resultList);
     }
 
     public Order find(String order_id) {

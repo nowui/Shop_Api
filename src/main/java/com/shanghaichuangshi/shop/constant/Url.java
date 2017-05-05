@@ -22,6 +22,7 @@ public class Url {
     public static final String MEMBER_DELETE = "/member/delete";
     public static final String MEMBER_LOGIN = "/member/login";
     public static final String MEMBER_WECHAT_LOGIN = "/member/wechat/login";
+    public static final String MEMBER_MY_FIND = "/member/my/find";
 
     public static final String MEMBER_LEVEL_LIST = "/member/level/list";
     public static final String MEMBER_LEVEL_ADMIN_LIST = "/member/level/admin/list";
@@ -103,6 +104,7 @@ public class Url {
     public static final String COMMISSION_DELETE = "/commission/delete";
 
     public static final String BILL_LIST = "/bill/list";
+    public static final String BILL_MEMBER_LIST = "/bill/member/list";
     public static final String BILL_ADMIN_LIST = "/bill/admin/list";
     public static final String BILL_FIND = "/bill/find";
     public static final String BILL_ADMIN_FIND = "/bill/admin/find";

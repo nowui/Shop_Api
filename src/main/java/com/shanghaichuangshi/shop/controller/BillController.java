@@ -5,6 +5,7 @@ import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.controller.Controller;
 import com.shanghaichuangshi.shop.model.Bill;
+import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.shop.service.BillService;
 
 import java.util.List;
@@ -20,6 +21,19 @@ public class BillController extends Controller {
         validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);
 
         List<Bill> billListvice = billService.listByUser_id(request_user_id, getM(), getN());
+
+        renderSuccessJson(billListvice);
+    }
+
+    @ActionKey(Url.BILL_MEMBER_LIST)
+    public void memberList() {
+        validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);
+
+        Member model = getParameter(Member.class);
+
+        model.validate(Member.MEMBER_ID);
+
+        List<Bill> billListvice = billService.listByMember_id(model.getMember_id(), getM(), getN());
 
         renderSuccessJson(billListvice);
     }

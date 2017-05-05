@@ -128,6 +128,8 @@ public class MemberDao extends Dao {
 
         List<Object[]> parameterList = new ArrayList<Object[]>();
         for(Member member : memberList) {
+            CacheUtil.remove(MEMBER_CACHE, member.getMember_id());
+
             List<Object> objectList = new ArrayList<Object>();
             objectList.add(member.getMember_total_amount());
             objectList.add(member.getMember_withdrawal_amount());
