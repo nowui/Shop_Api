@@ -10,6 +10,7 @@ import com.shanghaichuangshi.shop.dao.ProductDao;
 import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.type.CategoryType;
+import com.shanghaichuangshi.util.AesUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,10 @@ public class ProductService extends Service {
     }
 
     public Product find(String product_id) {
+        return productDao.find(product_id);
+    }
+
+    public Product findByUser_id(String product_id, String user_id) {
         Product product = productDao.find(product_id);
 
         File productImageFile = fileService.find(product.getProduct_image());
@@ -74,11 +79,35 @@ public class ProductService extends Service {
         }
         product.put(Product.PRODUCT_IMAGE_FILE_LIST, productImageFileList);
 
+        Member member = memberService.findByUser_id(user_id);
+
+        String member_level_id = "";
+        if (member != null) {
+            member_level_id = member.getMember_level_id();
+        }
+
+        List<Sku> skuList = skuService.listByProduct_idAndMember_level_id(product.getProduct_id(), member_level_id);
+
+        product.put(Sku.SKU_LIST, skuList);
+
         return product;
     }
 
-    public Product findByUser_id(String product_id, String user_id) {
-        Product product = find(product_id);
+    public Product videoFindByUser_id(String product_id, String user_id) {
+        Product product = productDao.find(product_id);
+
+        File productImageFile = fileService.find(product.getProduct_image());
+        product.put(Product.PRODUCT_IMAGE_FILE, productImageFile.getFile_thumbnail_path());
+
+        List<File> productImageFileList = new ArrayList<File>();
+        JSONArray productImageList = JSONArray.parseArray(product.getProduct_image_list().toString());
+        for (int i = 0; i < productImageList.size(); i++) {
+            File file = fileService.find(productImageList.getString(i));
+            file.setFile_path(AesUtil.encrypt(file.getFile_path()));
+            file.keep(File.FILE_ID, File.FILE_NAME, File.FILE_PATH, File.FILE_IMAGE);
+            productImageFileList.add(file);
+        }
+        product.put(Product.PRODUCT_IMAGE_FILE_LIST, productImageFileList);
 
         Member member = memberService.findByUser_id(user_id);
 
@@ -87,17 +116,7 @@ public class ProductService extends Service {
             member_level_id = member.getMember_level_id();
         }
 
-        List<Sku> skuList = skuService.list(product.getProduct_id());
-
-        for (Sku sku : skuList) {
-            JSONArray priceArray = new JSONArray();
-
-            JSONObject jsonObject = skuService.getProduct_price(sku, member_level_id);
-
-            priceArray.add(jsonObject);
-
-            sku.setProduct_price(priceArray.toJSONString());
-        }
+        List<Sku> skuList = skuService.listByProduct_idAndMember_level_id(product.getProduct_id(), member_level_id);
 
         product.put(Sku.SKU_LIST, skuList);
 
@@ -105,7 +124,7 @@ public class ProductService extends Service {
     }
 
     public Product adminFind(String product_id) {
-        Product product = find(product_id);
+        Product product = productDao.find(product_id);
 
         File productImageFile = fileService.find(product.getProduct_image());
         product.put(Product.PRODUCT_IMAGE_FILE, productImageFile);
@@ -114,7 +133,31 @@ public class ProductService extends Service {
         JSONArray productImageList = JSONArray.parseArray(product.getProduct_image_list().toString());
         for (int i = 0; i < productImageList.size(); i++) {
             File file = fileService.find(productImageList.getString(i));
-            file.keep(File.FILE_ID, File.FILE_PATH);
+            file.keep(File.FILE_ID, File.FILE_NAME, File.FILE_PATH);
+            productImageFileList.add(file);
+        }
+        product.put(Product.PRODUCT_IMAGE_FILE_LIST, productImageFileList);
+
+        List<Sku> skuList = skuService.list(product_id);
+        product.put(Sku.SKU_LIST, skuList);
+
+        List<Commission> commissionList = commissionService.list(product.getProduct_id());
+        product.put(Commission.COMMISSION_LIST, commissionList);
+
+        return product;
+    }
+
+    public Product adminVideoFind(String product_id) {
+        Product product = productDao.find(product_id);
+
+        File productImageFile = fileService.find(product.getProduct_image());
+        product.put(Product.PRODUCT_IMAGE_FILE, productImageFile);
+
+        List<File> productImageFileList = new ArrayList<File>();
+        JSONArray productImageList = JSONArray.parseArray(product.getProduct_image_list().toString());
+        for (int i = 0; i < productImageList.size(); i++) {
+            File file = fileService.find(productImageList.getString(i));
+            file.keep(File.FILE_ID, File.FILE_NAME, File.FILE_PATH, File.FILE_IMAGE);
             productImageFileList.add(file);
         }
         product.put(Product.PRODUCT_IMAGE_FILE_LIST, productImageFileList);

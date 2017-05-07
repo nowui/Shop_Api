@@ -1,6 +1,6 @@
 package com.shanghaichuangshi.shop.dao;
 
-import com.jfinal.kit.JMap;
+import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
@@ -16,7 +16,7 @@ public class DeliveryDao extends Dao {
     private final String DELIVERY_LIST_CACHE = "delivery_list_cache";
 
     public int count(String delivery_name, String user_id) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Delivery.DELIVERY_NAME, delivery_name);
         map.put(Delivery.USER_ID, user_id);
         SqlPara sqlPara = Db.getSqlPara("delivery.count", map);
@@ -26,7 +26,7 @@ public class DeliveryDao extends Dao {
     }
 
     public List<Delivery> list(String delivery_name, Integer m, Integer n) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Delivery.DELIVERY_NAME, delivery_name);
         map.put(Delivery.M, m);
         map.put(Delivery.N, n);
@@ -39,7 +39,7 @@ public class DeliveryDao extends Dao {
         List<Delivery> deliveryList = CacheUtil.get(DELIVERY_LIST_CACHE, user_id);
 
         if (deliveryList == null) {
-            JMap map = JMap.create();
+            Kv map = Kv.create();
             map.put(Delivery.USER_ID, user_id);
             map.put(Delivery.M, m);
             map.put(Delivery.N, n);
@@ -58,7 +58,7 @@ public class DeliveryDao extends Dao {
     }
 
     public Delivery find(String delivery_id) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Delivery.DELIVERY_ID, delivery_id);
         SqlPara sqlPara = Db.getSqlPara("delivery.find", map);
 
@@ -71,7 +71,7 @@ public class DeliveryDao extends Dao {
     }
 
     public Delivery findDefaultByUser_id(String user_id) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Delivery.USER_ID, user_id);
         SqlPara sqlPara = Db.getSqlPara("delivery.findDefaultByUser_id", map);
 
@@ -112,7 +112,7 @@ public class DeliveryDao extends Dao {
     }
 
     public boolean updateIsDefault(String delivery_id, String request_user_id) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Delivery.DELIVERY_ID, delivery_id);
         map.put(Delivery.SYSTEM_UPDATE_USER_ID, request_user_id);
         map.put(Delivery.SYSTEM_UPDATE_TIME, new Date());
@@ -125,7 +125,7 @@ public class DeliveryDao extends Dao {
     public boolean delete(String delivery_id, String request_user_id) {
         CacheUtil.remove(DELIVERY_LIST_CACHE, request_user_id);
 
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Delivery.DELIVERY_ID, delivery_id);
         map.put(Delivery.SYSTEM_UPDATE_USER_ID, request_user_id);
         map.put(Delivery.SYSTEM_UPDATE_TIME, new Date());

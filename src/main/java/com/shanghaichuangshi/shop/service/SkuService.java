@@ -41,6 +41,22 @@ public class SkuService extends Service {
         }
     }
 
+    public List<Sku> listByProduct_idAndMember_level_id(String product_id, String member_level_id) {
+        List<Sku> skuList = skuDao.list(product_id);
+
+        for (Sku sku : skuList) {
+            JSONArray priceArray = new JSONArray();
+
+            JSONObject jsonObject = getProduct_price(sku, member_level_id);
+
+            priceArray.add(jsonObject);
+
+            sku.setProduct_price(priceArray.toJSONString());
+        }
+
+        return skuList;
+    }
+
     public JSONObject getProduct_price(Sku sku, String member_level_id) {
         JSONArray jsonArray = JSON.parseArray(sku.getProduct_price());
 
@@ -60,8 +76,6 @@ public class SkuService extends Service {
                 return jsonObject;
             }
         }
-
-        System.out.println(sku);
 
         throw new RuntimeException("找不到价格");
     }

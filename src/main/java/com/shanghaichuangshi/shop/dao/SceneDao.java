@@ -1,6 +1,6 @@
 package com.shanghaichuangshi.shop.dao;
 
-import com.jfinal.kit.JMap;
+import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
@@ -15,7 +15,7 @@ public class SceneDao extends Dao {
     private final String SCENED_CACHE = "scene_cache";
 
     public int count(String scene_type) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Scene.SCENE_TYPE, scene_type);
         SqlPara sqlPara = Db.getSqlPara("scene.count", map);
 
@@ -24,7 +24,7 @@ public class SceneDao extends Dao {
     }
 
     public List<Scene> list(String scene_type, Integer m, Integer n) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Scene.SCENE_TYPE, scene_type);
         map.put(Scene.M, m);
         map.put(Scene.N, n);
@@ -37,7 +37,7 @@ public class SceneDao extends Dao {
         Scene scene = CacheUtil.get(SCENED_CACHE, scene_id);
 
         if (scene == null) {
-            JMap map = JMap.create();
+            Kv map = Kv.create();
             map.put(Scene.SCENE_ID, scene_id);
             SqlPara sqlPara = Db.getSqlPara("scene.find", map);
 
@@ -89,7 +89,7 @@ public class SceneDao extends Dao {
     public boolean updateScene_addByScene_id(String scene_id, String request_user_id) {
         CacheUtil.remove(SCENED_CACHE, scene_id);
 
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Scene.SCENE_ID, scene_id);
         SqlPara sqlPara = Db.getSqlPara("scene.updateScene_addByScene_id", map);
 
@@ -99,7 +99,7 @@ public class SceneDao extends Dao {
     public boolean updateScene_cancelByScene_id(String scene_id, String request_user_id) {
         CacheUtil.remove(SCENED_CACHE, scene_id);
 
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Scene.SCENE_ID, scene_id);
         SqlPara sqlPara = Db.getSqlPara("scene.updateScene_cancelByScene_id", map);
 
@@ -109,7 +109,7 @@ public class SceneDao extends Dao {
     public boolean updateScene_is_expireByScene_id(String scene_id, String request_user_id) {
         CacheUtil.remove(SCENED_CACHE, scene_id);
 
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Scene.SCENE_ID, scene_id);
         SqlPara sqlPara = Db.getSqlPara("scene.updateScene_is_expireByScene_id", map);
 
@@ -119,7 +119,7 @@ public class SceneDao extends Dao {
     public boolean delete(String scene_id, String request_user_id) {
         CacheUtil.remove(SCENED_CACHE, scene_id);
 
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Scene.SCENE_ID, scene_id);
         map.put(Scene.SYSTEM_UPDATE_USER_ID, request_user_id);
         map.put(Scene.SYSTEM_UPDATE_TIME, new Date());

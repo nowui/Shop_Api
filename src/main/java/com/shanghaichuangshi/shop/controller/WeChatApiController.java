@@ -293,6 +293,8 @@ public class WeChatApiController extends ApiController {
 
         SnsAccessToken snsAccessToken = SnsAccessTokenApi.getSnsAccessToken(WeChat.app_id, WeChat.app_secret, code);
 
+        System.out.println(snsAccessToken.getJson());
+
         String wechat_open_id = snsAccessToken.getOpenid();
 
 //        System.out.println("http://h5." + WeChat.redirect_uri + "/#/" + url + "/?wechat_open_id=" + wechat_open_id);

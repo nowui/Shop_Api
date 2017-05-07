@@ -75,6 +75,18 @@ public class ProductController extends Controller {
         renderSuccessJson(product.removeUnfindable());
     }
 
+    @ActionKey(Url.PRODUCT_VIDEO_FIND)
+    public void videoFind() {
+        Product model = getParameter(Product.class);
+        String request_user_id = getRequest_user_id();
+
+        model.validate(Product.PRODUCT_ID);
+
+        Product product = productService.videoFindByUser_id(model.getProduct_id(), request_user_id);
+
+        renderSuccessJson(product.removeUnfindable());
+    }
+
     @ActionKey(Url.PRODUCT_ADMIN_FIND)
     public void adminFind() {
         Product model = getParameter(Product.class);
@@ -82,6 +94,18 @@ public class ProductController extends Controller {
         model.validate(Product.PRODUCT_ID);
 
         Product product = productService.adminFind(model.getProduct_id());
+
+        renderSuccessJson(product.removeSystemInfo());
+    }
+
+    @ActionKey(Url.PRODUCT_ADMIN_VIDEO_FIND)
+    public void adminVideoFind() {
+        Product model = getParameter(Product.class);
+        String request_user_id = getRequest_user_id();
+
+        model.validate(Product.PRODUCT_ID);
+
+        Product product = productService.adminVideoFind(model.getProduct_id());
 
         renderSuccessJson(product.removeSystemInfo());
     }

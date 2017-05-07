@@ -1,6 +1,6 @@
 package com.shanghaichuangshi.shop.dao;
 
-import com.jfinal.kit.JMap;
+import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.constant.Constant;
@@ -22,7 +22,7 @@ public class SkuDao extends Dao {
         List<Sku> skuList = CacheUtil.get(SKU_LIST_CACHE, product_id);
 
         if (skuList == null) {
-            JMap map = JMap.create();
+            Kv map = Kv.create();
             map.put(Sku.PRODUCT_ID, product_id);
             SqlPara sqlPara = Db.getSqlPara("sku.list", map);
 
@@ -40,7 +40,7 @@ public class SkuDao extends Dao {
         Sku sku = CacheUtil.get(SKU_CACHE, sku_id);
 
         if (sku == null) {
-            JMap map = JMap.create();
+            Kv map = Kv.create();
             map.put(Sku.SKU_ID, sku_id);
             SqlPara sqlPara = Db.getSqlPara("sku.find", map);
 
@@ -58,7 +58,7 @@ public class SkuDao extends Dao {
     }
 
     public void save(List<Sku> skuList, String request_user_id) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("sku.save", map);
 
         List<Object[]> parameterList = new ArrayList<Object[]>();
@@ -94,7 +94,7 @@ public class SkuDao extends Dao {
 
         CacheUtil.remove(SKU_LIST_CACHE, product_id);
 
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("sku.updateProduct_stock", map);
 
         List<Object[]> parameterList = new ArrayList<Object[]>();
@@ -124,7 +124,7 @@ public class SkuDao extends Dao {
 
         CacheUtil.remove(SKU_LIST_CACHE, product_id);
 
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("sku.delete", map);
 
         List<Object[]> parameterList = new ArrayList<Object[]>();
@@ -156,7 +156,7 @@ public class SkuDao extends Dao {
 
         CacheUtil.remove(SKU_LIST_CACHE, product_id);
 
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Sku.PRODUCT_ID, product_id);
         map.put(Sku.SYSTEM_UPDATE_USER_ID, request_user_id);
         map.put(Sku.SYSTEM_UPDATE_TIME, new Date());

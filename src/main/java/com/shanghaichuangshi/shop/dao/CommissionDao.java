@@ -1,6 +1,6 @@
 package com.shanghaichuangshi.shop.dao;
 
-import com.jfinal.kit.JMap;
+import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.constant.Constant;
@@ -22,7 +22,7 @@ public class CommissionDao extends Dao {
         List<Commission> commissionList = CacheUtil.get(COMMISSION_LIST_CACHE, product_id);
 
         if (commissionList == null) {
-            JMap map = JMap.create();
+            Kv map = Kv.create();
             map.put(Commission.PRODUCT_ID, product_id);
             SqlPara sqlPara = Db.getSqlPara("commission.list", map);
 
@@ -40,7 +40,7 @@ public class CommissionDao extends Dao {
         Commission commission = CacheUtil.get(COMMISSION_CACHE, commission_id);
 
         if (commission == null) {
-            JMap map = JMap.create();
+            Kv map = Kv.create();
             map.put(Commission.COMMISSION_ID, commission_id);
             SqlPara sqlPara = Db.getSqlPara("commission.find", map);
 
@@ -58,7 +58,7 @@ public class CommissionDao extends Dao {
     }
 
     public void save(List<Commission> commissionList, String request_user_id) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("commission.save", map);
 
         List<Object[]> parameterList = new ArrayList<Object[]>();
@@ -90,7 +90,7 @@ public class CommissionDao extends Dao {
             CacheUtil.remove(COMMISSION_CACHE, commission.getCommission_id());
         }
 
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("commission.delete", map);
 
         List<Object[]> parameterList = new ArrayList<Object[]>();
@@ -126,7 +126,7 @@ public class CommissionDao extends Dao {
 
         CacheUtil.remove(COMMISSION_LIST_CACHE, product_id);
 
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Commission.PRODUCT_ID, product_id);
         map.put(Commission.SYSTEM_UPDATE_USER_ID, request_user_id);
         map.put(Commission.SYSTEM_UPDATE_TIME, new Date());

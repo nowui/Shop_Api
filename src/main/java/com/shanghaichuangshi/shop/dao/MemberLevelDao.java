@@ -1,6 +1,6 @@
 package com.shanghaichuangshi.shop.dao;
 
-import com.jfinal.kit.JMap;
+import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
@@ -16,7 +16,7 @@ public class MemberLevelDao extends Dao {
     private final String MEMBER_LEVEL_CACHE = "member_level_cache";
 
     public int count(String member_level_name) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(MemberLevel.MEMBER_LEVEL_NAME, member_level_name);
         SqlPara sqlPara = Db.getSqlPara("member_level.count", map);
 
@@ -25,7 +25,7 @@ public class MemberLevelDao extends Dao {
     }
 
     public List<MemberLevel> list(String member_level_name, Integer m, Integer n) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(MemberLevel.MEMBER_LEVEL_NAME, member_level_name);
         map.put(MemberLevel.M, m);
         map.put(MemberLevel.N, n);
@@ -38,7 +38,7 @@ public class MemberLevelDao extends Dao {
         MemberLevel memberLevel = CacheUtil.get(MEMBER_LEVEL_CACHE, member_level_id);
 
         if (memberLevel == null) {
-            JMap map = JMap.create();
+            Kv map = Kv.create();
             map.put(MemberLevel.MEMBER_LEVEL_ID, member_level_id);
             SqlPara sqlPara = Db.getSqlPara("member_level.find", map);
 
@@ -71,7 +71,7 @@ public class MemberLevelDao extends Dao {
         }
 
         if (memberLevel == null) {
-            JMap map = JMap.create();
+            Kv map = Kv.create();
             map.put(MemberLevel.MEMBER_LEVEL_VALUE, member_level_value);
             SqlPara sqlPara = Db.getSqlPara("member_level.findByMember_level_value", map);
 
@@ -116,7 +116,7 @@ public class MemberLevelDao extends Dao {
     public boolean delete(String member_level_id, String request_user_id) {
         CacheUtil.remove(MEMBER_LEVEL_CACHE, member_level_id);
 
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(MemberLevel.MEMBER_LEVEL_ID, member_level_id);
         map.put(MemberLevel.SYSTEM_UPDATE_USER_ID, request_user_id);
         map.put(MemberLevel.SYSTEM_UPDATE_TIME, new Date());

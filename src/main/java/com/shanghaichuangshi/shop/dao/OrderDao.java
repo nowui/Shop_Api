@@ -1,6 +1,6 @@
 package com.shanghaichuangshi.shop.dao;
 
-import com.jfinal.kit.JMap;
+import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
@@ -21,7 +21,7 @@ public class OrderDao extends Dao {
     private final String ORDER_CACHE = "order_cache";
 
     public int count(String order_number) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Order.ORDER_NUMBER, order_number);
         SqlPara sqlPara = Db.getSqlPara("order.count", map);
 
@@ -30,7 +30,7 @@ public class OrderDao extends Dao {
     }
 
     public List<Order> list(String order_number, Integer m, Integer n) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Order.ORDER_NUMBER, order_number);
         map.put(Order.M, m);
         map.put(Order.N, n);
@@ -40,7 +40,7 @@ public class OrderDao extends Dao {
     }
 
     public List<Order> listByUser_id(String user_id, Integer m, Integer n) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Order.USER_ID, user_id);
         map.put(Order.M, m);
         map.put(Order.N, n);
@@ -53,7 +53,7 @@ public class OrderDao extends Dao {
         List<String> resultList = CacheUtil.get(ORDER_NUMBER_LIST_CACHE, day);
 
         if (resultList == null) {
-            JMap map = JMap.create();
+            Kv map = Kv.create();
             map.put(Order.ORDER_NUMBER, day);
             SqlPara sqlPara = Db.getSqlPara("order.listOrderNumber", map);
 
@@ -85,7 +85,7 @@ public class OrderDao extends Dao {
         Order order = CacheUtil.get(ORDER_CACHE, order_id);
 
         if (order == null) {
-            JMap map = JMap.create();
+            Kv map = Kv.create();
             map.put(Order.ORDER_ID, order_id);
             SqlPara sqlPara = Db.getSqlPara("order.find", map);
 
@@ -119,7 +119,7 @@ public class OrderDao extends Dao {
         }
 
         if (order == null) {
-            JMap map = JMap.create();
+            Kv map = Kv.create();
             map.put(Order.ORDER_NUMBER, order_number);
             SqlPara sqlPara = Db.getSqlPara("order.findByOrder_number", map);
 
@@ -186,7 +186,7 @@ public class OrderDao extends Dao {
 
         CacheUtil.remove(ORDER_CACHE, order_id);
 
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Order.ORDER_ID, order_id);
         map.put(Order.ORDER_AMOUNT, order_amount);
         map.put(Order.ORDER_PAY_TYPE, order_pay_type);
@@ -205,7 +205,7 @@ public class OrderDao extends Dao {
     public boolean delete(String order_id, String request_user_id) {
         CacheUtil.remove(ORDER_CACHE, order_id);
 
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Order.ORDER_ID, order_id);
         map.put(Order.SYSTEM_UPDATE_USER_ID, request_user_id);
         map.put(Order.SYSTEM_UPDATE_TIME, new Date());
@@ -217,7 +217,7 @@ public class OrderDao extends Dao {
     public boolean updateByOrder_idAndOrder_is_confirm(String order_id) {
         CacheUtil.remove(ORDER_CACHE, order_id);
 
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Order.ORDER_ID, order_id);
         SqlPara sqlPara = Db.getSqlPara("order.updateByOrder_idAndOrder_is_confirm", map);
 

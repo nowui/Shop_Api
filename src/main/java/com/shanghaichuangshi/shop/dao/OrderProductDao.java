@@ -1,6 +1,6 @@
 package com.shanghaichuangshi.shop.dao;
 
-import com.jfinal.kit.JMap;
+import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.constant.Constant;
@@ -16,7 +16,7 @@ import java.util.List;
 public class OrderProductDao extends Dao {
 
     public List<OrderProduct> list(String order_id) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(OrderProduct.ORDER_ID, order_id);
         SqlPara sqlPara = Db.getSqlPara("order_product.list", map);
 
@@ -24,7 +24,7 @@ public class OrderProductDao extends Dao {
     }
 
     public OrderProduct find(String order_product_id) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(OrderProduct.ORDER_PRODUCT_ID, order_product_id);
         SqlPara sqlPara = Db.getSqlPara("order_product.find", map);
 
@@ -37,7 +37,7 @@ public class OrderProductDao extends Dao {
     }
 
     public void save(List<OrderProduct> orderProductList, String request_user_id) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("order_product.save", map);
 
         List<Object[]> parameterList = new ArrayList<Object[]>();
@@ -97,7 +97,7 @@ public class OrderProductDao extends Dao {
     }
 
     public boolean updateByOrder_idAndOrder_status(String order_id, Boolean order_status) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(OrderProduct.ORDER_ID, order_id);
         map.put(OrderProduct.ORDER_STATUS, order_status);
         map.put(OrderProduct.SYSTEM_UPDATE_TIME, new Date());
@@ -107,7 +107,7 @@ public class OrderProductDao extends Dao {
     }
 
     public boolean delete(String order_product_id, String request_user_id) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(OrderProduct.ORDER_PRODUCT_ID, order_product_id);
         map.put(OrderProduct.SYSTEM_UPDATE_USER_ID, request_user_id);
         map.put(OrderProduct.SYSTEM_UPDATE_TIME, new Date());

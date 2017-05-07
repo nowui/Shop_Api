@@ -1,6 +1,6 @@
 package com.shanghaichuangshi.shop.dao;
 
-import com.jfinal.kit.JMap;
+import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
@@ -15,7 +15,7 @@ public class DistributorDao extends Dao {
     private final String DISTRIBUTOR_CACHE = "distributor_cache";
 
     public int count(String distributor_name) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Distributor.DISTRIBUTOR_NAME, distributor_name);
         SqlPara sqlPara = Db.getSqlPara("distributor.count", map);
 
@@ -24,7 +24,7 @@ public class DistributorDao extends Dao {
     }
 
     public List<Distributor> list(String distributor_name, Integer m, Integer n) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Distributor.DISTRIBUTOR_NAME, distributor_name);
         map.put(Distributor.M, m);
         map.put(Distributor.N, n);
@@ -37,7 +37,7 @@ public class DistributorDao extends Dao {
         Distributor distributor = CacheUtil.get(DISTRIBUTOR_CACHE, distributor_id);
 
         if (distributor == null) {
-            JMap map = JMap.create();
+            Kv map = Kv.create();
             map.put(Distributor.DISTRIBUTOR_ID, distributor_id);
             SqlPara sqlPara = Db.getSqlPara("distributor.find", map);
 
@@ -82,7 +82,7 @@ public class DistributorDao extends Dao {
     public boolean delete(String distributor_id, String request_user_id) {
         CacheUtil.remove(DISTRIBUTOR_CACHE, distributor_id);
 
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Distributor.DISTRIBUTOR_ID, distributor_id);
         map.put(Distributor.SYSTEM_UPDATE_USER_ID, request_user_id);
         map.put(Distributor.SYSTEM_UPDATE_TIME, new Date());

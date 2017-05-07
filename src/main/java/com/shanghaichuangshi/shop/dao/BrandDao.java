@@ -1,6 +1,6 @@
 package com.shanghaichuangshi.shop.dao;
 
-import com.jfinal.kit.JMap;
+import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
@@ -16,7 +16,7 @@ public class BrandDao extends Dao {
     private final String BRAND_CACHE = "brand_cache";
 
     public int count(String brand_name) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Brand.BRAND_NAME, brand_name);
         SqlPara sqlPara = Db.getSqlPara("brand.count", map);
 
@@ -25,7 +25,7 @@ public class BrandDao extends Dao {
     }
 
     public List<Brand> list(String brand_name, Integer m, Integer n) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Brand.BRAND_NAME, brand_name);
         map.put(Brand.M, m);
         map.put(Brand.N, n);
@@ -38,7 +38,7 @@ public class BrandDao extends Dao {
         Brand brand = CacheUtil.get(BRAND_CACHE, brand_id);
 
         if (brand == null) {
-            JMap map = JMap.create();
+            Kv map = Kv.create();
             map.put(Brand.BRAND_ID, brand_id);
             SqlPara sqlPara = Db.getSqlPara("brand.find", map);
 
@@ -83,7 +83,7 @@ public class BrandDao extends Dao {
     public boolean delete(String brand_id, String request_user_id) {
         CacheUtil.remove(BRAND_CACHE, brand_id);
 
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Brand.BRAND_ID, brand_id);
         map.put(Brand.SYSTEM_UPDATE_USER_ID, request_user_id);
         map.put(Brand.SYSTEM_UPDATE_TIME, new Date());

@@ -1,6 +1,6 @@
 package com.shanghaichuangshi.shop.dao;
 
-import com.jfinal.kit.JMap;
+import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.constant.Constant;
@@ -19,7 +19,7 @@ public class MemberDao extends Dao {
     private final String MEMBER_CACHE = "membe_cache";
 
     public int count(String member_name) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Member.MEMBER_NAME, member_name);
         SqlPara sqlPara = Db.getSqlPara("member.count", map);
 
@@ -28,7 +28,7 @@ public class MemberDao extends Dao {
     }
 
     public List<Member> list(String member_name, Integer m, Integer n) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Member.MEMBER_NAME, member_name);
         map.put(Member.M, m);
         map.put(Member.N, n);
@@ -38,7 +38,7 @@ public class MemberDao extends Dao {
     }
 
     public List<Member> teamList(String parent_id, Integer m, Integer n) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Member.PARENT_ID, parent_id);
         map.put(Member.M, m);
         map.put(Member.N, n);
@@ -51,7 +51,7 @@ public class MemberDao extends Dao {
         Member member = CacheUtil.get(MEMBER_CACHE, member_id);
 
         if (member == null) {
-            JMap map = JMap.create();
+            Kv map = Kv.create();
             map.put(Member.MEMBER_ID, member_id);
             SqlPara sqlPara = Db.getSqlPara("member.find", map);
 
@@ -98,7 +98,7 @@ public class MemberDao extends Dao {
     public boolean updateByMember_idAndScene_idAndScene_qrcode(String member_id, String scene_id, String scene_qrcode, String request_user_id) {
         CacheUtil.remove(MEMBER_CACHE, member_id);
 
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Member.MEMBER_ID, member_id);
         map.put(Member.SCENE_ID, scene_id);
         map.put(Member.SCENE_QRCODE, scene_qrcode);
@@ -112,7 +112,7 @@ public class MemberDao extends Dao {
     public boolean updateByMember_idAndParent_idAndParent_pathAndMember_level_id(String member_id, String parent_id, String parent_path, String member_level_id) {
         CacheUtil.remove(MEMBER_CACHE, member_id);
 
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Member.MEMBER_ID, member_id);
         map.put(Member.PARENT_ID, parent_id);
         map.put(Member.PARENT_PATH, parent_path);
@@ -123,7 +123,7 @@ public class MemberDao extends Dao {
     }
 
     public void updateAmount(List<Member> memberList) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("member.updateAmount", map);
 
         List<Object[]> parameterList = new ArrayList<Object[]>();
@@ -149,7 +149,7 @@ public class MemberDao extends Dao {
     public boolean delete(String member_id, String request_user_id) {
         CacheUtil.remove(MEMBER_CACHE, member_id);
 
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Member.MEMBER_ID, member_id);
         map.put(Member.SYSTEM_UPDATE_USER_ID, request_user_id);
         map.put(Member.SYSTEM_UPDATE_TIME, new Date());

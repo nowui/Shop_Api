@@ -1,6 +1,6 @@
 package com.shanghaichuangshi.shop.dao;
 
-import com.jfinal.kit.JMap;
+import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
@@ -13,7 +13,7 @@ import java.util.List;
 public class SupplierDao extends Dao {
 
     public int count(String supplier_name) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Supplier.SUPPLIER_NAME, supplier_name);
         SqlPara sqlPara = Db.getSqlPara("supplier.count", map);
 
@@ -22,7 +22,7 @@ public class SupplierDao extends Dao {
     }
 
     public List<Supplier> list(String supplier_name, Integer m, Integer n) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Supplier.SUPPLIER_NAME, supplier_name);
         map.put(Supplier.M, m);
         map.put(Supplier.N, n);
@@ -32,7 +32,7 @@ public class SupplierDao extends Dao {
     }
 
     public Supplier find(String supplier_id) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Supplier.SUPPLIER_ID, supplier_id);
         SqlPara sqlPara = Db.getSqlPara("supplier.find", map);
 
@@ -68,7 +68,7 @@ public class SupplierDao extends Dao {
     }
 
 //    public boolean updateBySupplier_idAndUser_id(String supplier_id, String user_id, String request_user_id) {
-//        JMap map = JMap.create();
+//        Kv map = Kv.create();
 //        map.put(Supplier.SUPPLIER_ID, supplier_id);
 //        map.put(Supplier.USER_ID, user_id);
 //        map.put(Supplier.SYSTEM_UPDATE_USER_ID, request_user_id);
@@ -79,7 +79,7 @@ public class SupplierDao extends Dao {
 //    }
 
     public boolean delete(String supplier_id, String request_user_id) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Supplier.SUPPLIER_ID, supplier_id);
         map.put(Supplier.SYSTEM_UPDATE_USER_ID, request_user_id);
         map.put(Supplier.SYSTEM_UPDATE_TIME, new Date());

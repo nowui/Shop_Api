@@ -2,7 +2,7 @@ package com.shanghaichuangshi.shop.dao;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.jfinal.kit.JMap;
+import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.constant.Constant;
@@ -19,7 +19,7 @@ public class ProductDao extends Dao {
     private final String PRODUCT_CACHE = "product_cache";
 
     public int count(String product_name) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Product.PRODUCT_NAME, product_name);
         SqlPara sqlPara = Db.getSqlPara("product.count", map);
 
@@ -28,7 +28,7 @@ public class ProductDao extends Dao {
     }
 
     public List<Product> list(String product_name, Integer m, Integer n) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Product.PRODUCT_NAME, product_name);
         map.put(Product.M, m);
         map.put(Product.N, n);
@@ -38,14 +38,14 @@ public class ProductDao extends Dao {
     }
 
     public List<Product> listAll() {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("product.listAll", map);
 
         return new Product().find(sqlPara.getSql(), sqlPara.getPara());
     }
 
     public List<Product> listAllHot() {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("product.listAllHot", map);
 
         return new Product().find(sqlPara.getSql(), sqlPara.getPara());
@@ -55,7 +55,7 @@ public class ProductDao extends Dao {
         Product product = CacheUtil.get(PRODUCT_CACHE, product_id);
 
         if (product == null) {
-            JMap map = JMap.create();
+            Kv map = Kv.create();
             map.put(Product.PRODUCT_ID, product_id);
             SqlPara sqlPara = Db.getSqlPara("product.find", map);
 
@@ -100,7 +100,7 @@ public class ProductDao extends Dao {
     public boolean delete(String product_id, String request_user_id) {
         CacheUtil.remove(PRODUCT_CACHE, product_id);
 
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Product.PRODUCT_ID, product_id);
         map.put(Product.SYSTEM_UPDATE_USER_ID, request_user_id);
         map.put(Product.SYSTEM_UPDATE_TIME, new Date());

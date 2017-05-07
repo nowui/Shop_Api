@@ -1,6 +1,6 @@
 package com.shanghaichuangshi.shop.dao;
 
-import com.jfinal.kit.JMap;
+import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.constant.Constant;
@@ -18,7 +18,7 @@ public class BillDao extends Dao {
     private final String BILL_CACHE = "bill_cache";
 
     public int count(String bill_name) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Bill.BILL_NAME, bill_name);
         SqlPara sqlPara = Db.getSqlPara("bill.count", map);
 
@@ -27,7 +27,7 @@ public class BillDao extends Dao {
     }
 
     public List<Bill> list(String bill_name, Integer m, Integer n) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Bill.BILL_NAME, bill_name);
         map.put(Bill.M, m);
         map.put(Bill.N, n);
@@ -40,7 +40,7 @@ public class BillDao extends Dao {
         List<Bill> billList = CacheUtil.get(BILL_CACHE, user_id);
 
         if (billList == null) {
-            JMap map = JMap.create();
+            Kv map = Kv.create();
             map.put(Bill.USER_ID, user_id);
             map.put(Bill.M, m);
             map.put(Bill.N, n);
@@ -57,7 +57,7 @@ public class BillDao extends Dao {
     }
 
     public Bill find(String bill_id) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         map.put(Bill.BILL_ID, bill_id);
         SqlPara sqlPara = Db.getSqlPara("bill.find", map);
 
@@ -70,7 +70,7 @@ public class BillDao extends Dao {
     }
 
     public void save(List<Bill> billList, String request_user_id) {
-        JMap map = JMap.create();
+        Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("bill.save", map);
 
         List<Object[]> parameterList = new ArrayList<Object[]>();
@@ -117,7 +117,7 @@ public class BillDao extends Dao {
 //    }
 
 //    public boolean delete(String bill_id, String request_user_id) {
-//        JMap map = JMap.create();
+//        Kv map = Kv.create();
 //        map.put(Bill.BILL_ID, bill_id);
 //        map.put(Bill.SYSTEM_UPDATE_USER_ID, request_user_id);
 //        map.put(Bill.SYSTEM_UPDATE_TIME, new Date());
