@@ -29,6 +29,9 @@
     SELECT
     member_id,
     member_name,
+    user_id,
+    member_level_id,
+    member_total_amount,
     member_status
     FROM table_member
     WHERE system_status = 1

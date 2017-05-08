@@ -126,22 +126,29 @@ public class MemberController extends Controller {
         renderSuccessJson();
     }
 
-    @ActionKey(Url.MEMBER_LOGIN)
-    public void login() {
+//    @ActionKey(Url.MEMBER_LOGIN)
+//    public void login() {
+//        User model = getParameter(User.class);
+//        String request_user_id = getRequest_user_id();
+//
+//        Map<String, Object> resultMap = memberService.login(model.getUser_phone(), model.getUser_password(), getPlatform(), getVersion(), getIp_address(), request_user_id);
+//
+//        renderSuccessJson(resultMap);
+//    }
+
+    @ActionKey(Url.MEMBER_WECHAT_H5_LOGIN)
+    public void weChatH5Login() {
         User model = getParameter(User.class);
         String request_user_id = getRequest_user_id();
 
-        Map<String, Object> resultMap = memberService.login(model.getUser_phone(), model.getUser_password(), getPlatform(), getVersion(), getIp_address(), request_user_id);
+        Map<String, Object> resultMap = memberService.weChatH5Login(model.getWechat_open_id(), getPlatform(), getVersion(), getIp_address(), request_user_id);
 
         renderSuccessJson(resultMap);
     }
 
-    @ActionKey(Url.MEMBER_WECHAT_LOGIN)
-    public void weChatLogin() {
-        User model = getParameter(User.class);
-        String request_user_id = getRequest_user_id();
-
-        Map<String, Object> resultMap = memberService.weChatLogin(model.getWechat_open_id(), getPlatform(), getVersion(), getIp_address(), request_user_id);
+    @ActionKey(Url.MEMBER_WECHAT_WX_LOGIN)
+    public void weChatWX5Login() {
+        Map<String, Object> resultMap = memberService.weChatWXLogin(getAttr(Constant.REQUEST_PARAMETER), getPlatform(), getVersion(), getIp_address());
 
         renderSuccessJson(resultMap);
     }

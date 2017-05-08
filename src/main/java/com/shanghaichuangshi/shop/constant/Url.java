@@ -8,7 +8,6 @@ public class Url {
     public static final String WECHAT_API_NOTIFY = "/wechat/api/notify";
     public static final String WECHAT_MESSAGE = "/wechat/message";
     public static final String WECHAT_SHARE = "/wechat/share";
-    public static final String WECHAT_API_OPENID = "/wechat/api/openid";
 
     public static final String MEMBER_LIST = "/member/list";
     public static final String MEMBER_ADMIN_LIST = "/member/admin/list";
@@ -21,7 +20,8 @@ public class Url {
     public static final String MEMBERL_UPDATE = "/member/update";
     public static final String MEMBER_DELETE = "/member/delete";
     public static final String MEMBER_LOGIN = "/member/login";
-    public static final String MEMBER_WECHAT_LOGIN = "/member/wechat/login";
+    public static final String MEMBER_WECHAT_H5_LOGIN = "/member/wechat/h5/login";
+    public static final String MEMBER_WECHAT_WX_LOGIN = "/member/wechat/wx/login";
     public static final String MEMBER_MY_FIND = "/member/my/find";
 
     public static final String MEMBER_LEVEL_LIST = "/member/level/list";

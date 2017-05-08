@@ -293,6 +293,8 @@ public class WeChatApiController extends ApiController {
     public void auth() {
         String code = getPara("code");
         String url = getPara("url");
+        String platform = getPara("platform");
+        String version = getPara("version");
         if (url.contains("?")) {
             url = url.substring(0, url.indexOf("?"));
         }
@@ -300,12 +302,10 @@ public class WeChatApiController extends ApiController {
         SnsAccessToken snsAccessToken = SnsAccessTokenApi.getSnsAccessToken(WeChat.app_id, WeChat.app_secret, code);
 
         String wechat_open_id = snsAccessToken.getOpenid();
-        String platform = "H5";
-        String version = "1.0.0";
         String ip_address = HttpUtil.getIpAddress(getRequest());
         String request_user_id = "";
 
-        Map<String, Object> resultMap = memberService.weChatLogin(wechat_open_id, platform, version, ip_address, request_user_id);
+        Map<String, Object> resultMap = memberService.weChatH5Login(wechat_open_id, platform, version, ip_address, request_user_id);
         String token = resultMap.get(Constant.TOKEN.toLowerCase()).toString();
         String user_name = resultMap.get(User.USER_NAME).toString();
         String user_avatar = resultMap.get(User.USER_AVATAR).toString();
@@ -322,44 +322,63 @@ public class WeChatApiController extends ApiController {
         renderText(QrcodeApi.getShowQrcodeUrl(apiResult.getStr("ticket")));
     }
 
-    @ActionKey(Url.WECHAT_API_OPENID)
-    public void openid() {
-        String wx_app_id = WeChat.wx_app_id;
-        String wx_app_secret = WeChat.wx_app_secret;
-        String js_code = getPara("js_code");
-        String encrypted_data = getPara("encrypted_data");
-        String iv = getPara("iv");
-        String user_name = getPara("nick_name");
-        String user_avatar = getPara("avatar_url");
-        String platform = getPara("platform");
-        String version = getPara("version");
-
-        String result = HttpKit.get("https://api.weixin.qq.com/sns/jscode2session?appid=" + wx_app_id + "&secret=" + wx_app_secret + "&js_code=" + js_code + "&grant_type=authorization_code");
-        JSONObject jsonObject = JSONObject.parseObject(result);
-
-        System.out.println(jsonObject);
-        System.out.println(encrypted_data);
-        System.out.println(iv);
-
-        String wechat_open_id = jsonObject.getString("openid");
-        String scene_id = "";
-        Boolean member_status = true;
-        String ip_address = HttpUtil.getIpAddress(getRequest());
-        String request_user_id = "";
-
-        Member member = memberService.saveByWechat_open_idAndUser_nameAndUser_avatarAndFrom_scene_idAndMember_status(wechat_open_id, user_name, user_avatar, scene_id, member_status);
-
-        String token = authorizationService.saveByUser_id(member.getUser_id(), platform, version, ip_address, request_user_id);
-
-        Map<String, Object> dataMap = new HashMap<String, Object>();
-        dataMap.put(Constant.TOKEN.toLowerCase(), token);
-        dataMap.put("openid", wechat_open_id);
-
-        Map<String, Object> resultMap = new HashMap<String, Object>();
-        resultMap.put(Constant.CODE, HttpStatus.SC_OK);
-        resultMap.put(Constant.DATA, dataMap);
-
-        renderJson(resultMap);
-    }
+//    @ActionKey(Url.WECHAT_API_OPENID)
+//    public void openid() {
+//        String wx_app_id = WeChat.wx_app_id;
+//        String wx_app_secret = WeChat.wx_app_secret;
+//        String js_code = getPara("js_code");
+//        String encrypted_data = getPara("encrypted_data");
+//        String iv = getPara("iv");
+//        String user_name = getPara("nick_name");
+//        String user_avatar = getPara("avatar_url");
+//        String platform = getPara("platform");
+//        String version = getPara("version");
+//
+//        String result = HttpKit.get("https://api.weixin.qq.com/sns/jscode2session?appid=" + wx_app_id + "&secret=" + wx_app_secret + "&js_code=" + js_code + "&grant_type=authorization_code");
+//        JSONObject jsonObject = JSONObject.parseObject(result);
+//
+//        System.out.println("---------------");
+//        System.out.println(jsonObject);
+//        System.out.println("---------------");
+//        System.out.println(wx_app_id);
+//        System.out.println("---------------");
+//        System.out.println(wx_app_secret);
+//        System.out.println("---------------");
+//        System.out.println(js_code);
+//        System.out.println("---------------");
+//        System.out.println(encrypted_data);
+//        System.out.println("---------------");
+//        System.out.println(iv);
+//        System.out.println("---------------");
+//        System.out.println(user_name);
+//        System.out.println("---------------");
+//        System.out.println(user_avatar);
+//        System.out.println("---------------");
+//        System.out.println(platform);
+//        System.out.println("---------------");
+//        System.out.println(version);
+//        System.out.println("---------------");
+//
+//        String wechat_open_id = jsonObject.getString("openid");
+//        String scene_id = "";
+//        Boolean member_status = true;
+//        String ip_address = HttpUtil.getIpAddress(getRequest());
+//        String request_user_id = "";
+//
+////        Member member = memberService.saveByWechat_open_idAndUser_nameAndUser_avatarAndFrom_scene_idAndMember_status(wechat_open_id, user_name, user_avatar, scene_id, member_status);
+////
+////        String token = authorizationService.saveByUser_id(member.getUser_id(), platform, version, ip_address, request_user_id);
+////
+////        Map<String, Object> dataMap = new HashMap<String, Object>();
+////        dataMap.put(Constant.TOKEN.toLowerCase(), token);
+////        dataMap.put("openid", wechat_open_id);
+//
+//        Map<String, Object> resultMap = new HashMap<String, Object>();
+//        resultMap.put(Constant.CODE, HttpStatus.SC_OK);
+////        resultMap.put(Constant.DATA, dataMap);
+//        resultMap.put(Constant.DATA, null);
+//
+//        renderJson(resultMap);
+//    }
 
 }
