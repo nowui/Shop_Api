@@ -28,7 +28,7 @@ public class SkuDao extends Dao {
 
             skuList = new Sku().find(sqlPara.getSql(), sqlPara.getPara());
 
-            if (skuList != null) {
+            if (skuList.size() > 0) {
                 CacheUtil.put(SKU_LIST_CACHE, product_id, skuList);
             }
         }

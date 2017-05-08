@@ -50,7 +50,7 @@ public class OrderService extends Service {
     public Order find(String order_id) {
         Order order = orderDao.find(order_id);
 
-        List<OrderProduct> orderProductList = orderProductService.list(order_id);
+        List<OrderProduct> orderProductList = orderProductService.listByOder_id(order_id);
         for(OrderProduct orderProduct : orderProductList) {
             File productImageFile = fileService.find(orderProduct.getProduct_image());
             orderProduct.put(Product.PRODUCT_IMAGE_FILE, productImageFile.getFile_thumbnail_path());
@@ -65,7 +65,7 @@ public class OrderService extends Service {
     public Order adminFind(String order_id) {
         Order order = orderDao.find(order_id);
 
-        List<OrderProduct> orderProductList = orderProductService.list(order_id);
+        List<OrderProduct> orderProductList = orderProductService.listByOder_id(order_id);
         for(OrderProduct orderProduct : orderProductList) {
             orderProduct.keep(OrderProduct.PRODUCT_ID, OrderProduct.PRODUCT_NAME, OrderProduct.PRODUCT_PRICE, OrderProduct.PRODUCT_QUANTITY, OrderProduct.ORDER_PRODUCT_COMMISSION);
         }

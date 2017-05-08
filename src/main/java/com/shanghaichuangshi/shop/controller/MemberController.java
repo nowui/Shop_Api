@@ -131,7 +131,7 @@ public class MemberController extends Controller {
         User model = getParameter(User.class);
         String request_user_id = getRequest_user_id();
 
-        Map<String, Object> resultMap = memberService.login(model, getPlatform(), getVersion(), getIp_address(), request_user_id);
+        Map<String, Object> resultMap = memberService.login(model.getUser_phone(), model.getUser_password(), getPlatform(), getVersion(), getIp_address(), request_user_id);
 
         renderSuccessJson(resultMap);
     }
@@ -139,8 +139,9 @@ public class MemberController extends Controller {
     @ActionKey(Url.MEMBER_WECHAT_LOGIN)
     public void weChatLogin() {
         User model = getParameter(User.class);
+        String request_user_id = getRequest_user_id();
 
-        Map<String, Object> resultMap = memberService.weChatLogin(model.getWechat_open_id());
+        Map<String, Object> resultMap = memberService.weChatLogin(model.getWechat_open_id(), getPlatform(), getVersion(), getIp_address(), request_user_id);
 
         renderSuccessJson(resultMap);
     }

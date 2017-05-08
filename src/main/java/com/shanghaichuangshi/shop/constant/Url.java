@@ -46,6 +46,7 @@ public class Url {
     public static final String PRODUCT_CATEGORY_LIST = "/product/category/list";
     public static final String PRODUCT_ALL_LIST = "/product/all/list";
     public static final String PRODUCT_HOT_LIST = "/product/hot/list";
+    public static final String PRODUCT_MY_LIST = "/product/my/list";
     public static final String PRODUCT_FIND = "/product/find";
     public static final String PRODUCT_VIDEO_FIND = "/product/video/find";
     public static final String PRODUCT_ADMIN_FIND = "/product/admin/find";

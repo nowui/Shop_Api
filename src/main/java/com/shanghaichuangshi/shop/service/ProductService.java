@@ -24,6 +24,7 @@ public class ProductService extends Service {
     private final CommissionService commissionService = new CommissionService();
     private final MemberService memberService = new MemberService();
     private final FileService fileService = new FileService();
+    private final OrderProductService orderProductService = new OrderProductService();
 
     public int count(Product product) {
         return productDao.count(product.getProduct_name());
@@ -33,11 +34,23 @@ public class ProductService extends Service {
         return productDao.list(product.getProduct_name(), m, n);
     }
 
+    public List<Product> hotList() {
+        List<Product> productList = productDao.listAllHot();
+
+        for (Product product : productList) {
+            File file = fileService.find(product.getProduct_image());
+            product.put(Product.PRODUCT_IMAGE_FILE, file.getFile_original_path());
+            product.remove(Product.PRODUCT_IMAGE);
+        }
+
+        return productList;
+    }
+
     public List<Category> categoryList() {
         return categoryService.listByCategory_key(CategoryType.PRODUCT.getKey());
     }
 
-    public List<Product> listAll() {
+    public List<Product> allList() {
         List<Product> productList = productDao.listAll();
 
         for (Product product : productList) {
@@ -49,13 +62,21 @@ public class ProductService extends Service {
         return productList;
     }
 
-    public List<Product> listHot() {
-        List<Product> productList = productDao.listAllHot();
+    public List<Product> myList(String request_user_id) {
+        Member member = memberService.findByUser_id(request_user_id);
 
-        for (Product product : productList) {
+        List<OrderProduct> orderProductList = orderProductService.listByMember_id(member.getMember_id());
+
+        List<Product> productList = new ArrayList<Product>();
+
+        for (OrderProduct orderProduct : orderProductList) {
+            Product product = productDao.find(orderProduct.getProduct_id());
+
             File file = fileService.find(product.getProduct_image());
             product.put(Product.PRODUCT_IMAGE_FILE, file.getFile_original_path());
             product.remove(Product.PRODUCT_IMAGE);
+
+            productList.add(product);
         }
 
         return productList;
@@ -96,6 +117,19 @@ public class ProductService extends Service {
     public Product videoFindByUser_id(String product_id, String user_id) {
         Product product = productDao.find(product_id);
 
+        Member member = memberService.findByUser_id(user_id);
+
+        List<OrderProduct> orderProductList = orderProductService.listByMember_id(member.getMember_id());
+        Boolean product_is_pay = false;
+        for (OrderProduct orderProduct : orderProductList) {
+            if (orderProduct.getProduct_id().equals(product_id)) {
+                product_is_pay = true;
+
+                break;
+            }
+        }
+        product.put(Product.PRODUCT_IS_PAY, product_is_pay);
+
         File productImageFile = fileService.find(product.getProduct_image());
         product.put(Product.PRODUCT_IMAGE_FILE, productImageFile.getFile_thumbnail_path());
 
@@ -108,8 +142,6 @@ public class ProductService extends Service {
             productImageFileList.add(file);
         }
         product.put(Product.PRODUCT_IMAGE_FILE_LIST, productImageFileList);
-
-        Member member = memberService.findByUser_id(user_id);
 
         String member_level_id = "";
         if (member != null) {

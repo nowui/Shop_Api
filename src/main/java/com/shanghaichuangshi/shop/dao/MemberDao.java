@@ -68,7 +68,22 @@ public class MemberDao extends Dao {
         return member;
     }
 
-    public Member save(Member member, String request_user_id) {
+    public Member save(String parent_id, String parent_path, String user_id, String from_scene_id, String scene_id, String scene_qrcode, BigDecimal member_total_amount, BigDecimal member_withdrawal_amount, String member_level_id, String user_name, String member_phone, String member_remark, Boolean member_status, String request_user_id) {
+        Member member = new Member();
+        member.setParent_id(parent_id);
+        member.setParent_path(parent_path);
+        member.setParent_id(parent_id);
+        member.setUser_id(user_id);
+        member.setFrom_scene_id(from_scene_id);
+        member.setScene_id(scene_id);
+        member.setScene_qrcode(scene_qrcode);
+        member.setMember_total_amount(member_total_amount);
+        member.setMember_withdrawal_amount(member_withdrawal_amount);
+        member.setMember_level_id(member_level_id);
+        member.setMember_name(user_name);
+        member.setMember_phone(member_phone);
+        member.setMember_remark(member_remark);
+        member.setMember_status(member_status);
         member.setMember_id(Util.getRandomUUID());
         member.setSystem_create_user_id(request_user_id);
         member.setSystem_create_time(new Date());

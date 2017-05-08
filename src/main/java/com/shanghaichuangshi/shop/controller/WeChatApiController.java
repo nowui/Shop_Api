@@ -7,7 +7,10 @@ import com.jfinal.kit.HttpKit;
 import com.jfinal.weixin.sdk.api.*;
 import com.jfinal.weixin.sdk.jfinal.ApiController;
 import com.jfinal.weixin.sdk.kit.PaymentKit;
+import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.constant.WeChat;
+import com.shanghaichuangshi.model.User;
+import com.shanghaichuangshi.service.AuthorizationService;
 import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.shop.service.*;
@@ -15,7 +18,9 @@ import com.shanghaichuangshi.shop.type.BillFlowEnum;
 import com.shanghaichuangshi.shop.type.BillTypeEnum;
 import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.shop.type.PayTypeEnum;
+import com.shanghaichuangshi.util.HttpUtil;
 import com.shanghaichuangshi.util.Util;
+import org.apache.http.HttpStatus;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -29,7 +34,7 @@ public class WeChatApiController extends ApiController {
     private final OrderService orderService = new OrderService();
     private final OrderProductService orderProductService = new OrderProductService();
     private final MemberService memberService = new MemberService();
-    private final CommissionService commissionService = new CommissionService();
+    private final AuthorizationService authorizationService = new AuthorizationService();
     private final BillService billService = new BillService();
 
     public ApiConfig getApiConfig() {
@@ -156,9 +161,9 @@ public class WeChatApiController extends ApiController {
 
             boolean is_update = orderService.update(order.getOrder_id(), order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result, order_flow, order_status);
 
-            orderProductService.updateByOrder_idAndOrder_status(order.getOrder_id(), order_status);
+            orderProductService.updateByOrder_idAndOrder_status(order.getOrder_id(), order_status, order.getMember_id());
 
-            List<OrderProduct> orderProductList = orderProductService.list(order.getOrder_id());
+            List<OrderProduct> orderProductList = orderProductService.listByOder_id(order.getOrder_id());
             List<Bill> billList = new ArrayList<Bill>();
             List<Member> memberList = new ArrayList<Member>();
             String request_user_id = "";
@@ -263,8 +268,9 @@ public class WeChatApiController extends ApiController {
             e.printStackTrace();
         }
 
+        ApiResult jsonResult = MenuApi.createMenu("{\"button\":[{\"name\":\"我的健康\",\"sub_button\":[{\"type\":\"click\",\"name\":\"我的积分\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"查询医生\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"我的病历\",\"key\":\"V1001_TODAY_MUSIC\"}]},{\"type\":\"view\",\"name\":\"快速购买\",\"url\":\"http://h5.jiyiguan.nowui.com\"},{\"name\":\"服务中心\",\"sub_button\":[{\"type\":\"click\",\"name\":\"个人中心\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"在线咨询\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"健康服务\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"我的物流\",\"key\":\"V1001_TODAY_MUSIC\"}]}]}");
 //        ApiResult jsonResult = MenuApi.createMenu("{\"button\":[{\"name\":\"我的健康\",\"sub_button\":[{\"type\":\"click\",\"name\":\"我的积分\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"查询医生\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"我的病历\",\"key\":\"V1001_TODAY_MUSIC\"}]},{\"type\":\"view\",\"name\":\"快速购买\",\"url\":\"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + WeChat.app_id + "&redirect_uri=" + url + "&response_type=code&scope=snsapi_base&state=123#wechat_redirect\"},{\"name\":\"服务中心\",\"sub_button\":[{\"type\":\"click\",\"name\":\"个人中心\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"在线咨询\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"健康服务\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"我的物流\",\"key\":\"V1001_TODAY_MUSIC\"}]}]}");
-        ApiResult jsonResult = MenuApi.createMenu("{\"button\":[{\"type\":\"view\",\"name\":\"微信商城\",\"url\":\"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + WeChat.app_id + "&redirect_uri=" + url + "&response_type=code&scope=snsapi_base&state=123#wechat_redirect\"}]}");
+//        ApiResult jsonResult = MenuApi.createMenu("{\"button\":[{\"type\":\"view\",\"name\":\"微信商城\",\"url\":\"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + WeChat.app_id + "&redirect_uri=" + url + "&response_type=code&scope=snsapi_base&state=123#wechat_redirect\"}]}");
 
         renderText(jsonResult.getJson());
     }
@@ -293,20 +299,25 @@ public class WeChatApiController extends ApiController {
 
         SnsAccessToken snsAccessToken = SnsAccessTokenApi.getSnsAccessToken(WeChat.app_id, WeChat.app_secret, code);
 
-        System.out.println(snsAccessToken.getJson());
-
         String wechat_open_id = snsAccessToken.getOpenid();
+        String platform = "H5";
+        String version = "1.0.0";
+        String ip_address = HttpUtil.getIpAddress(getRequest());
+        String request_user_id = "";
 
-//        System.out.println("http://h5." + WeChat.redirect_uri + "/#/" + url + "/?wechat_open_id=" + wechat_open_id);
-//
-        redirect("http://h5." + WeChat.redirect_uri + "/#/" + url + "/?wechat_open_id=" + wechat_open_id);
+        Map<String, Object> resultMap = memberService.weChatLogin(wechat_open_id, platform, version, ip_address, request_user_id);
+        String token = resultMap.get(Constant.TOKEN.toLowerCase()).toString();
+        String user_name = resultMap.get(User.USER_NAME).toString();
+        String user_avatar = resultMap.get(User.USER_AVATAR).toString();
+        String member_level_id = resultMap.get(MemberLevel.MEMBER_LEVEL_ID).toString();
+        String member_level_value = resultMap.get(MemberLevel.MEMBER_LEVEL_VALUE).toString();
+
+        redirect("http://h5." + WeChat.redirect_uri + "/#/" + url + "/?open_id=" + wechat_open_id + "&token=" + token + "&user_name=" + user_name + "&user_avatar=" + user_avatar + "&member_level_id=" + member_level_id + "&member_level_value=" + member_level_value);
     }
 
     @ActionKey(Url.WECHAT_API_ORCODE)
     public void orcode() {
         ApiResult apiResult = QrcodeApi.createTemporary(604800, 1);
-
-//        System.out.println(apiResult.getJson());
 
         renderText(QrcodeApi.getShowQrcodeUrl(apiResult.getStr("ticket")));
     }
@@ -316,10 +327,39 @@ public class WeChatApiController extends ApiController {
         String wx_app_id = WeChat.wx_app_id;
         String wx_app_secret = WeChat.wx_app_secret;
         String js_code = getPara("js_code");
+        String encrypted_data = getPara("encrypted_data");
+        String iv = getPara("iv");
+        String user_name = getPara("nick_name");
+        String user_avatar = getPara("avatar_url");
+        String platform = getPara("platform");
+        String version = getPara("version");
 
         String result = HttpKit.get("https://api.weixin.qq.com/sns/jscode2session?appid=" + wx_app_id + "&secret=" + wx_app_secret + "&js_code=" + js_code + "&grant_type=authorization_code");
+        JSONObject jsonObject = JSONObject.parseObject(result);
 
-        renderJson(result);
+        System.out.println(jsonObject);
+        System.out.println(encrypted_data);
+        System.out.println(iv);
+
+        String wechat_open_id = jsonObject.getString("openid");
+        String scene_id = "";
+        Boolean member_status = true;
+        String ip_address = HttpUtil.getIpAddress(getRequest());
+        String request_user_id = "";
+
+        Member member = memberService.saveByWechat_open_idAndUser_nameAndUser_avatarAndFrom_scene_idAndMember_status(wechat_open_id, user_name, user_avatar, scene_id, member_status);
+
+        String token = authorizationService.saveByUser_id(member.getUser_id(), platform, version, ip_address, request_user_id);
+
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        dataMap.put(Constant.TOKEN.toLowerCase(), token);
+        dataMap.put("openid", wechat_open_id);
+
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put(Constant.CODE, HttpStatus.SC_OK);
+        resultMap.put(Constant.DATA, dataMap);
+
+        renderJson(resultMap);
     }
 
 }

@@ -18,14 +18,14 @@ public class ProductController extends Controller {
 
     @ActionKey(Url.PRODUCT_LIST)
     public void list() {
-        List<Product> productList = productService.listHot();
+        List<Product> productList = productService.hotList();
 
         renderSuccessJson(productList);
     }
 
     @ActionKey(Url.PRODUCT_HOT_LIST)
     public void hotList() {
-        List<Product> productList = productService.listHot();
+        List<Product> productList = productService.hotList();
 
         renderSuccessJson(productList);
     }
@@ -54,7 +54,16 @@ public class ProductController extends Controller {
 
     @ActionKey(Url.PRODUCT_ALL_LIST)
     public void allList() {
-        List<Product> productList = productService.listAll();
+        List<Product> productList = productService.allList();
+
+        renderSuccessJson(productList);
+    }
+
+    @ActionKey(Url.PRODUCT_MY_LIST)
+    public void myList() {
+        String request_user_id = getRequest_user_id();
+
+        List<Product> productList = productService.myList(request_user_id);
 
         if (productList == null) {
             productList = new ArrayList<Product>();

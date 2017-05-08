@@ -1,6 +1,6 @@
 #namespace("order_product")
 
-  #sql("list")
+  #sql("listByOder_id")
     SELECT
     order_product_id,
     order_id,
@@ -17,6 +17,16 @@
     FROM table_order_product
     WHERE system_status = 1
     AND order_id = #p(order_id)
+    ORDER BY system_create_time DESC
+  #end
+
+  #sql("listByMember_id")
+    SELECT
+    product_id
+    FROM table_order_product
+    WHERE system_status = 1
+    AND order_status = 1
+    AND member_id = #p(member_id)
     ORDER BY system_create_time DESC
   #end
 
