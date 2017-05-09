@@ -20,7 +20,6 @@ import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.shop.type.PayTypeEnum;
 import com.shanghaichuangshi.util.HttpUtil;
 import com.shanghaichuangshi.util.Util;
-import org.apache.http.HttpStatus;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -34,7 +33,6 @@ public class WeChatApiController extends ApiController {
     private final OrderService orderService = new OrderService();
     private final OrderProductService orderProductService = new OrderProductService();
     private final MemberService memberService = new MemberService();
-    private final AuthorizationService authorizationService = new AuthorizationService();
     private final BillService billService = new BillService();
 
     public ApiConfig getApiConfig() {
@@ -268,9 +266,13 @@ public class WeChatApiController extends ApiController {
             e.printStackTrace();
         }
 
-        ApiResult jsonResult = MenuApi.createMenu("{\"button\":[{\"name\":\"我的健康\",\"sub_button\":[{\"type\":\"click\",\"name\":\"我的积分\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"查询医生\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"我的病历\",\"key\":\"V1001_TODAY_MUSIC\"}]},{\"type\":\"view\",\"name\":\"快速购买\",\"url\":\"http://h5.jiyiguan.nowui.com\"},{\"name\":\"服务中心\",\"sub_button\":[{\"type\":\"click\",\"name\":\"个人中心\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"在线咨询\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"健康服务\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"我的物流\",\"key\":\"V1001_TODAY_MUSIC\"}]}]}");
-//        ApiResult jsonResult = MenuApi.createMenu("{\"button\":[{\"name\":\"我的健康\",\"sub_button\":[{\"type\":\"click\",\"name\":\"我的积分\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"查询医生\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"我的病历\",\"key\":\"V1001_TODAY_MUSIC\"}]},{\"type\":\"view\",\"name\":\"快速购买\",\"url\":\"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + WeChat.app_id + "&redirect_uri=" + url + "&response_type=code&scope=snsapi_base&state=123#wechat_redirect\"},{\"name\":\"服务中心\",\"sub_button\":[{\"type\":\"click\",\"name\":\"个人中心\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"在线咨询\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"健康服务\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"我的物流\",\"key\":\"V1001_TODAY_MUSIC\"}]}]}");
-//        ApiResult jsonResult = MenuApi.createMenu("{\"button\":[{\"type\":\"view\",\"name\":\"微信商城\",\"url\":\"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + WeChat.app_id + "&redirect_uri=" + url + "&response_type=code&scope=snsapi_base&state=123#wechat_redirect\"}]}");
+        ApiResult jsonResult;
+
+        if (WeChat.redirect_uri.indexOf("xingxiao") > -1) {
+            jsonResult = MenuApi.createMenu("{\"button\":[{\"type\":\"view\",\"name\":\"微信商城\",\"url\":\"http://h5." + WeChat.redirect_uri + "/#/home/\"}]\"button\":[{\"type\":\"click\",\"name\":\"小程序\",\"key\":\"V1001_TODAY_MUSIC\"}]}");
+        } else {
+            jsonResult = MenuApi.createMenu("{\"button\":[{\"name\":\"我的健康\",\"sub_button\":[{\"type\":\"click\",\"name\":\"我的积分\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"查询医生\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"我的病历\",\"key\":\"V1001_TODAY_MUSIC\"}]},{\"type\":\"view\",\"name\":\"快速购买\",\"url\":\"http://h5." + WeChat.redirect_uri + "/#/home/\"},{\"name\":\"服务中心\",\"sub_button\":[{\"type\":\"click\",\"name\":\"个人中心\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"在线咨询\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"健康服务\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"我的物流\",\"key\":\"V1001_TODAY_MUSIC\"}]}]}");
+        }
 
         renderText(jsonResult.getJson());
     }
@@ -299,20 +301,24 @@ public class WeChatApiController extends ApiController {
             url = url.substring(0, url.indexOf("?"));
         }
 
-        SnsAccessToken snsAccessToken = SnsAccessTokenApi.getSnsAccessToken(WeChat.app_id, WeChat.app_secret, code);
+        if (Util.isNullOrEmpty(code)) {
+            redirect("http://h5." + WeChat.redirect_uri + "/#/home/");
+        } else {
+            SnsAccessToken snsAccessToken = SnsAccessTokenApi.getSnsAccessToken(WeChat.app_id, WeChat.app_secret, code);
 
-        String wechat_open_id = snsAccessToken.getOpenid();
-        String ip_address = HttpUtil.getIpAddress(getRequest());
-        String request_user_id = "";
+            String wechat_open_id = snsAccessToken.getOpenid();
+            String ip_address = HttpUtil.getIpAddress(getRequest());
+            String request_user_id = "";
 
-        Map<String, Object> resultMap = memberService.weChatH5Login(wechat_open_id, platform, version, ip_address, request_user_id);
-        String token = resultMap.get(Constant.TOKEN.toLowerCase()).toString();
-        String user_name = resultMap.get(User.USER_NAME).toString();
-        String user_avatar = resultMap.get(User.USER_AVATAR).toString();
-        String member_level_id = resultMap.get(MemberLevel.MEMBER_LEVEL_ID).toString();
-        String member_level_value = resultMap.get(MemberLevel.MEMBER_LEVEL_VALUE).toString();
+            Map<String, Object> resultMap = memberService.weChatH5Login(wechat_open_id, platform, version, ip_address, request_user_id);
+            String token = resultMap.get(Constant.TOKEN.toLowerCase()).toString();
+            String user_name = resultMap.get(User.USER_NAME).toString();
+            String user_avatar = resultMap.get(User.USER_AVATAR).toString();
+            String member_level_id = resultMap.get(MemberLevel.MEMBER_LEVEL_ID).toString();
+            String member_level_value = resultMap.get(MemberLevel.MEMBER_LEVEL_VALUE).toString();
 
-        redirect("http://h5." + WeChat.redirect_uri + "/#/" + url + "/?open_id=" + wechat_open_id + "&token=" + token + "&user_name=" + user_name + "&user_avatar=" + user_avatar + "&member_level_id=" + member_level_id + "&member_level_value=" + member_level_value);
+            redirect("http://h5." + WeChat.redirect_uri + "/#/" + url + "/?open_id=" + wechat_open_id + "&token=" + token + "&user_name=" + user_name + "&user_avatar=" + user_avatar + "&member_level_id=" + member_level_id + "&member_level_value=" + member_level_value);
+        }
     }
 
     @ActionKey(Url.WECHAT_API_ORCODE)

@@ -15,6 +15,7 @@ import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.util.Util;
+import net.sf.ehcache.search.expression.Or;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -44,7 +45,20 @@ public class OrderService extends Service {
     }
 
     public List<Order> listByUser_id(String user_id, Integer m, Integer n) {
-        return orderDao.listByUser_id(user_id, m, n);
+        List<Order> orderList = orderDao.listByUser_id(user_id, m, n);
+
+        for (Order order : orderList) {
+            List<OrderProduct> orderProductList = orderProductService.listByOder_id(order.getOrder_id());
+            for(OrderProduct orderProduct : orderProductList) {
+                File productImageFile = fileService.find(orderProduct.getProduct_image());
+                orderProduct.put(Product.PRODUCT_IMAGE_FILE, productImageFile.getFile_thumbnail_path());
+
+                orderProduct.keep(OrderProduct.PRODUCT_ID, OrderProduct.PRODUCT_NAME, Product.PRODUCT_IMAGE_FILE, OrderProduct.PRODUCT_PRICE, OrderProduct.PRODUCT_QUANTITY);
+            }
+            order.put(Product.PRODUCT_LIST, orderProductList);
+        }
+
+        return orderList;
     }
 
     public Order find(String order_id) {
@@ -341,9 +355,17 @@ public class OrderService extends Service {
 
         Delivery delivery = deliveryService.findDefaultByUser_id(request_user_id);
         if (delivery == null) {
-            resultMap.put(Delivery.DELIVERY_NAME, "");
-            resultMap.put(Delivery.DELIVERY_PHONE, "");
-            resultMap.put(Delivery.DELIVERY_ADDRESS, "");
+            List<Delivery> deliveryList = deliveryService.listByUser_id(request_user_id, 0, 0);
+
+            if (deliveryList.size() == 0) {
+                resultMap.put(Delivery.DELIVERY_NAME, "");
+                resultMap.put(Delivery.DELIVERY_PHONE, "");
+                resultMap.put(Delivery.DELIVERY_ADDRESS, "");
+            } else {
+                resultMap.put(Delivery.DELIVERY_NAME, deliveryList.get(0).getDelivery_name());
+                resultMap.put(Delivery.DELIVERY_PHONE, deliveryList.get(0).getDelivery_phone());
+                resultMap.put(Delivery.DELIVERY_ADDRESS, deliveryList.get(0).getDelivery_address());
+            }
         } else {
             resultMap.put(Delivery.DELIVERY_NAME, delivery.getDelivery_name());
             resultMap.put(Delivery.DELIVERY_PHONE, delivery.getDelivery_phone());

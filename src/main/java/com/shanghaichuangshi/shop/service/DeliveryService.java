@@ -36,7 +36,7 @@ public class DeliveryService extends Service {
         } else {
             List<Delivery> deliveryList = deliveryDao.listByUser_id(request_user_id, 0, 0);
 
-            if (deliveryList == null) {
+            if (deliveryList.size() == 0) {
                 delivery.setDelivery_is_default(true);
             }
         }
