@@ -182,7 +182,7 @@ public class MemberService extends Service {
 
         Member member = find(user.getObject_id());
 
-        return getMember(user.getUser_id(), user.getUser_name(), user.getUser_avatar(), member.getMember_level_id(), platform, version, ip_address, request_user_id);
+        return getMember(wechat_open_id, user.getUser_id(), user.getUser_name(), user.getUser_avatar(), member.getMember_level_id(), platform, version, ip_address, request_user_id);
     }
 
     public Map<String, Object> weChatWXLogin(JSONObject jsonObject, String platform, String version, String ip_address) {
@@ -218,7 +218,7 @@ public class MemberService extends Service {
 
         Member member = saveByWechat_open_idAndUser_nameAndUser_avatarAndFrom_scene_idAndMember_status(wechat_open_id, user_name, user_avatar, scene_id, member_status);
 
-        return getMember(member.getUser_id(), user_name, user_avatar, member.getMember_level_id(), platform, version, ip_address, request_user_id);
+        return getMember(wechat_open_id, member.getUser_id(), user_name, user_avatar, member.getMember_level_id(), platform, version, ip_address, request_user_id);
     }
 
     public Map<String, Object> myFind(String request_user_id) {
@@ -234,11 +234,12 @@ public class MemberService extends Service {
         return resultMap;
     }
 
-    private Map<String, Object> getMember(String user_id, String user_name, String user_avatar, String member_level_id, String platform, String version, String ip_address, String request_user_id) {
+    private Map<String, Object> getMember(String wechat_open_id, String user_id, String user_name, String user_avatar, String member_level_id, String platform, String version, String ip_address, String request_user_id) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
         String token = authorizationService.saveByUser_id(user_id, platform, version, ip_address, request_user_id);
 
+        resultMap.put("open_id", wechat_open_id);
         resultMap.put(Constant.TOKEN.toLowerCase(), token);
         resultMap.put(User.USER_NAME, user_name);
         resultMap.put(User.USER_AVATAR, user_avatar);

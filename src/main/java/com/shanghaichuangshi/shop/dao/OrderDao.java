@@ -107,33 +107,16 @@ public class OrderDao extends Dao {
     }
 
     public Order findByOrder_number(String order_number) {
-        Order order = null;
-        List<String> keyList = CacheUtil.getKeys(ORDER_CACHE);
+        Kv map = Kv.create();
+        map.put(Order.ORDER_NUMBER, order_number);
+        SqlPara sqlPara = Db.getSqlPara("order.findByOrder_number", map);
 
-        for(String key : keyList) {
-            order = CacheUtil.get(ORDER_CACHE, key);
-
-            if (order.getOrder_number().equals(order_number)) {
-                return order;
-            }
+        List<Order> orderList = new Order().find(sqlPara.getSql(), sqlPara.getPara());
+        if (orderList.size() == 0) {
+            return null;
+        } else {
+            return orderList.get(0);
         }
-
-        if (order == null) {
-            Kv map = Kv.create();
-            map.put(Order.ORDER_NUMBER, order_number);
-            SqlPara sqlPara = Db.getSqlPara("order.findByOrder_number", map);
-
-            List<Order> orderList = new Order().find(sqlPara.getSql(), sqlPara.getPara());
-            if (orderList.size() == 0) {
-                order = null;
-            } else {
-                order = orderList.get(0);
-
-                CacheUtil.put(ORDER_CACHE, order.getOrder_id(), order);
-            }
-        }
-
-        return order;
     }
 
     public Order save(Order order, String request_user_id) {

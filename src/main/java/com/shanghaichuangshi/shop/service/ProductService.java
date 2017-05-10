@@ -11,6 +11,7 @@ import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.type.CategoryType;
 import com.shanghaichuangshi.util.AesUtil;
+import com.shanghaichuangshi.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +77,8 @@ public class ProductService extends Service {
             product.put(Product.PRODUCT_IMAGE_FILE, file.getFile_original_path());
             product.remove(Product.PRODUCT_IMAGE);
 
+            product.keep(Product.PRODUCT_ID, Product.PRODUCT_NAME, Product.PRODUCT_PRICE, Product.PRODUCT_IMAGE_FILE, Product.SYSTEM_CREATE_TIME);
+
             productList.add(product);
         }
 
@@ -117,17 +120,30 @@ public class ProductService extends Service {
     public Product videoFindByUser_id(String product_id, String user_id) {
         Product product = productDao.find(product_id);
 
-        Member member = memberService.findByUser_id(user_id);
-
-        List<OrderProduct> orderProductList = orderProductService.listByMember_id(member.getMember_id());
+        Member member = null;
         Boolean product_is_pay = false;
-        for (OrderProduct orderProduct : orderProductList) {
-            if (orderProduct.getProduct_id().equals(product_id)) {
-                product_is_pay = true;
 
-                break;
+        System.out.println("user_id:" + user_id);
+
+        if (Util.isNullOrEmpty(user_id)) {
+
+        } else {
+            member = memberService.findByUser_id(user_id);
+
+            System.out.println("member_id:" + member.getMember_id());
+
+            List<OrderProduct> orderProductList = orderProductService.listByMember_id(member.getMember_id());
+            for (OrderProduct orderProduct : orderProductList) {
+
+                System.out.println("order_product_id:" + orderProduct.getOrder_product_id());
+                if (orderProduct.getProduct_id().equals(product_id)) {
+                    product_is_pay = true;
+
+                    break;
+                }
             }
         }
+
         product.put(Product.PRODUCT_IS_PAY, product_is_pay);
 
         File productImageFile = fileService.find(product.getProduct_image());

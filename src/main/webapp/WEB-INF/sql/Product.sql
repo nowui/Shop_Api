@@ -42,10 +42,10 @@
   #sql("listAllHot")
     SELECT
     product_id,
-    category_id,
     product_name,
     product_image,
-    product_price
+    product_price,
+    system_create_time
     FROM table_product
     WHERE system_status = 1
     AND product_is_hot = 1
