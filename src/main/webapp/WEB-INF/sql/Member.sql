@@ -61,6 +61,15 @@
     WHERE member_id = #p(member_id)
   #end
 
+  #sql("childrenUpdate")
+    UPDATE table_member SET
+    member_level_id = #p(member_level_id),
+    member_status = 1,
+    system_update_user_id = #p(system_update_user_id),
+    system_update_time = #p(system_update_time)
+    WHERE member_id = #p(member_id)
+  #end
+
   #sql("updateByMember_idAndParent_idAndParent_pathAndMember_level_id")
     UPDATE table_member SET
     parent_id = #p(parent_id),

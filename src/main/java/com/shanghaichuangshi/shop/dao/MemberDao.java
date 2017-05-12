@@ -96,18 +96,31 @@ public class MemberDao extends Dao {
         return member;
     }
 
-    public boolean update(Member member, String request_user_id) {
-        CacheUtil.remove(MEMBER_CACHE, member.getMember_id());
+//    public boolean update(Member member, String request_user_id) {
+//        CacheUtil.remove(MEMBER_CACHE, member.getMember_id());
+//
+//        member.remove(Member.MEMBER_TOTAL_AMOUNT);
+//        member.remove(Member.MEMBER_WITHDRAWAL_AMOUNT);
+//        member.remove(Member.SYSTEM_CREATE_USER_ID);
+//        member.remove(Member.SYSTEM_CREATE_TIME);
+//        member.setSystem_update_user_id(request_user_id);
+//        member.setSystem_update_time(new Date());
+//        member.remove(Member.SYSTEM_STATUS);
+//
+//        return member.update();
+//    }
 
-        member.remove(Member.MEMBER_TOTAL_AMOUNT);
-        member.remove(Member.MEMBER_WITHDRAWAL_AMOUNT);
-        member.remove(Member.SYSTEM_CREATE_USER_ID);
-        member.remove(Member.SYSTEM_CREATE_TIME);
-        member.setSystem_update_user_id(request_user_id);
-        member.setSystem_update_time(new Date());
-        member.remove(Member.SYSTEM_STATUS);
+    public boolean childrenUpdate(String member_id, String member_level_id, String request_user_id) {
+        CacheUtil.remove(MEMBER_CACHE, member_id);
 
-        return member.update();
+        Kv map = Kv.create();
+        map.put(Member.MEMBER_ID, member_id);
+        map.put(Member.MEMBER_LEVEL_ID, member_level_id);
+        map.put(Member.SYSTEM_UPDATE_USER_ID, request_user_id);
+        map.put(Member.SYSTEM_UPDATE_TIME, new Date());
+        SqlPara sqlPara = Db.getSqlPara("member.childrenUpdate", map);
+
+        return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }
 
     public boolean updateByMember_idAndScene_idAndScene_qrcode(String member_id, String scene_id, String scene_qrcode, String request_user_id) {

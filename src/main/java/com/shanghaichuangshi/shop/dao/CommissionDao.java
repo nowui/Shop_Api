@@ -90,6 +90,8 @@ public class CommissionDao extends Dao {
             CacheUtil.remove(COMMISSION_CACHE, commission.getCommission_id());
         }
 
+        CacheUtil.remove(COMMISSION_LIST_CACHE, product_id);
+
         Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("commission.delete", map);
 
@@ -112,16 +114,10 @@ public class CommissionDao extends Dao {
     }
 
     public boolean deleteByProduct_id(String product_id, String request_user_id) {
-        List<String> keyList = CacheUtil.getKeys(COMMISSION_CACHE);
+        List<Commission> commissionList = CacheUtil.get(COMMISSION_LIST_CACHE, product_id);
 
-        if (keyList != null) {
-            for(String key : keyList) {
-                Commission commission = CacheUtil.get(COMMISSION_CACHE, key);
-
-                if (commission.getProduct_id().equals(product_id)) {
-                    CacheUtil.remove(COMMISSION_CACHE, product_id);
-                }
-            }
+        for(Commission commission : commissionList) {
+            CacheUtil.remove(COMMISSION_CACHE, commission.getCommission_id());
         }
 
         CacheUtil.remove(COMMISSION_LIST_CACHE, product_id);

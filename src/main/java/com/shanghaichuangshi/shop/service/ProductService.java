@@ -93,7 +93,7 @@ public class ProductService extends Service {
         Product product = productDao.find(product_id);
 
         File productImageFile = fileService.find(product.getProduct_image());
-        product.put(Product.PRODUCT_IMAGE_FILE, productImageFile.getFile_thumbnail_path());
+        product.put(Product.PRODUCT_IMAGE_FILE, productImageFile.getFile_original_path());
 
         List<String> productImageFileList = new ArrayList<String>();
         JSONArray productImageList = JSONArray.parseArray(product.getProduct_image_list().toString());

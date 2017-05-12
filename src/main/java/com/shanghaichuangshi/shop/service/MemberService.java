@@ -19,9 +19,9 @@ import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.shop.type.SceneTypeEnum;
 import com.shanghaichuangshi.type.UserType;
 import com.shanghaichuangshi.util.Util;
-import org.apache.http.HttpStatus;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +53,7 @@ public class MemberService extends Service {
         for (Member item : memberList) {
             User user = userService.find(item.getUser_id());
             item.put(User.USER_AVATAR, user.getUser_avatar());
-
+            user.remove(User.USER_ID);
 
             if (Util.isNullOrEmpty(item.getMember_level_id())) {
                 item.put(MemberLevel.MEMBER_LEVEL_NAME, "");
@@ -72,6 +72,36 @@ public class MemberService extends Service {
         User user = userService.find(member.getUser_id());
 
         member.put(User.USER_AVATAR, user.getUser_avatar());
+
+        return member;
+    }
+
+    public Member teamFind(String member_id) {
+        Member member = memberDao.find(member_id);
+
+        User user = userService.find(member.getUser_id());
+
+        member.put(User.USER_AVATAR, user.getUser_avatar());
+
+        if (Util.isNullOrEmpty(member.getMember_level_id())) {
+            member.put(MemberLevel.MEMBER_LEVEL_NAME, "");
+
+            if (!member.getMember_status()) {
+                Member parentMember = memberDao.find(member.getParent_id());
+                MemberLevel parentMemberLevel = memberLevelService.find(parentMember.getMember_level_id());
+                List<MemberLevel> list = new ArrayList<MemberLevel>();
+                List<MemberLevel> memberLevelList = memberLevelService.listAll();
+                for(MemberLevel m : memberLevelList) {
+                    if (m.getMember_level_value() > parentMemberLevel.getMember_level_value()) {
+                        list.add(m);
+                    }
+                }
+                member.put(Member.MEMBER_LEVEL_LIST, list);
+            }
+        } else {
+            MemberLevel memberLevel = memberLevelService.find(member.getMember_level_id());
+            member.put(MemberLevel.MEMBER_LEVEL_NAME, memberLevel.getMember_level_name());
+        }
 
         return member;
     }
@@ -128,8 +158,8 @@ public class MemberService extends Service {
 //        return member;
 //    }
 
-    public Member saveByWechat_open_idAndUser_nameAndUser_avatarAndFrom_scene_idAndMember_status(String wechat_open_id, String user_name, String user_avatar, String from_scene_id, Boolean member_status) {
-        User user = userService.findByWechat_open_idAndUser_type(wechat_open_id, UserType.MEMBER.getKey());
+    public Member saveByWechat_open_idAndWechat_union_idAndUser_nameAndUser_avatarAndFrom_scene_idAndMember_status(String wechat_open_id, String wechat_union_id, String user_name, String user_avatar, String from_scene_id, Boolean member_status) {
+        User user = userService.findByWechat_open_idAndWechat_union_idAndUser_type(wechat_open_id, wechat_union_id, UserType.MEMBER.getKey());
         if (user == null) {
             String user_id = Util.getRandomUUID();
             String parent_id = "";
@@ -145,13 +175,24 @@ public class MemberService extends Service {
 
             Member member = memberDao.save(parent_id, parent_path, user_id, from_scene_id, scene_id, scene_qrcode, member_total_amount, member_withdrawal_amount, member_level_id, user_name, member_phone, member_remark, member_status, request_user_id);
 
-            userService.saveByUser_idAndUser_nameAndUser_avatarAndWechat_open_idAndObject_idAndUser_type(user_id, user_name, user_avatar, wechat_open_id, member.getMember_id(), UserType.MEMBER.getKey(), request_user_id);
+            userService.saveByUser_idAndUser_nameAndUser_avatarAndWechat_open_idAndWechat_union_idAndObject_idAndUser_type(user_id, user_name, user_avatar, wechat_open_id, wechat_union_id, member.getMember_id(), UserType.MEMBER.getKey(), request_user_id);
 
             return member;
         } else {
             Member member = memberDao.find(user.getObject_id());
 
             return member;
+        }
+    }
+
+    public boolean childrenUpdate(String member_id, String member_level_id, String request_user_id) {
+        Member member = memberDao.find(member_id);
+        Member parentMember = findByUser_id(request_user_id);
+
+        if (member.getParent_id().equals(parentMember.getMember_id())) {
+            return memberDao.childrenUpdate(member_id, member_level_id, request_user_id);
+        } else {
+            throw new RuntimeException("您不是上一级");
         }
     }
 
@@ -177,8 +218,8 @@ public class MemberService extends Service {
 //        return getMember(user, platform, version, ip_address, request_user_id);
 //    }
 
-    public Map<String, Object> weChatH5Login(String wechat_open_id, String platform, String version, String ip_address, String request_user_id) {
-        User user = userService.findByWechat_open_idAndUser_type(wechat_open_id, UserType.MEMBER.getKey());
+    public Map<String, Object> weChatH5Login(String wechat_open_id, String wechat_union_id, String platform, String version, String ip_address, String request_user_id) {
+        User user = userService.findByWechat_open_idAndWechat_union_idAndUser_type(wechat_open_id, wechat_union_id, UserType.MEMBER.getKey());
 
         Member member = find(user.getObject_id());
 
@@ -197,6 +238,7 @@ public class MemberService extends Service {
         String session_key = resultJSONObject.getString("session_key");
 
         String wechat_open_id = "";
+        String wechat_union_id = "";
         String user_name = "";
         String user_avatar = "";
         String scene_id = "";
@@ -216,7 +258,7 @@ public class MemberService extends Service {
             throw new RuntimeException("Exception:" + e.toString());
         }
 
-        Member member = saveByWechat_open_idAndUser_nameAndUser_avatarAndFrom_scene_idAndMember_status(wechat_open_id, user_name, user_avatar, scene_id, member_status);
+        Member member = saveByWechat_open_idAndWechat_union_idAndUser_nameAndUser_avatarAndFrom_scene_idAndMember_status(wechat_open_id, wechat_union_id, user_name, user_avatar, scene_id, member_status);
 
         return getMember(wechat_open_id, member.getUser_id(), user_name, user_avatar, member.getMember_level_id(), platform, version, ip_address, request_user_id);
     }

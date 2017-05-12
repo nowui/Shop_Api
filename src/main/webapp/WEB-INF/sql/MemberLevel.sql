@@ -12,7 +12,8 @@
   #sql("list")
     SELECT
     member_level_id,
-    member_level_name
+    member_level_name,
+    member_level_value
     FROM table_member_level
     WHERE system_status = 1
     #if(member_level_name)

@@ -14,13 +14,13 @@ public class Member extends Model<Member> {
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "上一级会员编号")
     public static final String PARENT_ID = "parent_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "上一级会员编号路径")
+    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "上一级会员编号路径", findable = false)
     public static final String PARENT_PATH = "parent_path";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "用户编号")
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "用户编号", findable = false)
     public static final String USER_ID = "user_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "来源场景编号")
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "来源场景编号", findable = false)
     public static final String FROM_SCENE_ID = "from_scene_id";
 
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "场景编号")
@@ -47,8 +47,10 @@ public class Member extends Model<Member> {
     @Column(type = ColumnType.VARCHAR, length = 250, comment = "会员备注")
     public static final String MEMBER_REMARK = "member_remark";
 
-    @Column(type = ColumnType.BOOLEAN, length = 1, comment = "会员状态", findable = false)
+    @Column(type = ColumnType.BOOLEAN, length = 1, comment = "会员状态")
     public static final String MEMBER_STATUS = "member_status";
+
+    public static final String MEMBER_LEVEL_LIST = "member_level_list";
 
     public String getMember_id() {
         return getStr(MEMBER_ID);

@@ -41,6 +41,21 @@ public class OrderController extends Controller {
         renderSuccessJson(count, orderListvice);
     }
 
+    @ActionKey(Url.ORDER_ADMIN_VIDEO_LIST)
+    public void adminVideoList() {
+        validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);
+
+        Order model = getParameter(Order.class);
+
+        model.validate(Order.ORDER_NUMBER);
+
+        int count = orderService.count(model);
+
+        List<Order> orderListvice = orderService.videoList(model, getM(), getN());
+
+        renderSuccessJson(count, orderListvice);
+    }
+
     @ActionKey(Url.ORDER_FIND)
     public void find() {
         Order model = getParameter(Order.class);

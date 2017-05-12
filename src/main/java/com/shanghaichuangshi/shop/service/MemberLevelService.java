@@ -18,6 +18,10 @@ public class MemberLevelService extends Service {
         return memberLevelDao.list(member_level.getMember_level_name(), m, n);
     }
 
+    public List<MemberLevel> listAll() {
+        return memberLevelDao.listAll();
+    }
+
     public MemberLevel find(String member_level_id) {
         return memberLevelDao.find(member_level_id);
     }

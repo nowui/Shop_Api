@@ -68,6 +68,17 @@ public class MemberController extends Controller {
         renderSuccessJson(member.removeUnfindable());
     }
 
+    @ActionKey(Url.MEMBER_TEAM_FIND)
+    public void teamFind() {
+        Member model = getParameter(Member.class);
+
+        model.validate(Member.MEMBER_ID);
+
+        Member member = memberService.teamFind(model.getMember_id());
+
+        renderSuccessJson(member.removeUnfindable());
+    }
+
     @ActionKey(Url.MEMBER_ADMIN_FIND)
     public void adminFind() {
         Member model = getParameter(Member.class);
@@ -101,18 +112,17 @@ public class MemberController extends Controller {
 //        renderSuccessJson();
 //    }
 
-//    @ActionKey(Url.MEMBERL_UPDATE)
-//    public void update() {
-//        Member model = getParameter(Member.class);
-//        User userModel = getParameter(User.class);
-//        String request_user_id = getRequest_user_id();
-//
-//        model.validate(Member.MEMBER_ID, Member.MEMBER_NAME);
-//
-//        memberService.update(model, userModel, request_user_id);
-//
-//        renderSuccessJson();
-//    }
+    @ActionKey(Url.MEMBERL_CHILDREN_UPDATE)
+    public void childrenUpdate() {
+        Member model = getParameter(Member.class);
+        String request_user_id = getRequest_user_id();
+
+        model.validate(Member.MEMBER_ID, Member.MEMBER_LEVEL_ID);
+
+        memberService.childrenUpdate(model.getMember_id(), model.getMember_level_id(), request_user_id);
+
+        renderSuccessJson();
+    }
 
     @ActionKey(Url.MEMBER_DELETE)
     public void delete() {
@@ -141,7 +151,7 @@ public class MemberController extends Controller {
         User model = getParameter(User.class);
         String request_user_id = getRequest_user_id();
 
-        Map<String, Object> resultMap = memberService.weChatH5Login(model.getWechat_open_id(), getPlatform(), getVersion(), getIp_address(), request_user_id);
+        Map<String, Object> resultMap = memberService.weChatH5Login(model.getWechat_open_id(), model.getWechat_union_id(), getPlatform(), getVersion(), getIp_address(), request_user_id);
 
         renderSuccessJson(resultMap);
     }

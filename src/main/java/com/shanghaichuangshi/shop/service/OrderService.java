@@ -8,13 +8,16 @@ import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.constant.WeChat;
 import com.shanghaichuangshi.model.Category;
 import com.shanghaichuangshi.model.File;
+import com.shanghaichuangshi.model.User;
 import com.shanghaichuangshi.service.CategoryService;
 import com.shanghaichuangshi.service.FileService;
+import com.shanghaichuangshi.service.UserService;
 import com.shanghaichuangshi.shop.dao.OrderDao;
 import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.util.Util;
+import net.sf.ehcache.search.expression.Or;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -34,6 +37,7 @@ public class OrderService extends Service {
     private final CommissionService commissionService = new CommissionService();
     private final DeliveryService deliveryService = new DeliveryService();
     private final FileService fileService = new FileService();
+    private final UserService userService = new UserService();
 
     public int count(Order order) {
         return orderDao.count(order.getOrder_number());
@@ -41,6 +45,22 @@ public class OrderService extends Service {
 
     public List<Order> list(Order order, int m, int n) {
         return orderDao.list(order.getOrder_number(), m, n);
+    }
+
+    public List<Order> videoList(Order order, int m, int n) {
+        List<Order> orderList = orderDao.list(order.getOrder_number(), m, n);
+        for (Order o : orderList) {
+            List<OrderProduct> orderProductList = orderProductService.listByOder_id(o.getOrder_id());
+            User user = userService.find(o.getUser_id());
+
+            o.put(User.USER_NAME, user.getUser_name());
+            o.put(User.USER_AVATAR, user.getUser_avatar());
+            o.put(OrderProduct.PRODUCT_NAME, orderProductList.get(0).getProduct_name());
+
+            File productImageFile = fileService.find(orderProductList.get(0).getProduct_image());
+            o.put(OrderProduct.PRODUCT_IMAGE, productImageFile.getFile_thumbnail_path());
+        }
+        return orderList;
     }
 
     public List<Order> listByUser_id(String user_id, Integer m, Integer n) {

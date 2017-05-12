@@ -10,7 +10,6 @@ import com.jfinal.weixin.sdk.kit.PaymentKit;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.constant.WeChat;
 import com.shanghaichuangshi.model.User;
-import com.shanghaichuangshi.service.AuthorizationService;
 import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.shop.service.*;
@@ -306,11 +305,16 @@ public class WeChatApiController extends ApiController {
         } else {
             SnsAccessToken snsAccessToken = SnsAccessTokenApi.getSnsAccessToken(WeChat.app_id, WeChat.app_secret, code);
 
+            String wechat_union_id = "";
+            if (Util.isNullOrEmpty(snsAccessToken.getUnionid())) {
+                wechat_union_id = snsAccessToken.getUnionid();
+            }
+
             String wechat_open_id = snsAccessToken.getOpenid();
             String ip_address = HttpUtil.getIpAddress(getRequest());
             String request_user_id = "";
 
-            Map<String, Object> resultMap = memberService.weChatH5Login(wechat_open_id, platform, version, ip_address, request_user_id);
+            Map<String, Object> resultMap = memberService.weChatH5Login(wechat_open_id, wechat_union_id, platform, version, ip_address, request_user_id);
             String token = resultMap.get(Constant.TOKEN.toLowerCase()).toString();
             String user_name = resultMap.get(User.USER_NAME).toString();
             String user_avatar = resultMap.get(User.USER_AVATAR).toString();

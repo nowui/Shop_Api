@@ -11,7 +11,7 @@
     product_quantity,
     commission_id,
     member_id,
-    order_product_commission,
+    order_product_commission
     FROM table_order_product
     WHERE system_status = 1
     AND order_id = #p(order_id)

@@ -12,6 +12,7 @@
   #sql("list")
     SELECT
     order_id,
+    user_id,
     order_number,
     order_delivery_name,
     order_delivery_phone,
@@ -42,7 +43,7 @@
     order_status
     FROM table_order
     WHERE system_status = 1
-    AND user_id LIKE #p(user_id)
+    AND user_id = #p(user_id)
     ORDER BY system_create_time DESC
     #if(n > 0)
       LIMIT #p(m), #p(n)
