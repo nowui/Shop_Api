@@ -242,17 +242,23 @@ public class MemberService extends Service {
         String user_name = "";
         String user_avatar = "";
         String scene_id = "";
-        Boolean member_status = true;
+        Boolean member_status = false;
         String request_user_id = "";
 
         try {
             result = decrypt(encrypted_data, session_key, iv, "UTF-8");
+
             if (result != null && result.length() > 0) {
                 resultJSONObject = JSONObject.parseObject(result);
 
                 wechat_open_id = resultJSONObject.getString("openId");
+                wechat_union_id = resultJSONObject.getString("unionId");
                 user_name = resultJSONObject.getString("nickName");
                 user_avatar = resultJSONObject.getString("avatarUrl");
+            }
+
+            if (Util.isNullOrEmpty(wechat_union_id)) {
+                wechat_union_id = "";
             }
         } catch (Exception e) {
             throw new RuntimeException("Exception:" + e.toString());
