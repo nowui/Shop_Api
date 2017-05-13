@@ -13,7 +13,7 @@ import java.util.List;
 
 public class BrandDao extends Dao {
 
-    private final String BRAND_CACHE = "brand_cache";
+    private final String BRAND_BY_BRAND_ID_CACHE = "brand_id_brand_id_cache";
 
     public int count(String brand_name) {
         Kv map = Kv.create();
@@ -35,7 +35,7 @@ public class BrandDao extends Dao {
     }
 
     public Brand find(String brand_id) {
-        Brand brand = CacheUtil.get(BRAND_CACHE, brand_id);
+        Brand brand = CacheUtil.get(BRAND_BY_BRAND_ID_CACHE, brand_id);
 
         if (brand == null) {
             Kv map = Kv.create();
@@ -48,7 +48,7 @@ public class BrandDao extends Dao {
             } else {
                 brand = brandList.get(0);
 
-                CacheUtil.put(BRAND_CACHE, brand_id, brand);
+                CacheUtil.put(BRAND_BY_BRAND_ID_CACHE, brand_id, brand);
             }
         }
 
@@ -69,7 +69,7 @@ public class BrandDao extends Dao {
     }
 
     public boolean update(Brand brand, String request_user_id) {
-        CacheUtil.remove(BRAND_CACHE, brand.getBrand_id());
+        CacheUtil.remove(BRAND_BY_BRAND_ID_CACHE, brand.getBrand_id());
 
         brand.remove(Brand.SYSTEM_CREATE_USER_ID);
         brand.remove(Brand.SYSTEM_CREATE_TIME);
@@ -81,7 +81,7 @@ public class BrandDao extends Dao {
     }
 
     public boolean delete(String brand_id, String request_user_id) {
-        CacheUtil.remove(BRAND_CACHE, brand_id);
+        CacheUtil.remove(BRAND_BY_BRAND_ID_CACHE, brand_id);
 
         Kv map = Kv.create();
         map.put(Brand.BRAND_ID, brand_id);

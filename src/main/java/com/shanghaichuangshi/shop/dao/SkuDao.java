@@ -15,11 +15,11 @@ import java.util.List;
 
 public class SkuDao extends Dao {
 
-    private final String SKU_LIST_CACHE = "sku_list_cache";
-    private final String SKU_CACHE = "sku_cache";
+    private final String SKU_LIST_BY_PRODUCT_ID_CACHE = "sku_list_by_product_id_cache";
+    private final String SKU_BY_SKU_ID_CACHE = "sku_by_sku_id_cache";
 
     public List<Sku> list(String product_id) {
-        List<Sku> skuList = CacheUtil.get(SKU_LIST_CACHE, product_id);
+        List<Sku> skuList = CacheUtil.get(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
 
         if (skuList == null) {
             Kv map = Kv.create();
@@ -29,7 +29,7 @@ public class SkuDao extends Dao {
             skuList = new Sku().find(sqlPara.getSql(), sqlPara.getPara());
 
             if (skuList.size() > 0) {
-                CacheUtil.put(SKU_LIST_CACHE, product_id, skuList);
+                CacheUtil.put(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id, skuList);
             }
         }
 
@@ -37,7 +37,7 @@ public class SkuDao extends Dao {
     }
 
     public Sku find(String sku_id) {
-        Sku sku = CacheUtil.get(SKU_CACHE, sku_id);
+        Sku sku = CacheUtil.get(SKU_BY_SKU_ID_CACHE, sku_id);
 
         if (sku == null) {
             Kv map = Kv.create();
@@ -50,7 +50,7 @@ public class SkuDao extends Dao {
             } else {
                 sku = skuList.get(0);
 
-                CacheUtil.put(SKU_CACHE, sku_id, sku);
+                CacheUtil.put(SKU_BY_SKU_ID_CACHE, sku_id, sku);
             }
         }
 
@@ -87,12 +87,12 @@ public class SkuDao extends Dao {
     }
 
     public void updateProduct_stock(List<Sku> skuList, String product_id, String request_user_id) {
-        List<Sku> skuListCache = CacheUtil.get(SKU_LIST_CACHE, product_id);
+        List<Sku> skuListCache = CacheUtil.get(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
         for(Sku sku : skuListCache) {
-            CacheUtil.remove(SKU_CACHE, sku.getSku_id());
+            CacheUtil.remove(SKU_BY_SKU_ID_CACHE, sku.getSku_id());
         }
 
-        CacheUtil.remove(SKU_LIST_CACHE, product_id);
+        CacheUtil.remove(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
 
         Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("sku.updateProduct_stock", map);
@@ -117,12 +117,12 @@ public class SkuDao extends Dao {
     }
 
     public void delete(List<Sku> skuList, String product_id, String request_user_id) {
-        List<Sku> skuListCache = CacheUtil.get(SKU_LIST_CACHE, product_id);
+        List<Sku> skuListCache = CacheUtil.get(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
         for(Sku sku : skuListCache) {
-            CacheUtil.remove(SKU_CACHE, sku.getSku_id());
+            CacheUtil.remove(SKU_BY_SKU_ID_CACHE, sku.getSku_id());
         }
 
-        CacheUtil.remove(SKU_LIST_CACHE, product_id);
+        CacheUtil.remove(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
 
         Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("sku.delete", map);
@@ -146,15 +146,15 @@ public class SkuDao extends Dao {
     }
 
     public boolean deleteByProduct_id(String product_id, String request_user_id) {
-        List<Sku> skuListCache = CacheUtil.get(SKU_LIST_CACHE, product_id);
+        List<Sku> skuListCache = CacheUtil.get(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
 
         if (skuListCache != null) {
             for(Sku sku : skuListCache) {
-                CacheUtil.remove(SKU_CACHE, sku.getSku_id());
+                CacheUtil.remove(SKU_BY_SKU_ID_CACHE, sku.getSku_id());
             }
         }
 
-        CacheUtil.remove(SKU_LIST_CACHE, product_id);
+        CacheUtil.remove(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
 
         Kv map = Kv.create();
         map.put(Sku.PRODUCT_ID, product_id);

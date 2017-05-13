@@ -117,4 +117,12 @@ public class Url {
     public static final String BILL_SAVE = "/bill/save";
     public static final String BILLL_UPDATE = "/bill/update";
     public static final String BILL_DELETE = "/bill/delete";
+
+    public static final String CART_LIST = "/cart/list";
+    public static final String CART_ADMIN_LIST = "/cart/admin/list";
+    public static final String CART_FIND = "/cart/find";
+    public static final String CART_ADMIN_FIND = "/cart/admin/find";
+    public static final String CART_SAVE = "/cart/save";
+    public static final String CARTL_UPDATE = "/cart/update";
+    public static final String CART_DELETE = "/cart/delete";
 }

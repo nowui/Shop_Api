@@ -15,11 +15,11 @@ import java.util.List;
 
 public class CommissionDao extends Dao {
 
-    private final String COMMISSION_LIST_CACHE = "commission_list_cache";
+    private final String COMMISSION_LIST_BY_PRODUCT_ID_CACHE = "commission_list_by_product_id_cache";
     private final String COMMISSION_CACHE = "commission_cache";
 
     public List<Commission> list(String product_id) {
-        List<Commission> commissionList = CacheUtil.get(COMMISSION_LIST_CACHE, product_id);
+        List<Commission> commissionList = CacheUtil.get(COMMISSION_LIST_BY_PRODUCT_ID_CACHE, product_id);
 
         if (commissionList == null) {
             Kv map = Kv.create();
@@ -29,7 +29,7 @@ public class CommissionDao extends Dao {
             commissionList = new Commission().find(sqlPara.getSql(), sqlPara.getPara());
 
             if (commissionList != null) {
-                CacheUtil.put(COMMISSION_LIST_CACHE, product_id, commissionList);
+                CacheUtil.put(COMMISSION_LIST_BY_PRODUCT_ID_CACHE, product_id, commissionList);
             }
         }
 
@@ -90,7 +90,7 @@ public class CommissionDao extends Dao {
             CacheUtil.remove(COMMISSION_CACHE, commission.getCommission_id());
         }
 
-        CacheUtil.remove(COMMISSION_LIST_CACHE, product_id);
+        CacheUtil.remove(COMMISSION_LIST_BY_PRODUCT_ID_CACHE, product_id);
 
         Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("commission.delete", map);
@@ -114,13 +114,13 @@ public class CommissionDao extends Dao {
     }
 
     public boolean deleteByProduct_id(String product_id, String request_user_id) {
-        List<Commission> commissionList = CacheUtil.get(COMMISSION_LIST_CACHE, product_id);
+        List<Commission> commissionList = CacheUtil.get(COMMISSION_LIST_BY_PRODUCT_ID_CACHE, product_id);
 
         for(Commission commission : commissionList) {
             CacheUtil.remove(COMMISSION_CACHE, commission.getCommission_id());
         }
 
-        CacheUtil.remove(COMMISSION_LIST_CACHE, product_id);
+        CacheUtil.remove(COMMISSION_LIST_BY_PRODUCT_ID_CACHE, product_id);
 
         Kv map = Kv.create();
         map.put(Commission.PRODUCT_ID, product_id);

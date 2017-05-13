@@ -83,8 +83,11 @@ public class OrderProduct extends Model<OrderProduct> {
     @Column(type = ColumnType.INT, length = 11, comment = "商品库存")
     public static final String PRODUCT_STOCK = "product_stock";
 
-    @Column(type = ColumnType.INT, length = 11, comment = "商品数量")
-    public static final String PRODUCT_QUANTITY = "product_quantity";
+    @Column(type = ColumnType.DECIMAL, length = 0, comment = "订单商品价格")
+    public static final String ORDER_PRODUCT_PRICE = "order_product_price";
+
+    @Column(type = ColumnType.INT, length = 11, comment = "订单商品数量")
+    public static final String ORDER_PRODUCT_QUANTITY = "order_product_quantity";
     
     public String getOrder_product_id() {
         return getStr(ORDER_PRODUCT_ID);
@@ -286,11 +289,19 @@ public class OrderProduct extends Model<OrderProduct> {
         set(PRODUCT_STOCK, product_stock);
     }
 
-    public Integer getProduct_quantity() {
-        return getInt(PRODUCT_QUANTITY);
+    public BigDecimal getOrder_product_price() {
+        return getBigDecimal(ORDER_PRODUCT_PRICE);
     }
 
-    public void setProduct_quantity(Integer product_quantity) {
-        set(PRODUCT_QUANTITY, product_quantity);
+    public void setOrder_product_price(BigDecimal order_product_price) {
+        set(ORDER_PRODUCT_PRICE, order_product_price);
+    }
+
+    public Integer getOrder_product_quantity() {
+        return getInt(ORDER_PRODUCT_QUANTITY);
+    }
+
+    public void setOrder_product_quantity(Integer order_product_quantity) {
+        set(ORDER_PRODUCT_QUANTITY, order_product_quantity);
     }
 }

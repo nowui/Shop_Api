@@ -17,11 +17,11 @@ public class OrderController extends Controller {
 
     @ActionKey(Url.ORDER_LIST)
     public void list() {
-        validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);
+//        validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);
 
         String request_user_id = getRequest_user_id();
 
-        List<Order> orderListvice = orderService.listByUser_id(request_user_id, getM(), getN());
+        List<Order> orderListvice = orderService.listByUser_id(request_user_id);
 
         renderSuccessJson(orderListvice);
     }

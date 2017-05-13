@@ -15,7 +15,7 @@ import java.util.List;
 
 public class BillDao extends Dao {
 
-    private final String BILL_CACHE = "bill_cache";
+    private final String BILL_BY_USER_ID_CACHE = "bill_by_user_id_cache";
 
     public int count(String bill_name) {
         Kv map = Kv.create();
@@ -37,7 +37,7 @@ public class BillDao extends Dao {
     }
 
     public List<Bill> listByUser_id(String user_id, Integer m, Integer n) {
-        List<Bill> billList = CacheUtil.get(BILL_CACHE, user_id);
+        List<Bill> billList = CacheUtil.get(BILL_BY_USER_ID_CACHE, user_id);
 
         if (billList == null) {
             Kv map = Kv.create();
@@ -49,7 +49,7 @@ public class BillDao extends Dao {
             billList = new Bill().find(sqlPara.getSql(), sqlPara.getPara());
 
             if (billList.size() > 0) {
-                CacheUtil.put(BILL_CACHE, user_id, billList);
+                CacheUtil.put(BILL_BY_USER_ID_CACHE, user_id, billList);
             }
         }
 
@@ -75,7 +75,7 @@ public class BillDao extends Dao {
 
         List<Object[]> parameterList = new ArrayList<Object[]>();
         for(Bill bill : billList) {
-            CacheUtil.remove(BILL_CACHE, bill.getUser_id());
+            CacheUtil.remove(BILL_BY_USER_ID_CACHE, bill.getUser_id());
 
             List<Object> objectList = new ArrayList<Object>();
             objectList.add(Util.getRandomUUID());

@@ -17,7 +17,6 @@ import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.util.Util;
-import net.sf.ehcache.search.expression.Or;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -63,16 +62,16 @@ public class OrderService extends Service {
         return orderList;
     }
 
-    public List<Order> listByUser_id(String user_id, Integer m, Integer n) {
-        List<Order> orderList = orderDao.listByUser_id(user_id, m, n);
+    public List<Order> listByUser_id(String user_id) {
+        List<Order> orderList = orderDao.listByUser_id(user_id);
 
         for (Order order : orderList) {
             List<OrderProduct> orderProductList = orderProductService.listByOder_id(order.getOrder_id());
-            for(OrderProduct orderProduct : orderProductList) {
+            for (OrderProduct orderProduct : orderProductList) {
                 File productImageFile = fileService.find(orderProduct.getProduct_image());
                 orderProduct.put(Product.PRODUCT_IMAGE_FILE, productImageFile.getFile_thumbnail_path());
 
-                orderProduct.keep(OrderProduct.PRODUCT_ID, OrderProduct.PRODUCT_NAME, Product.PRODUCT_IMAGE_FILE, OrderProduct.PRODUCT_PRICE, OrderProduct.PRODUCT_QUANTITY);
+                orderProduct.keep(OrderProduct.PRODUCT_ID, OrderProduct.PRODUCT_NAME, Product.PRODUCT_IMAGE_FILE, OrderProduct.ORDER_PRODUCT_PRICE, OrderProduct.ORDER_PRODUCT_QUANTITY);
             }
             order.put(Product.PRODUCT_LIST, orderProductList);
         }
@@ -84,11 +83,11 @@ public class OrderService extends Service {
         Order order = orderDao.find(order_id);
 
         List<OrderProduct> orderProductList = orderProductService.listByOder_id(order_id);
-        for(OrderProduct orderProduct : orderProductList) {
+        for (OrderProduct orderProduct : orderProductList) {
             File productImageFile = fileService.find(orderProduct.getProduct_image());
             orderProduct.put(Product.PRODUCT_IMAGE_FILE, productImageFile.getFile_thumbnail_path());
 
-            orderProduct.keep(OrderProduct.PRODUCT_ID, OrderProduct.PRODUCT_NAME, Product.PRODUCT_IMAGE_FILE, OrderProduct.PRODUCT_PRICE, OrderProduct.PRODUCT_QUANTITY);
+            orderProduct.keep(OrderProduct.PRODUCT_ID, OrderProduct.PRODUCT_NAME, Product.PRODUCT_IMAGE_FILE, OrderProduct.ORDER_PRODUCT_PRICE, OrderProduct.ORDER_PRODUCT_QUANTITY);
         }
         order.put(Product.PRODUCT_LIST, orderProductList);
 
@@ -99,8 +98,8 @@ public class OrderService extends Service {
         Order order = orderDao.find(order_id);
 
         List<OrderProduct> orderProductList = orderProductService.listByOder_id(order_id);
-        for(OrderProduct orderProduct : orderProductList) {
-            orderProduct.keep(OrderProduct.PRODUCT_ID, OrderProduct.PRODUCT_NAME, OrderProduct.PRODUCT_PRICE, OrderProduct.PRODUCT_QUANTITY, OrderProduct.ORDER_PRODUCT_COMMISSION);
+        for (OrderProduct orderProduct : orderProductList) {
+            orderProduct.keep(OrderProduct.PRODUCT_ID, OrderProduct.PRODUCT_NAME, OrderProduct.PRODUCT_PRICE, OrderProduct.ORDER_PRODUCT_QUANTITY, OrderProduct.ORDER_PRODUCT_COMMISSION);
         }
         order.put(Product.PRODUCT_LIST, orderProductList);
 
@@ -183,7 +182,7 @@ public class OrderService extends Service {
 
             String order_product_id = Util.getRandomUUID();
             String sku_id = productJSONObject.getString(Sku.SKU_ID);
-            Integer product_quantity = productJSONObject.getInteger(OrderProduct.PRODUCT_QUANTITY);
+            Integer product_quantity = productJSONObject.getInteger(OrderProduct.ORDER_PRODUCT_QUANTITY);
 
             Sku sku = skuService.find(sku_id);
 
@@ -261,14 +260,15 @@ public class OrderService extends Service {
             orderProduct.setProduct_is_sale(product.getProduct_is_sale());
             orderProduct.setProduct_content(product.getProduct_content());
             orderProduct.setSku_id(sku_id);
-            orderProduct.setCommission_id(commission_id);
             orderProduct.setMember_id(member_id);
+            orderProduct.setCommission_id(commission_id);
+            orderProduct.setOrder_product_commission(fatherMemberJSONArray.toJSONString());
             orderProduct.setProduct_attribute(sku.getProduct_attribute());
             orderProduct.setProduct_market_price(product.getProduct_market_price());
             orderProduct.setProduct_price(product.getProduct_price());
             orderProduct.setProduct_stock(product.getProduct_stock());
-            orderProduct.setProduct_quantity(product_quantity);
-            orderProduct.setOrder_product_commission(fatherMemberJSONArray.toJSONString());
+            orderProduct.setOrder_product_price(product_price);
+            orderProduct.setOrder_product_quantity(product_quantity);
             orderProductList.add(orderProduct);
         }
 

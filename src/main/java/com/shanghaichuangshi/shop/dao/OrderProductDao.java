@@ -15,11 +15,11 @@ import java.util.List;
 
 public class OrderProductDao extends Dao {
 
-    private final String ORDER_PRODUCT_LIST_ORDER_ID_CACHE = "order_product_list_order_id_cache";
-    private final String ORDER_PRODUCT_LIST_MEMBER_ID_CACHE = "order_product_list_member_id_cache";
+    private final String ORDER_PRODUCT_LIST_BY_ORDER_ID_CACHE = "order_product_list_by_order_id_cache";
+    private final String ORDER_PRODUCT_LIST_BY_MEMBER_ID_CACHE = "order_product_list_by_member_id_cache";
 
     public List<OrderProduct> listByOder_id(String order_id) {
-        List<OrderProduct> orderProductList = CacheUtil.get(ORDER_PRODUCT_LIST_ORDER_ID_CACHE, order_id);
+        List<OrderProduct> orderProductList = CacheUtil.get(ORDER_PRODUCT_LIST_BY_ORDER_ID_CACHE, order_id);
 
         if (orderProductList == null) {
             Kv map = Kv.create();
@@ -29,7 +29,7 @@ public class OrderProductDao extends Dao {
             orderProductList = new OrderProduct().find(sqlPara.getSql(), sqlPara.getPara());
 
             if (orderProductList.size() > 0) {
-                CacheUtil.put(ORDER_PRODUCT_LIST_ORDER_ID_CACHE, order_id, orderProductList);
+                CacheUtil.put(ORDER_PRODUCT_LIST_BY_ORDER_ID_CACHE, order_id, orderProductList);
             }
         }
 
@@ -37,7 +37,7 @@ public class OrderProductDao extends Dao {
     }
 
     public List<OrderProduct> listByMember_id(String member_id) {
-        List<OrderProduct> orderProductList = CacheUtil.get(ORDER_PRODUCT_LIST_MEMBER_ID_CACHE, member_id);
+        List<OrderProduct> orderProductList = CacheUtil.get(ORDER_PRODUCT_LIST_BY_MEMBER_ID_CACHE, member_id);
 
         if (orderProductList == null) {
             Kv map = Kv.create();
@@ -47,7 +47,7 @@ public class OrderProductDao extends Dao {
             orderProductList = new OrderProduct().find(sqlPara.getSql(), sqlPara.getPara());
 
             if (orderProductList.size() > 0) {
-                CacheUtil.put(ORDER_PRODUCT_LIST_MEMBER_ID_CACHE, member_id, orderProductList);
+                CacheUtil.put(ORDER_PRODUCT_LIST_BY_MEMBER_ID_CACHE, member_id, orderProductList);
             }
         }
 
@@ -99,7 +99,8 @@ public class OrderProductDao extends Dao {
             objectList.add(orderProduct.getProduct_market_price());
             objectList.add(orderProduct.getProduct_price());
             objectList.add(orderProduct.getProduct_stock());
-            objectList.add(orderProduct.getProduct_quantity());
+            objectList.add(orderProduct.getOrder_product_price());
+            objectList.add(orderProduct.getOrder_product_quantity());
             objectList.add(request_user_id);
             objectList.add(new Date());
             objectList.add(request_user_id);
@@ -128,8 +129,8 @@ public class OrderProductDao extends Dao {
 //    }
 
     public boolean updateByOrder_idAndOrder_status(String order_id, Boolean order_status, String member_id) {
-        CacheUtil.remove(ORDER_PRODUCT_LIST_ORDER_ID_CACHE, order_id);
-        CacheUtil.remove(ORDER_PRODUCT_LIST_MEMBER_ID_CACHE, member_id);
+        CacheUtil.remove(ORDER_PRODUCT_LIST_BY_ORDER_ID_CACHE, order_id);
+        CacheUtil.remove(ORDER_PRODUCT_LIST_BY_MEMBER_ID_CACHE, member_id);
 
         Kv map = Kv.create();
         map.put(OrderProduct.ORDER_ID, order_id);

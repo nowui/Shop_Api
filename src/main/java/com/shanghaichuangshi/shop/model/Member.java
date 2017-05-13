@@ -35,6 +35,12 @@ public class Member extends Model<Member> {
     @Column(type = ColumnType.DECIMAL, length = 0, comment = "可提现金额")
     public static final String MEMBER_WITHDRAWAL_AMOUNT = "member_withdrawal_amount";
 
+    @Column(type = ColumnType.DECIMAL, length = 0, comment = "当月进货金额")
+    public static final String MEMBER_MONTH_ORDER_AMOUNT = "member_month_order_amount";
+
+    @Column(type = ColumnType.DECIMAL, length = 0, comment = "全部进货金额")
+    public static final String MEMBER_ALL_ORDER_AMOUNT = "member_all_order_amount";
+
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "会员等级")
     public static final String MEMBER_LEVEL_ID = "member_level_id";
 
@@ -114,6 +120,22 @@ public class Member extends Model<Member> {
 
     public void setMember_total_amount(BigDecimal member_total_amount) {
         set(MEMBER_TOTAL_AMOUNT, member_total_amount);
+    }
+
+    public BigDecimal getMember_month_order_amount() {
+        return getBigDecimal(MEMBER_MONTH_ORDER_AMOUNT);
+    }
+
+    public void setMember_month_order_amount(BigDecimal member_month_order_amount) {
+        set(MEMBER_MONTH_ORDER_AMOUNT, member_month_order_amount);
+    }
+
+    public BigDecimal getMember_all_order_amount() {
+        return getBigDecimal(MEMBER_ALL_ORDER_AMOUNT);
+    }
+
+    public void setMember_all_order_amount(BigDecimal member_all_order_amount) {
+        set(MEMBER_ALL_ORDER_AMOUNT, member_all_order_amount);
     }
 
     public BigDecimal getMember_withdrawal_amount() {

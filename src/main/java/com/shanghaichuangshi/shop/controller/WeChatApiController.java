@@ -160,72 +160,108 @@ public class WeChatApiController extends ApiController {
 
             orderProductService.updateByOrder_idAndOrder_status(order.getOrder_id(), order_status, order.getMember_id());
 
-            List<OrderProduct> orderProductList = orderProductService.listByOder_id(order.getOrder_id());
+            Member member = memberService.find(order.getMember_id());
+
             List<Bill> billList = new ArrayList<Bill>();
             List<Member> memberList = new ArrayList<Member>();
             String request_user_id = "";
 
-            for (OrderProduct orderProduct : orderProductList) {
-                String commission_id = orderProduct.getCommission_id();
-                BigDecimal product_price = orderProduct.getProduct_price();
-                Integer product_quantity = orderProduct.getProduct_quantity();
+            if (WeChat.income.equals(BillTypeEnum.SALE.getKey())) {
+                String parent_member_id = member.getParent_id();
+                //上级不是平台
+                if (!parent_member_id.equals("0")) {
+                    Member parentMember = memberService.find(member.getParent_id());
+                    //账单
+                    Bill bill = new Bill();
+                    bill.setUser_id(parentMember.getUser_id());
+                    bill.setObject_id(order.getOrder_id());
+                    bill.setBill_type(BillTypeEnum.SALE.getKey());
+                    bill.setBill_image("");
+                    bill.setBill_amount(order.getOrder_amount());
+                    bill.setBill_name("卖货[" + order.getOrder_number() + "]收入¥" + order.getOrder_amount());
+                    bill.setBill_is_income(true);
+                    bill.setBill_time(new Date());
+                    bill.setBill_flow(BillFlowEnum.WAIT.getKey());
+                    bill.setBill_status(true);
+                    billList.add(bill);
 
-                BigDecimal price = product_price.multiply(BigDecimal.valueOf(product_quantity));
+                    BigDecimal member_total_amount = parentMember.getMember_total_amount().add(order.getOrder_amount());
 
-                //如果要分成
-                if (!Util.isNullOrEmpty(commission_id)) {
-                    JSONArray orderProductCommissionJSONArray = JSONArray.parseArray(orderProduct.getOrder_product_commission());
+                    Member m = new Member();
+                    m.setMember_id(parent_member_id);
+                    m.setMember_total_amount(member_total_amount);
+                    m.setMember_withdrawal_amount(parentMember.getMember_withdrawal_amount());
+                    m.setMember_month_order_amount(parentMember.getMember_month_order_amount());
+                    m.setMember_all_order_amount(parentMember.getMember_all_order_amount());
+                    memberList.add(m);
+                }
+            }
 
-                    for (int i = 0; i < orderProductCommissionJSONArray.size(); i++) {
-                        JSONObject orderProductCommissionJSONObject = orderProductCommissionJSONArray.getJSONObject(i);
 
-                        String member_id = orderProductCommissionJSONObject.getString(Member.MEMBER_ID);
-                        BigDecimal commission_amount = orderProductCommissionJSONObject.getBigDecimal(Commission.COMMISSION_AMOUNT);
+            if (WeChat.income.equals(BillTypeEnum.COMMISSION.getKey())) {
+                List<OrderProduct> orderProductList = orderProductService.listByOder_id(order.getOrder_id());
+                for (OrderProduct orderProduct : orderProductList) {
+                    String commission_id = orderProduct.getCommission_id();
+                    BigDecimal product_price = orderProduct.getProduct_price();
+                    Integer order_product_quantity = orderProduct.getOrder_product_quantity();
 
-                        Member member = memberService.find(member_id);
+                    BigDecimal price = product_price.multiply(BigDecimal.valueOf(order_product_quantity));
 
-                        //账单
-                        Bill bill = new Bill();
-                        bill.setUser_id(member.getUser_id());
-                        bill.setObject_id(orderProduct.getOrder_product_id());
-                        bill.setBill_type(BillTypeEnum.COMMISSION.getKey());
-                        bill.setBill_image(orderProduct.getProduct_image());
-                        bill.setBill_amount(commission_amount);
-                        bill.setBill_name("商品[" + orderProduct.getProduct_name() + "]分销收入¥" + commission_amount);
-                        bill.setBill_is_income(true);
-                        bill.setBill_time(new Date());
-                        bill.setBill_flow(BillFlowEnum.WAIT.getKey());
-                        bill.setBill_status(true);
-                        billList.add(bill);
+                    //如果要分成
+                    if (!Util.isNullOrEmpty(commission_id)) {
+                        JSONArray orderProductCommissionJSONArray = JSONArray.parseArray(orderProduct.getOrder_product_commission());
 
-                        //判断是否重复
-                        Boolean is_exit = false;
-                        for (Member m : memberList) {
-                            if (m.getMember_id().equals(member_id)) {
-                                is_exit = true;
+                        for (int i = 0; i < orderProductCommissionJSONArray.size(); i++) {
+                            JSONObject orderProductCommissionJSONObject = orderProductCommissionJSONArray.getJSONObject(i);
 
-                                //增加增量
-                                m.setMember_total_amount(m.getMember_total_amount().add(commission_amount));
+                            String parent_member_id = orderProductCommissionJSONObject.getString(Member.MEMBER_ID);
+                            BigDecimal commission_amount = orderProductCommissionJSONObject.getBigDecimal(Commission.COMMISSION_AMOUNT);
 
-                                break;
+                            Member parentMember = memberService.find(parent_member_id);
+
+                            //账单
+                            Bill bill = new Bill();
+                            bill.setUser_id(parentMember.getUser_id());
+                            bill.setObject_id(orderProduct.getOrder_product_id());
+                            bill.setBill_type(BillTypeEnum.COMMISSION.getKey());
+                            bill.setBill_image(orderProduct.getProduct_image());
+                            bill.setBill_amount(commission_amount);
+                            bill.setBill_name("商品[" + orderProduct.getProduct_name() + "]分销收入¥" + commission_amount);
+                            bill.setBill_is_income(true);
+                            bill.setBill_time(new Date());
+                            bill.setBill_flow(BillFlowEnum.WAIT.getKey());
+                            bill.setBill_status(true);
+                            billList.add(bill);
+
+                            //判断是否重复
+                            Boolean is_exit = false;
+                            for (Member m : memberList) {
+                                if (m.getMember_id().equals(parent_member_id)) {
+                                    is_exit = true;
+
+                                    //增加增量
+                                    m.setMember_total_amount(m.getMember_total_amount().add(commission_amount));
+
+                                    break;
+                                }
                             }
-                        }
 
-                        if (!is_exit) {
-                            //增加存量
-                            BigDecimal member_total_amount = member.getMember_total_amount().add(commission_amount);
+                            if (!is_exit) {
+                                //增加存量
+                                BigDecimal member_total_amount = parentMember.getMember_total_amount().add(commission_amount);
 
-                            Member m = new Member();
-                            m.setMember_id(member_id);
-                            m.setMember_total_amount(member_total_amount);
-                            m.setMember_withdrawal_amount(member.getMember_withdrawal_amount());
-                            memberList.add(m);
+                                Member m = new Member();
+                                m.setMember_id(parent_member_id);
+                                m.setMember_total_amount(member_total_amount);
+                                m.setMember_withdrawal_amount(parentMember.getMember_withdrawal_amount());
+                                m.setMember_month_order_amount(parentMember.getMember_month_order_amount());
+                                m.setMember_all_order_amount(parentMember.getMember_all_order_amount());
+                                memberList.add(m);
+                            }
                         }
                     }
                 }
             }
-
-            Member member = memberService.find(order.getMember_id());
 
             //本人下单账单
             Bill bill = new Bill();
@@ -240,6 +276,16 @@ public class WeChatApiController extends ApiController {
             bill.setBill_flow(BillFlowEnum.FINISH.getKey());
             bill.setBill_status(true);
             billList.add(bill);
+
+            BigDecimal member_total_amount = member.getMember_total_amount().add(order.getOrder_amount());
+
+            Member m = new Member();
+            m.setMember_id(member.getMember_id());
+            m.setMember_total_amount(member.getMember_total_amount());
+            m.setMember_withdrawal_amount(member.getMember_withdrawal_amount());
+            m.setMember_month_order_amount(member.getMember_month_order_amount());
+            m.setMember_all_order_amount(member_total_amount);
+            memberList.add(m);
 
             billService.save(billList, request_user_id);
             memberService.updateAmount(memberList);
@@ -331,64 +377,5 @@ public class WeChatApiController extends ApiController {
 
         renderText(QrcodeApi.getShowQrcodeUrl(apiResult.getStr("ticket")));
     }
-
-//    @ActionKey(Url.WECHAT_API_OPENID)
-//    public void openid() {
-//        String wx_app_id = WeChat.wx_app_id;
-//        String wx_app_secret = WeChat.wx_app_secret;
-//        String js_code = getPara("js_code");
-//        String encrypted_data = getPara("encrypted_data");
-//        String iv = getPara("iv");
-//        String user_name = getPara("nick_name");
-//        String user_avatar = getPara("avatar_url");
-//        String platform = getPara("platform");
-//        String version = getPara("version");
-//
-//        String result = HttpKit.get("https://api.weixin.qq.com/sns/jscode2session?appid=" + wx_app_id + "&secret=" + wx_app_secret + "&js_code=" + js_code + "&grant_type=authorization_code");
-//        JSONObject jsonObject = JSONObject.parseObject(result);
-//
-//        System.out.println("---------------");
-//        System.out.println(jsonObject);
-//        System.out.println("---------------");
-//        System.out.println(wx_app_id);
-//        System.out.println("---------------");
-//        System.out.println(wx_app_secret);
-//        System.out.println("---------------");
-//        System.out.println(js_code);
-//        System.out.println("---------------");
-//        System.out.println(encrypted_data);
-//        System.out.println("---------------");
-//        System.out.println(iv);
-//        System.out.println("---------------");
-//        System.out.println(user_name);
-//        System.out.println("---------------");
-//        System.out.println(user_avatar);
-//        System.out.println("---------------");
-//        System.out.println(platform);
-//        System.out.println("---------------");
-//        System.out.println(version);
-//        System.out.println("---------------");
-//
-//        String wechat_open_id = jsonObject.getString("openid");
-//        String scene_id = "";
-//        Boolean member_status = true;
-//        String ip_address = HttpUtil.getIpAddress(getRequest());
-//        String request_user_id = "";
-//
-////        Member member = memberService.saveByWechat_open_idAndUser_nameAndUser_avatarAndFrom_scene_idAndMember_status(wechat_open_id, user_name, user_avatar, scene_id, member_status);
-////
-////        String token = authorizationService.saveByUser_id(member.getUser_id(), platform, version, ip_address, request_user_id);
-////
-////        Map<String, Object> dataMap = new HashMap<String, Object>();
-////        dataMap.put(Constant.TOKEN.toLowerCase(), token);
-////        dataMap.put("openid", wechat_open_id);
-//
-//        Map<String, Object> resultMap = new HashMap<String, Object>();
-//        resultMap.put(Constant.CODE, HttpStatus.SC_OK);
-////        resultMap.put(Constant.DATA, dataMap);
-//        resultMap.put(Constant.DATA, null);
-//
-//        renderJson(resultMap);
-//    }
 
 }

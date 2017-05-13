@@ -7,8 +7,8 @@
     product_id,
     product_name,
     product_image,
-    product_price,
-    product_quantity,
+    order_product_price,
+    order_product_quantity,
     commission_id,
     member_id,
     order_product_commission
@@ -63,13 +63,15 @@
       product_market_price,
       product_price,
       product_stock,
-      product_quantity,
+      order_product_price,
+      order_product_quantity,
       system_create_user_id,
       system_create_time,
       system_update_user_id,
       system_update_time,
       system_status
     ) VALUES (
+      ?,
       ?,
       ?,
       ?,

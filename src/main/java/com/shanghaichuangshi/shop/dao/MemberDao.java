@@ -16,7 +16,7 @@ import java.util.List;
 
 public class MemberDao extends Dao {
 
-    private final String MEMBER_CACHE = "membe_cache";
+    private final String MEMBER_BY_MEMBER_ID_CACHE = "membe_by_member_id_cache";
 
     public int count(String member_name) {
         Kv map = Kv.create();
@@ -48,7 +48,7 @@ public class MemberDao extends Dao {
     }
 
     public Member find(String member_id) {
-        Member member = CacheUtil.get(MEMBER_CACHE, member_id);
+        Member member = CacheUtil.get(MEMBER_BY_MEMBER_ID_CACHE, member_id);
 
         if (member == null) {
             Kv map = Kv.create();
@@ -61,14 +61,14 @@ public class MemberDao extends Dao {
             } else {
                 member = memberList.get(0);
 
-                CacheUtil.put(MEMBER_CACHE, member_id, member);
+                CacheUtil.put(MEMBER_BY_MEMBER_ID_CACHE, member_id, member);
             }
         }
 
         return member;
     }
 
-    public Member save(String parent_id, String parent_path, String user_id, String from_scene_id, String scene_id, String scene_qrcode, BigDecimal member_total_amount, BigDecimal member_withdrawal_amount, String member_level_id, String user_name, String member_phone, String member_remark, Boolean member_status, String request_user_id) {
+    public Member save(String parent_id, String parent_path, String user_id, String from_scene_id, String scene_id, String scene_qrcode, BigDecimal member_total_amount, BigDecimal member_withdrawal_amount, BigDecimal member_month_order_amount, BigDecimal member_all_order_amount, String member_level_id, String user_name, String member_phone, String member_remark, Boolean member_status, String request_user_id) {
         Member member = new Member();
         member.setParent_id(parent_id);
         member.setParent_path(parent_path);
@@ -79,6 +79,8 @@ public class MemberDao extends Dao {
         member.setScene_qrcode(scene_qrcode);
         member.setMember_total_amount(member_total_amount);
         member.setMember_withdrawal_amount(member_withdrawal_amount);
+        member.setMember_month_order_amount(member_month_order_amount);
+        member.setMember_all_order_amount(member_all_order_amount);
         member.setMember_level_id(member_level_id);
         member.setMember_name(user_name);
         member.setMember_phone(member_phone);
@@ -97,7 +99,7 @@ public class MemberDao extends Dao {
     }
 
 //    public boolean update(Member member, String request_user_id) {
-//        CacheUtil.remove(MEMBER_CACHE, member.getMember_id());
+//        CacheUtil.remove(MEMBER_BY_MEMBER_ID_CACHE, member.getMember_id());
 //
 //        member.remove(Member.MEMBER_TOTAL_AMOUNT);
 //        member.remove(Member.MEMBER_WITHDRAWAL_AMOUNT);
@@ -111,7 +113,7 @@ public class MemberDao extends Dao {
 //    }
 
     public boolean childrenUpdate(String member_id, String member_level_id, String request_user_id) {
-        CacheUtil.remove(MEMBER_CACHE, member_id);
+        CacheUtil.remove(MEMBER_BY_MEMBER_ID_CACHE, member_id);
 
         Kv map = Kv.create();
         map.put(Member.MEMBER_ID, member_id);
@@ -124,7 +126,7 @@ public class MemberDao extends Dao {
     }
 
     public boolean updateByMember_idAndScene_idAndScene_qrcode(String member_id, String scene_id, String scene_qrcode, String request_user_id) {
-        CacheUtil.remove(MEMBER_CACHE, member_id);
+        CacheUtil.remove(MEMBER_BY_MEMBER_ID_CACHE, member_id);
 
         Kv map = Kv.create();
         map.put(Member.MEMBER_ID, member_id);
@@ -138,7 +140,7 @@ public class MemberDao extends Dao {
     }
 
     public boolean updateByMember_idAndParent_idAndParent_pathAndMember_level_id(String member_id, String parent_id, String parent_path, String member_level_id) {
-        CacheUtil.remove(MEMBER_CACHE, member_id);
+        CacheUtil.remove(MEMBER_BY_MEMBER_ID_CACHE, member_id);
 
         Kv map = Kv.create();
         map.put(Member.MEMBER_ID, member_id);
@@ -156,11 +158,13 @@ public class MemberDao extends Dao {
 
         List<Object[]> parameterList = new ArrayList<Object[]>();
         for(Member member : memberList) {
-            CacheUtil.remove(MEMBER_CACHE, member.getMember_id());
+            CacheUtil.remove(MEMBER_BY_MEMBER_ID_CACHE, member.getMember_id());
 
             List<Object> objectList = new ArrayList<Object>();
             objectList.add(member.getMember_total_amount());
             objectList.add(member.getMember_withdrawal_amount());
+            objectList.add(member.getMember_month_order_amount());
+            objectList.add(member.getMember_all_order_amount());
             objectList.add(member.getMember_id());
             parameterList.add(objectList.toArray());
         }
@@ -175,7 +179,7 @@ public class MemberDao extends Dao {
     }
 
     public boolean delete(String member_id, String request_user_id) {
-        CacheUtil.remove(MEMBER_CACHE, member_id);
+        CacheUtil.remove(MEMBER_BY_MEMBER_ID_CACHE, member_id);
 
         Kv map = Kv.create();
         map.put(Member.MEMBER_ID, member_id);

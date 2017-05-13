@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ProductDao extends Dao {
 
-    private final String PRODUCT_CACHE = "product_cache";
+    private final String PRODUCT_BY_PRODUCT_ID_CACHE = "product_by_product_id_cache";
 
     public int count(String product_name) {
         Kv map = Kv.create();
@@ -49,7 +49,7 @@ public class ProductDao extends Dao {
     }
 
     public Product find(String product_id) {
-        Product product = CacheUtil.get(PRODUCT_CACHE, product_id);
+        Product product = CacheUtil.get(PRODUCT_BY_PRODUCT_ID_CACHE, product_id);
 
         if (product == null) {
             Kv map = Kv.create();
@@ -62,7 +62,7 @@ public class ProductDao extends Dao {
             } else {
                 product = productList.get(0);
 
-                CacheUtil.put(PRODUCT_CACHE, product_id, product);
+                CacheUtil.put(PRODUCT_BY_PRODUCT_ID_CACHE, product_id, product);
             }
         }
 
@@ -83,7 +83,7 @@ public class ProductDao extends Dao {
     }
 
     public boolean update(Product product, String request_user_id) {
-        CacheUtil.remove(PRODUCT_CACHE, product.getProduct_id());
+        CacheUtil.remove(PRODUCT_BY_PRODUCT_ID_CACHE, product.getProduct_id());
 
         product.remove(Product.SYSTEM_CREATE_USER_ID);
         product.remove(Product.SYSTEM_CREATE_TIME);
@@ -95,7 +95,7 @@ public class ProductDao extends Dao {
     }
 
     public boolean delete(String product_id, String request_user_id) {
-        CacheUtil.remove(PRODUCT_CACHE, product_id);
+        CacheUtil.remove(PRODUCT_BY_PRODUCT_ID_CACHE, product_id);
 
         Kv map = Kv.create();
         map.put(Product.PRODUCT_ID, product_id);

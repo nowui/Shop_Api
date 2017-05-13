@@ -14,7 +14,7 @@ import java.util.List;
 public class MemberLevelDao extends Dao {
 
     private final String MEMBER_LEVEL_LIST_CACHE = "member_level_list_cache";
-    private final String MEMBER_LEVEL_CACHE = "member_level_cache";
+    private final String MEMBER_LEVEL_BY_MEMBER_LEVEL_ID_CACHE = "member_level_by_member_level_id_cache";
 
     public int count(String member_level_name) {
         Kv map = Kv.create();
@@ -56,7 +56,7 @@ public class MemberLevelDao extends Dao {
     }
 
     public MemberLevel find(String member_level_id) {
-        MemberLevel memberLevel = CacheUtil.get(MEMBER_LEVEL_CACHE, member_level_id);
+        MemberLevel memberLevel = CacheUtil.get(MEMBER_LEVEL_BY_MEMBER_LEVEL_ID_CACHE, member_level_id);
 
         if (memberLevel == null) {
             Kv map = Kv.create();
@@ -69,7 +69,7 @@ public class MemberLevelDao extends Dao {
             } else {
                 memberLevel = member_levelList.get(0);
 
-                CacheUtil.put(MEMBER_LEVEL_CACHE, member_level_id, memberLevel);
+                CacheUtil.put(MEMBER_LEVEL_BY_MEMBER_LEVEL_ID_CACHE, member_level_id, memberLevel);
             }
         }
 
@@ -102,7 +102,7 @@ public class MemberLevelDao extends Dao {
             } else {
                 memberLevel = member_levelList.get(0);
 
-                CacheUtil.put(MEMBER_LEVEL_CACHE, memberLevel.getMember_level_id(), memberLevel);
+                CacheUtil.put(MEMBER_LEVEL_BY_MEMBER_LEVEL_ID_CACHE, memberLevel.getMember_level_id(), memberLevel);
             }
         }
 
@@ -126,7 +126,7 @@ public class MemberLevelDao extends Dao {
 
     public boolean update(MemberLevel member_level, String request_user_id) {
         CacheUtil.remove(MEMBER_LEVEL_LIST_CACHE, MEMBER_LEVEL_LIST_CACHE);
-        CacheUtil.remove(MEMBER_LEVEL_CACHE, member_level.getMember_level_id());
+        CacheUtil.remove(MEMBER_LEVEL_BY_MEMBER_LEVEL_ID_CACHE, member_level.getMember_level_id());
 
         member_level.remove(MemberLevel.SYSTEM_CREATE_USER_ID);
         member_level.remove(MemberLevel.SYSTEM_CREATE_TIME);
@@ -139,7 +139,7 @@ public class MemberLevelDao extends Dao {
 
     public boolean delete(String member_level_id, String request_user_id) {
         CacheUtil.remove(MEMBER_LEVEL_LIST_CACHE, MEMBER_LEVEL_LIST_CACHE);
-        CacheUtil.remove(MEMBER_LEVEL_CACHE, member_level_id);
+        CacheUtil.remove(MEMBER_LEVEL_BY_MEMBER_LEVEL_ID_CACHE, member_level_id);
 
         Kv map = Kv.create();
         map.put(MemberLevel.MEMBER_LEVEL_ID, member_level_id);

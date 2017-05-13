@@ -32,6 +32,8 @@
     user_id,
     member_level_id,
     member_total_amount,
+    member_month_order_amount,
+    member_all_order_amount,
     member_status
     FROM table_member
     WHERE system_status = 1
@@ -81,7 +83,9 @@
   #sql("updateAmount")
     UPDATE table_member SET
     member_total_amount = ?,
-    member_withdrawal_amount = ?
+    member_withdrawal_amount = ?,
+    member_month_order_amount = ?,
+    member_all_order_amount = ?
     WHERE member_id = ?
   #end
 

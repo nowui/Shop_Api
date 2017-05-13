@@ -109,6 +109,10 @@ public class MemberService extends Service {
     public String qrcodeFind(String user_id) {
         Member member = findByUser_id(user_id);
 
+        if (!member.getMember_status()) {
+            throw new RuntimeException("您还没有通过审核");
+        }
+
         if (Util.isNullOrEmpty(member.getScene_qrcode())) {
             String member_id = member.getMember_id();
             String scene_id = Util.getRandomUUID();
@@ -168,12 +172,14 @@ public class MemberService extends Service {
             String scene_qrcode = "";
             BigDecimal member_total_amount = BigDecimal.valueOf(0);
             BigDecimal member_withdrawal_amount = BigDecimal.valueOf(0);
+            BigDecimal member_month_order_amount = BigDecimal.valueOf(0);
+            BigDecimal member_all_order_amount = BigDecimal.valueOf(0);
             String member_level_id = "";
             String request_user_id = "";
             String member_phone = "";
             String member_remark = "";
 
-            Member member = memberDao.save(parent_id, parent_path, user_id, from_scene_id, scene_id, scene_qrcode, member_total_amount, member_withdrawal_amount, member_level_id, user_name, member_phone, member_remark, member_status, request_user_id);
+            Member member = memberDao.save(parent_id, parent_path, user_id, from_scene_id, scene_id, scene_qrcode, member_total_amount, member_withdrawal_amount, member_month_order_amount, member_all_order_amount, member_level_id, user_name, member_phone, member_remark, member_status, request_user_id);
 
             userService.saveByUser_idAndUser_nameAndUser_avatarAndWechat_open_idAndWechat_union_idAndObject_idAndUser_type(user_id, user_name, user_avatar, wechat_open_id, wechat_union_id, member.getMember_id(), UserType.MEMBER.getKey(), request_user_id);
 
@@ -201,6 +207,9 @@ public class MemberService extends Service {
     }
 
     public void updateAmount(List<Member> memberList) {
+        if (memberList.size() > 0) {
+
+        }
         memberDao.updateAmount(memberList);
     }
 
@@ -223,7 +232,7 @@ public class MemberService extends Service {
 
         Member member = find(user.getObject_id());
 
-        return getMember(wechat_open_id, user.getUser_id(), user.getUser_name(), user.getUser_avatar(), member.getMember_level_id(), platform, version, ip_address, request_user_id);
+        return getMember(wechat_open_id, user.getUser_id(), user.getUser_name(), user.getUser_avatar(), member.getMember_level_id(), member.getMember_status(), platform, version, ip_address, request_user_id);
     }
 
     public Map<String, Object> weChatWXLogin(JSONObject jsonObject, String platform, String version, String ip_address) {
@@ -266,7 +275,7 @@ public class MemberService extends Service {
 
         Member member = saveByWechat_open_idAndWechat_union_idAndUser_nameAndUser_avatarAndFrom_scene_idAndMember_status(wechat_open_id, wechat_union_id, user_name, user_avatar, scene_id, member_status);
 
-        return getMember(wechat_open_id, member.getUser_id(), user_name, user_avatar, member.getMember_level_id(), platform, version, ip_address, request_user_id);
+        return getMember(wechat_open_id, member.getUser_id(), user_name, user_avatar, member.getMember_level_id(), member.getMember_status(), platform, version, ip_address, request_user_id);
     }
 
     public Map<String, Object> myFind(String request_user_id) {
@@ -274,6 +283,17 @@ public class MemberService extends Service {
 
         Member member = findByUser_id(request_user_id);
 
+        String member_level_id = member.getMember_level_id();
+
+        if (Util.isNullOrEmpty(member_level_id)) {
+            resultMap.put(MemberLevel.MEMBER_LEVEL_NAME, "");
+        } else {
+            MemberLevel memberLevel = memberLevelService.find(member_level_id);
+
+            resultMap.put(MemberLevel.MEMBER_LEVEL_NAME, memberLevel.getMember_level_name());
+        }
+
+        resultMap.put(Member.MEMBER_STATUS, member.getMember_status());
         resultMap.put(Member.MEMBER_TOTAL_AMOUNT, member.getMember_total_amount());
         resultMap.put(OrderFlowEnum.WAIT_PAY.getKey(), 0);
         resultMap.put(OrderFlowEnum.WAIT_SEND.getKey(), 0);
@@ -282,7 +302,7 @@ public class MemberService extends Service {
         return resultMap;
     }
 
-    private Map<String, Object> getMember(String wechat_open_id, String user_id, String user_name, String user_avatar, String member_level_id, String platform, String version, String ip_address, String request_user_id) {
+    private Map<String, Object> getMember(String wechat_open_id, String user_id, String user_name, String user_avatar, String member_level_id, Boolean member_status, String platform, String version, String ip_address, String request_user_id) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
         String token = authorizationService.saveByUser_id(user_id, platform, version, ip_address, request_user_id);
@@ -291,15 +311,18 @@ public class MemberService extends Service {
         resultMap.put(Constant.TOKEN.toLowerCase(), token);
         resultMap.put(User.USER_NAME, user_name);
         resultMap.put(User.USER_AVATAR, user_avatar);
+        resultMap.put(Member.MEMBER_STATUS, member_status);
 //        resultMap.put(Member.SCENE_QRCODE, member.getScene_qrcode());
 
         if (Util.isNullOrEmpty(member_level_id)) {
             resultMap.put(MemberLevel.MEMBER_LEVEL_ID, "");
+            resultMap.put(MemberLevel.MEMBER_LEVEL_NAME, "");
             resultMap.put(MemberLevel.MEMBER_LEVEL_VALUE, 999);
         } else {
             MemberLevel memberLevel = memberLevelService.find(member_level_id);
 
             resultMap.put(MemberLevel.MEMBER_LEVEL_ID, memberLevel.getMember_level_id());
+            resultMap.put(MemberLevel.MEMBER_LEVEL_NAME, memberLevel.getMember_level_name());
             resultMap.put(MemberLevel.MEMBER_LEVEL_VALUE, memberLevel.getMember_level_value());
         }
 
