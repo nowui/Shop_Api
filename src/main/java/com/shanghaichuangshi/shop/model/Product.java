@@ -53,10 +53,12 @@ public class Product extends Model<Product> {
     @Column(type = ColumnType.LONGTEXT, length = 0, comment = "商品介绍")
     public static final String PRODUCT_CONTENT = "product_content";
 
+    public static final String PRODUCT_QUANTITY = "product_quantity";
     public static final String PRODUCT_IS_PAY = "product_is_pay";
     public static final String PRODUCT_LIST = "product_list";
     public static final String PRODUCT_IMAGE_FILE = "product_image_file";
     public static final String PRODUCT_IMAGE_FILE_LIST = "product_image_file_list";
+    public static final String PRODUCT_QUANTITY_MIN = "product_quantity_min";
 
     
     public String getProduct_id() {

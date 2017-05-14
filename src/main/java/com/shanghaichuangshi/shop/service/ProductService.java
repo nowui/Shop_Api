@@ -64,9 +64,7 @@ public class ProductService extends Service {
     }
 
     public List<Product> myList(String request_user_id) {
-        Member member = memberService.findByUser_id(request_user_id);
-
-        List<OrderProduct> orderProductList = orderProductService.listByMember_id(member.getMember_id());
+        List<OrderProduct> orderProductList = orderProductService.listByUser_id(request_user_id);
 
         List<Product> productList = new ArrayList<Product>();
 
@@ -123,19 +121,14 @@ public class ProductService extends Service {
         Member member = null;
         Boolean product_is_pay = false;
 
-        System.out.println("user_id:" + user_id);
-
         if (Util.isNullOrEmpty(user_id)) {
 
         } else {
             member = memberService.findByUser_id(user_id);
 
-            System.out.println("member_id:" + member.getMember_id());
-
-            List<OrderProduct> orderProductList = orderProductService.listByMember_id(member.getMember_id());
+            List<OrderProduct> orderProductList = orderProductService.listByUser_id(user_id);
             for (OrderProduct orderProduct : orderProductList) {
 
-                System.out.println("order_product_id:" + orderProduct.getOrder_product_id());
                 if (orderProduct.getProduct_id().equals(product_id)) {
                     product_is_pay = true;
 

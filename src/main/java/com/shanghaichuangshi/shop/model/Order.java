@@ -83,6 +83,7 @@ public class Order extends Model<Order> {
     @Column(type = ColumnType.TINYINT, length = 1, comment = "订单状态")
     public static final String ORDER_STATUS = "order_status";
 
+    public static final String ORDER_LIST = "order_list";
     
     public String getOrder_id() {
         return getStr(ORDER_ID);

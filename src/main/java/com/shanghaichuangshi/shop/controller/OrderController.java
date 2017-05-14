@@ -4,6 +4,7 @@ import com.jfinal.core.ActionKey;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.controller.Controller;
+import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.shop.model.Order;
 import com.shanghaichuangshi.shop.model.Product;
 import com.shanghaichuangshi.shop.service.OrderService;
@@ -56,6 +57,15 @@ public class OrderController extends Controller {
         renderSuccessJson(count, orderListvice);
     }
 
+    @ActionKey(Url.ORDER_TEAM_LIST)
+    public void teamList() {
+        String request_user_id = getRequest_user_id();
+
+        List<Member> memberList = orderService.teamList(request_user_id);
+
+        renderSuccessJson(memberList);
+    }
+
     @ActionKey(Url.ORDER_FIND)
     public void find() {
         Order model = getParameter(Order.class);
@@ -76,6 +86,17 @@ public class OrderController extends Controller {
         Order order = orderService.adminFind(model.getOrder_id());
 
         renderSuccessJson(order.removeSystemInfo());
+    }
+
+    @ActionKey(Url.ORDER_TEAM_FIND)
+    public void teamFind() {
+        Member model = getParameter(Member.class);
+
+        model.validate(Member.MEMBER_ID);
+
+        Member member = orderService.teamFind(model.getMember_id());
+
+        renderSuccessJson(member.removeUnfindable());
     }
 
     @ActionKey(Url.ORDER_SAVE)

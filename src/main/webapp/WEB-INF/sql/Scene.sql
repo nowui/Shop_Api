@@ -12,6 +12,7 @@
     SELECT
     scene_id,
     scene_type,
+    scene_is_expire,
     scene_add,
     scene_cancel
     FROM table_scene

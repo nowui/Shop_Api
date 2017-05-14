@@ -158,7 +158,7 @@ public class WeChatApiController extends ApiController {
 
             boolean is_update = orderService.update(order.getOrder_id(), order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result, order_flow, order_status);
 
-            orderProductService.updateByOrder_idAndOrder_status(order.getOrder_id(), order_status, order.getMember_id());
+            orderProductService.updateByOrder_idAndOrder_statusAndUser_id(order.getOrder_id(), order_status, order.getUser_id());
 
             Member member = memberService.find(order.getMember_id());
 
@@ -202,10 +202,10 @@ public class WeChatApiController extends ApiController {
                 List<OrderProduct> orderProductList = orderProductService.listByOder_id(order.getOrder_id());
                 for (OrderProduct orderProduct : orderProductList) {
                     String commission_id = orderProduct.getCommission_id();
-                    BigDecimal product_price = orderProduct.getProduct_price();
+                    BigDecimal order_product_price = orderProduct.getOrder_product_price();
                     Integer order_product_quantity = orderProduct.getOrder_product_quantity();
 
-                    BigDecimal price = product_price.multiply(BigDecimal.valueOf(order_product_quantity));
+                    BigDecimal price = order_product_price.multiply(BigDecimal.valueOf(order_product_quantity));
 
                     //如果要分成
                     if (!Util.isNullOrEmpty(commission_id)) {

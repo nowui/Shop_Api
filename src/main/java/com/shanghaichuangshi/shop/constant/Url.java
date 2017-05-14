@@ -11,11 +11,10 @@ public class Url {
 
     public static final String MEMBER_LIST = "/member/list";
     public static final String MEMBER_ADMIN_LIST = "/member/admin/list";
-    public static final String MEMBER_TEAM_LIST = "/member/team/list";
     public static final String MEMBER_FIND = "/member/find";
-    public static final String MEMBER_TEAM_FIND = "/member/team/find";
     public static final String MEMBER_ADMIN_FIND = "/member/admin/find";
     public static final String MEMBER_QRCODE_FIND = "/member/qrcode/find";
+    public static final String MEMBER_MY_FIND = "/member/my/find";
     public static final String MEMBER_SAVE = "/member/save";
     public static final String MEMBER_WECHAT_SAVE = "/member/wechat/save";
     public static final String MEMBERL_UPDATE = "/member/update";
@@ -24,7 +23,6 @@ public class Url {
     public static final String MEMBER_LOGIN = "/member/login";
     public static final String MEMBER_WECHAT_H5_LOGIN = "/member/wechat/h5/login";
     public static final String MEMBER_WECHAT_WX_LOGIN = "/member/wechat/wx/login";
-    public static final String MEMBER_MY_FIND = "/member/my/find";
 
     public static final String MEMBER_LEVEL_LIST = "/member/level/list";
     public static final String MEMBER_LEVEL_ADMIN_LIST = "/member/level/admin/list";
@@ -68,8 +66,10 @@ public class Url {
     public static final String ORDER_LIST = "/order/list";
     public static final String ORDER_ADMIN_LIST = "/order/admin/list";
     public static final String ORDER_ADMIN_VIDEO_LIST = "/order/admin/video/list";
+    public static final String ORDER_TEAM_LIST = "/order/team/list";
     public static final String ORDER_FIND = "/order/find";
     public static final String ORDER_ADMIN_FIND = "/order/admin/find";
+    public static final String ORDER_TEAM_FIND = "/order/team/find";
     public static final String ORDER_SAVE = "/order/save";
     public static final String ORDERL_UPDATE = "/order/update";
     public static final String ORDER_DELETE = "/order/delete";

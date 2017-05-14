@@ -18,13 +18,13 @@
     ORDER BY system_create_time DESC
   #end
 
-  #sql("listByMember_id")
+  #sql("listByUser_id")
     SELECT
     product_id
     FROM table_order_product
     WHERE system_status = 1
     AND order_status = 1
-    AND member_id = #p(member_id)
+    AND user_id = #p(user_id)
     ORDER BY system_create_time DESC
   #end
 
@@ -57,6 +57,7 @@
       product_content,
       sku_id,
       commission_id,
+      user_id,
       member_id,
       order_product_commission,
       product_attribute,
@@ -71,6 +72,7 @@
       system_update_time,
       system_status
     ) VALUES (
+      ?,
       ?,
       ?,
       ?,

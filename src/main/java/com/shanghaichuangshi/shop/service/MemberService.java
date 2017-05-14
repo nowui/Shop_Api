@@ -15,6 +15,7 @@ import com.shanghaichuangshi.shop.dao.MemberDao;
 import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.shop.model.MemberLevel;
+import com.shanghaichuangshi.shop.model.Order;
 import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.shop.type.SceneTypeEnum;
 import com.shanghaichuangshi.type.UserType;
@@ -45,63 +46,15 @@ public class MemberService extends Service {
         return memberDao.list(member.getMember_name(), m, n);
     }
 
-    public List<Member> teamList(String user_id, int m, int n) {
-        Member member = findByUser_id(user_id);
-
-        List<Member> memberList = memberDao.teamList(member.getMember_id(), m, n);
-
-        for (Member item : memberList) {
-            User user = userService.find(item.getUser_id());
-            item.put(User.USER_AVATAR, user.getUser_avatar());
-            user.remove(User.USER_ID);
-
-            if (Util.isNullOrEmpty(item.getMember_level_id())) {
-                item.put(MemberLevel.MEMBER_LEVEL_NAME, "");
-            } else {
-                MemberLevel memberLevel = memberLevelService.find(item.getMember_level_id());
-                item.put(MemberLevel.MEMBER_LEVEL_NAME, memberLevel.getMember_level_name());
-            }
-        }
-
-        return memberList;
+    public List<Member> teamList(String parent_id) {
+        return memberDao.teamList(parent_id);
     }
 
     public Member find(String member_id) {
         Member member = memberDao.find(member_id);
 
         User user = userService.find(member.getUser_id());
-
         member.put(User.USER_AVATAR, user.getUser_avatar());
-
-        return member;
-    }
-
-    public Member teamFind(String member_id) {
-        Member member = memberDao.find(member_id);
-
-        User user = userService.find(member.getUser_id());
-
-        member.put(User.USER_AVATAR, user.getUser_avatar());
-
-        if (Util.isNullOrEmpty(member.getMember_level_id())) {
-            member.put(MemberLevel.MEMBER_LEVEL_NAME, "");
-
-            if (!member.getMember_status()) {
-                Member parentMember = memberDao.find(member.getParent_id());
-                MemberLevel parentMemberLevel = memberLevelService.find(parentMember.getMember_level_id());
-                List<MemberLevel> list = new ArrayList<MemberLevel>();
-                List<MemberLevel> memberLevelList = memberLevelService.listAll();
-                for(MemberLevel m : memberLevelList) {
-                    if (m.getMember_level_value() > parentMemberLevel.getMember_level_value()) {
-                        list.add(m);
-                    }
-                }
-                member.put(Member.MEMBER_LEVEL_LIST, list);
-            }
-        } else {
-            MemberLevel memberLevel = memberLevelService.find(member.getMember_level_id());
-            member.put(MemberLevel.MEMBER_LEVEL_NAME, memberLevel.getMember_level_name());
-        }
 
         return member;
     }
@@ -130,6 +83,30 @@ public class MemberService extends Service {
         } else {
             return member.getScene_qrcode();
         }
+    }
+
+    public Map<String, Object> myFind(String request_user_id) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+
+        Member member = findByUser_id(request_user_id);
+
+        String member_level_id = member.getMember_level_id();
+
+        if (Util.isNullOrEmpty(member_level_id)) {
+            resultMap.put(MemberLevel.MEMBER_LEVEL_NAME, "会员");
+        } else {
+            MemberLevel memberLevel = memberLevelService.find(member_level_id);
+
+            resultMap.put(MemberLevel.MEMBER_LEVEL_NAME, memberLevel.getMember_level_name());
+        }
+
+        resultMap.put(Member.MEMBER_STATUS, member.getMember_status());
+        resultMap.put(Member.MEMBER_TOTAL_AMOUNT, member.getMember_total_amount());
+        resultMap.put(OrderFlowEnum.WAIT_PAY.getKey(), 0);
+        resultMap.put(OrderFlowEnum.WAIT_SEND.getKey(), 0);
+        resultMap.put(OrderFlowEnum.WAIT_RECEIVE.getKey(), 0);
+
+        return resultMap;
     }
 
     public Member findByUser_id(String user_id) {
@@ -163,6 +140,10 @@ public class MemberService extends Service {
 //    }
 
     public Member saveByWechat_open_idAndWechat_union_idAndUser_nameAndUser_avatarAndFrom_scene_idAndMember_status(String wechat_open_id, String wechat_union_id, String user_name, String user_avatar, String from_scene_id, Boolean member_status) {
+        if (Util.isNullOrEmpty(wechat_open_id)) {
+            throw new RuntimeException("wechat open id is null");
+        }
+
         User user = userService.findByWechat_open_idAndWechat_union_idAndUser_type(wechat_open_id, wechat_union_id, UserType.MEMBER.getKey());
         if (user == null) {
             String user_id = Util.getRandomUUID();
@@ -276,30 +257,6 @@ public class MemberService extends Service {
         Member member = saveByWechat_open_idAndWechat_union_idAndUser_nameAndUser_avatarAndFrom_scene_idAndMember_status(wechat_open_id, wechat_union_id, user_name, user_avatar, scene_id, member_status);
 
         return getMember(wechat_open_id, member.getUser_id(), user_name, user_avatar, member.getMember_level_id(), member.getMember_status(), platform, version, ip_address, request_user_id);
-    }
-
-    public Map<String, Object> myFind(String request_user_id) {
-        Map<String, Object> resultMap = new HashMap<String, Object>();
-
-        Member member = findByUser_id(request_user_id);
-
-        String member_level_id = member.getMember_level_id();
-
-        if (Util.isNullOrEmpty(member_level_id)) {
-            resultMap.put(MemberLevel.MEMBER_LEVEL_NAME, "");
-        } else {
-            MemberLevel memberLevel = memberLevelService.find(member_level_id);
-
-            resultMap.put(MemberLevel.MEMBER_LEVEL_NAME, memberLevel.getMember_level_name());
-        }
-
-        resultMap.put(Member.MEMBER_STATUS, member.getMember_status());
-        resultMap.put(Member.MEMBER_TOTAL_AMOUNT, member.getMember_total_amount());
-        resultMap.put(OrderFlowEnum.WAIT_PAY.getKey(), 0);
-        resultMap.put(OrderFlowEnum.WAIT_SEND.getKey(), 0);
-        resultMap.put(OrderFlowEnum.WAIT_RECEIVE.getKey(), 0);
-
-        return resultMap;
     }
 
     private Map<String, Object> getMember(String wechat_open_id, String user_id, String user_name, String user_avatar, String member_level_id, Boolean member_status, String platform, String version, String ip_address, String request_user_id) {

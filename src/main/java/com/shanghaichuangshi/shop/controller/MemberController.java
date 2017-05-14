@@ -46,17 +46,6 @@ public class MemberController extends Controller {
         renderSuccessJson(count, memberList);
     }
 
-    @ActionKey(Url.MEMBER_TEAM_LIST)
-    public void teamList() {
-        validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);
-
-        String request_user_id = getRequest_user_id();
-
-        List<Member> memberList = memberService.teamList(request_user_id, getM(), getN());
-
-        renderSuccessJson(memberList);
-    }
-
     @ActionKey(Url.MEMBER_FIND)
     public void find() {
         Member model = getParameter(Member.class);
@@ -64,17 +53,6 @@ public class MemberController extends Controller {
         model.validate(Member.MEMBER_ID);
 
         Member member = memberService.find(model.getMember_id());
-
-        renderSuccessJson(member.removeUnfindable());
-    }
-
-    @ActionKey(Url.MEMBER_TEAM_FIND)
-    public void teamFind() {
-        Member model = getParameter(Member.class);
-
-        model.validate(Member.MEMBER_ID);
-
-        Member member = memberService.teamFind(model.getMember_id());
 
         renderSuccessJson(member.removeUnfindable());
     }
@@ -97,6 +75,15 @@ public class MemberController extends Controller {
         String scene_qrcode = memberService.qrcodeFind(request_user_id);
 
         renderSuccessJson(scene_qrcode);
+    }
+
+    @ActionKey(Url.MEMBER_MY_FIND)
+    public void myFind() {
+        String request_user_id = getRequest_user_id();
+
+        Map<String, Object> resultMap = memberService.myFind(request_user_id);
+
+        renderSuccessJson(resultMap);
     }
 
 //    @ActionKey(Url.MEMBER_SAVE)
@@ -159,15 +146,6 @@ public class MemberController extends Controller {
     @ActionKey(Url.MEMBER_WECHAT_WX_LOGIN)
     public void weChatWX5Login() {
         Map<String, Object> resultMap = memberService.weChatWXLogin(getAttr(Constant.REQUEST_PARAMETER), getPlatform(), getVersion(), getIp_address());
-
-        renderSuccessJson(resultMap);
-    }
-
-    @ActionKey(Url.MEMBER_MY_FIND)
-    public void myFind() {
-        String request_user_id = getRequest_user_id();
-
-        Map<String, Object> resultMap = memberService.myFind(request_user_id);
 
         renderSuccessJson(resultMap);
     }

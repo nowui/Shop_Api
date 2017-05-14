@@ -16,6 +16,7 @@ import java.util.List;
 
 public class MemberDao extends Dao {
 
+    private final String MEMBER_LIST_BY_PARENT_ID_CACHE = "membe_list_by_parent_id_cache";
     private final String MEMBER_BY_MEMBER_ID_CACHE = "membe_by_member_id_cache";
 
     public int count(String member_name) {
@@ -37,14 +38,22 @@ public class MemberDao extends Dao {
         return new Member().find(sqlPara.getSql(), sqlPara.getPara());
     }
 
-    public List<Member> teamList(String parent_id, Integer m, Integer n) {
-        Kv map = Kv.create();
-        map.put(Member.PARENT_ID, parent_id);
-        map.put(Member.M, m);
-        map.put(Member.N, n);
-        SqlPara sqlPara = Db.getSqlPara("member.teamList", map);
+    public List<Member> teamList(String parent_id) {
+        List<Member> memberList = CacheUtil.get(MEMBER_LIST_BY_PARENT_ID_CACHE, parent_id);
 
-        return new Member().find(sqlPara.getSql(), sqlPara.getPara());
+        if (memberList == null) {
+            Kv map = Kv.create();
+            map.put(Member.PARENT_ID, parent_id);
+            SqlPara sqlPara = Db.getSqlPara("member.teamList", map);
+
+            memberList = new Member().find(sqlPara.getSql(), sqlPara.getPara());
+
+            if (memberList.size() > 0) {
+                CacheUtil.put(MEMBER_LIST_BY_PARENT_ID_CACHE, parent_id, memberList);
+            }
+        }
+
+        return memberList;
     }
 
     public Member find(String member_id) {
@@ -95,6 +104,10 @@ public class MemberDao extends Dao {
 
         member.save();
 
+        if (Util.isNullOrEmpty(parent_id)) {
+            CacheUtil.remove(MEMBER_LIST_BY_PARENT_ID_CACHE, parent_id);
+        }
+
         return member;
     }
 
@@ -113,6 +126,11 @@ public class MemberDao extends Dao {
 //    }
 
     public boolean childrenUpdate(String member_id, String member_level_id, String request_user_id) {
+        Member member = CacheUtil.get(MEMBER_BY_MEMBER_ID_CACHE, member_id);
+        if (member != null) {
+            CacheUtil.remove(MEMBER_LIST_BY_PARENT_ID_CACHE, member.getParent_id());
+        }
+
         CacheUtil.remove(MEMBER_BY_MEMBER_ID_CACHE, member_id);
 
         Kv map = Kv.create();
@@ -126,6 +144,11 @@ public class MemberDao extends Dao {
     }
 
     public boolean updateByMember_idAndScene_idAndScene_qrcode(String member_id, String scene_id, String scene_qrcode, String request_user_id) {
+        Member member = CacheUtil.get(MEMBER_BY_MEMBER_ID_CACHE, member_id);
+        if (member != null) {
+            CacheUtil.remove(MEMBER_LIST_BY_PARENT_ID_CACHE, member.getParent_id());
+        }
+
         CacheUtil.remove(MEMBER_BY_MEMBER_ID_CACHE, member_id);
 
         Kv map = Kv.create();
@@ -140,6 +163,11 @@ public class MemberDao extends Dao {
     }
 
     public boolean updateByMember_idAndParent_idAndParent_pathAndMember_level_id(String member_id, String parent_id, String parent_path, String member_level_id) {
+        Member member = CacheUtil.get(MEMBER_BY_MEMBER_ID_CACHE, member_id);
+        if (member != null) {
+            CacheUtil.remove(MEMBER_LIST_BY_PARENT_ID_CACHE, member.getParent_id());
+        }
+
         CacheUtil.remove(MEMBER_BY_MEMBER_ID_CACHE, member_id);
 
         Kv map = Kv.create();
@@ -158,6 +186,8 @@ public class MemberDao extends Dao {
 
         List<Object[]> parameterList = new ArrayList<Object[]>();
         for(Member member : memberList) {
+            CacheUtil.remove(MEMBER_LIST_BY_PARENT_ID_CACHE, member.getParent_id());
+
             CacheUtil.remove(MEMBER_BY_MEMBER_ID_CACHE, member.getMember_id());
 
             List<Object> objectList = new ArrayList<Object>();
@@ -179,6 +209,11 @@ public class MemberDao extends Dao {
     }
 
     public boolean delete(String member_id, String request_user_id) {
+        Member member = CacheUtil.get(MEMBER_BY_MEMBER_ID_CACHE, member_id);
+        if (member != null) {
+            CacheUtil.remove(MEMBER_LIST_BY_PARENT_ID_CACHE, member.getParent_id());
+        }
+
         CacheUtil.remove(MEMBER_BY_MEMBER_ID_CACHE, member_id);
 
         Kv map = Kv.create();

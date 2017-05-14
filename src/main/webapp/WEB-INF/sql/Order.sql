@@ -39,6 +39,7 @@
     order_amount,
     order_delivery_name,
     order_delivery_address,
+    order_is_pay,
     order_flow,
     order_status
     FROM table_order

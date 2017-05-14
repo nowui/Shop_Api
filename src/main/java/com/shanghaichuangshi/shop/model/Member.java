@@ -56,8 +56,6 @@ public class Member extends Model<Member> {
     @Column(type = ColumnType.BOOLEAN, length = 1, comment = "会员状态")
     public static final String MEMBER_STATUS = "member_status";
 
-    public static final String MEMBER_LEVEL_LIST = "member_level_list";
-
     public String getMember_id() {
         return getStr(MEMBER_ID);
     }

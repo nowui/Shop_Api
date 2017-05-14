@@ -14,8 +14,8 @@ public class OrderProductService extends Service {
         return orderProductDao.listByOder_id(order_id);
     }
 
-    public List<OrderProduct> listByMember_id(String member_id) {
-        return orderProductDao.listByMember_id(member_id);
+    public List<OrderProduct> listByUser_id(String user_id) {
+        return orderProductDao.listByUser_id(user_id);
     }
 
     public OrderProduct find(String order_product_id) {
@@ -30,8 +30,8 @@ public class OrderProductService extends Service {
 //        return orderProductDao.update(order_product, request_user_id);
 //    }
 
-    public boolean updateByOrder_idAndOrder_status(String order_id, Boolean order_status, String member_id) {
-        return orderProductDao.updateByOrder_idAndOrder_status(order_id, order_status, member_id);
+    public boolean updateByOrder_idAndOrder_statusAndUser_id(String order_id, Boolean order_status, String user_id) {
+        return orderProductDao.updateByOrder_idAndOrder_statusAndUser_id(order_id, order_status, user_id);
     }
 
 //    public boolean delete(OrderProduct order_product, String request_user_id) {

@@ -18,6 +18,7 @@ public class MemberLevel extends Model<MemberLevel> {
     @Column(type = ColumnType.INT, length = 3, comment = "会员等级排序", findable = false)
     public static final String MEMBER_LEVEL_SORT = "member_level_sort";
 
+    public static final String MEMBER_LEVEL_LIST = "member_level_list";
     
     public String getMember_level_id() {
         return getStr(MEMBER_LEVEL_ID);

@@ -41,7 +41,7 @@ public class DeliveryService extends Service {
             }
         }
 
-        delivery.setDelivery_address(delivery.getDelivery_province() + delivery.getDelivery_city() + delivery.getDelivery_area() + delivery.getDelivery_street());
+//        delivery.setDelivery_address(delivery.getDelivery_province() + delivery.getDelivery_city() + delivery.getDelivery_area() + delivery.getDelivery_street());
 
         return deliveryDao.save(delivery, request_user_id);
     }
@@ -51,7 +51,7 @@ public class DeliveryService extends Service {
             deliveryDao.updateIsDefault(delivery.getDelivery_id(), request_user_id);
         }
 
-        delivery.setDelivery_address(delivery.getDelivery_province() + delivery.getDelivery_city() + delivery.getDelivery_area() + delivery.getDelivery_street());
+//        delivery.setDelivery_address(delivery.getDelivery_province() + delivery.getDelivery_city() + delivery.getDelivery_area() + delivery.getDelivery_street());
 
         deliveryDao.update(delivery, request_user_id);
 

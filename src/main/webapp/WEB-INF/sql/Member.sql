@@ -31,7 +31,6 @@
     member_name,
     user_id,
     member_level_id,
-    member_total_amount,
     member_month_order_amount,
     member_all_order_amount,
     member_status
@@ -39,9 +38,6 @@
     WHERE system_status = 1
     AND parent_id = #p(parent_id)
     ORDER BY system_create_time DESC
-    #if(n > 0)
-      LIMIT #p(m), #p(n)
-    #end
   #end
 
   #sql("find")

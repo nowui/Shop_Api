@@ -25,6 +25,7 @@ public class Cart extends Model<Cart> {
     public void setCart_id(String cart_id) {
         set(CART_ID, cart_id);
     }
+
     public String getUser_id() {
         return getStr(USER_ID);
     }
@@ -32,6 +33,7 @@ public class Cart extends Model<Cart> {
     public void setUser_id(String user_id) {
         set(USER_ID, user_id);
     }
+
     public String getSku_id() {
         return getStr(SKU_ID);
     }
@@ -39,6 +41,7 @@ public class Cart extends Model<Cart> {
     public void setSku_id(String sku_id) {
         set(SKU_ID, sku_id);
     }
+
     public String getCart_product_quantity() {
         return getStr(CART_PRODUCT_QUANTITY);
     }

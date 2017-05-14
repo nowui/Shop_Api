@@ -65,6 +65,9 @@ public class OrderProduct extends Model<OrderProduct> {
     @Column(type = ColumnType.INT, length = 11, comment = "佣金编号")
     public static final String COMMISSION_ID = "commission_id";
 
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "用户编号")
+    public static final String USER_ID = "user_id";
+
     @Column(type = ColumnType.VARCHAR, length = 32, comment = "会员编号")
     public static final String MEMBER_ID = "member_id";
 
@@ -239,6 +242,14 @@ public class OrderProduct extends Model<OrderProduct> {
 
     public void setCommission_id(String commission_id) {
         set(COMMISSION_ID, commission_id);
+    }
+
+    public String getUser_id() {
+        return getStr(USER_ID);
+    }
+
+    public void setUser_id(String user_id) {
+        set(USER_ID, user_id);
     }
 
     public String getMember_id() {

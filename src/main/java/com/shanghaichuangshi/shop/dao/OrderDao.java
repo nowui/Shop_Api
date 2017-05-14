@@ -18,7 +18,7 @@ import java.util.List;
 public class OrderDao extends Dao {
 
     private final String ORDER_NUMBER_LIST_BY_DAY_CACHE = "order_number_list_by_day_cache";
-    private final String ORDER_NUMBER_LIST_BY_USER_ID_CACHE = "order_number_list_by_user_id_cache";
+    private final String ORDER_LIST_BY_USER_ID_CACHE = "order_list_by_user_id_cache";
     private final String ORDER_BY_ORDER_NUMBER_CACHE = "order_by_order_number_cache";
     private final String ORDER_BY_ORDER_ID_CACHE = "order_by_order_id_cache";
 
@@ -42,7 +42,7 @@ public class OrderDao extends Dao {
     }
 
     public List<Order> listByUser_id(String user_id) {
-        List<Order> orderList = CacheUtil.get(ORDER_NUMBER_LIST_BY_USER_ID_CACHE, user_id);
+        List<Order> orderList = CacheUtil.get(ORDER_LIST_BY_USER_ID_CACHE, user_id);
 
         if (orderList == null) {
             Kv map = Kv.create();
@@ -54,7 +54,7 @@ public class OrderDao extends Dao {
             orderList = new Order().find(sqlPara.getSql(), sqlPara.getPara());
 
             if (orderList.size() > 0) {
-                CacheUtil.put(ORDER_NUMBER_LIST_BY_USER_ID_CACHE, user_id, orderList);
+                CacheUtil.put(ORDER_LIST_BY_USER_ID_CACHE, user_id, orderList);
             }
         }
 
@@ -179,7 +179,7 @@ public class OrderDao extends Dao {
 
         order.save();
 
-        CacheUtil.put(ORDER_BY_ORDER_NUMBER_CACHE, order_number, order);
+        CacheUtil.put(ORDER_LIST_BY_USER_ID_CACHE, order_number, order);
 
         return order;
     }
@@ -192,7 +192,9 @@ public class OrderDao extends Dao {
         }
 
         Order order = find(order_id);
-        CacheUtil.remove(ORDER_BY_ORDER_ID_CACHE, order.getUser_id());
+        if (order != null) {
+            CacheUtil.remove(ORDER_LIST_BY_USER_ID_CACHE, order.getUser_id());
+        }
 
         CacheUtil.remove(ORDER_BY_ORDER_ID_CACHE, order_id);
 
@@ -214,7 +216,9 @@ public class OrderDao extends Dao {
 
     public boolean delete(String order_id, String request_user_id) {
         Order order = find(order_id);
-        CacheUtil.remove(ORDER_BY_ORDER_ID_CACHE, order.getUser_id());
+        if (order != null) {
+            CacheUtil.remove(ORDER_LIST_BY_USER_ID_CACHE, order.getUser_id());
+        }
 
         CacheUtil.remove(ORDER_BY_ORDER_ID_CACHE, order_id);
 
@@ -229,7 +233,9 @@ public class OrderDao extends Dao {
 
     public boolean updateByOrder_idAndOrder_is_confirm(String order_id) {
         Order order = find(order_id);
-        CacheUtil.remove(ORDER_BY_ORDER_ID_CACHE, order.getUser_id());
+        if (order != null) {
+            CacheUtil.remove(ORDER_LIST_BY_USER_ID_CACHE, order.getUser_id());
+        }
 
         CacheUtil.remove(ORDER_BY_ORDER_ID_CACHE, order_id);
 

@@ -2,11 +2,11 @@ package com.shanghaichuangshi.shop.type;
 
 public enum OrderFlowEnum {
 
-    WAIT_PAY("WAIT_PAY", "代付款"),
+    WAIT_PAY("WAIT_PAY", "待付款"),
     EXPIRE("EXPIRE", "超时未付款"),
     WAIT_CONFIRM("WAIT_CONFIRM", "已付款，待确认"),
-    WAIT_SEND("WAIT_SEND", "代发货"),
-    WAIT_RECEIVE("WAIT_RECEIVE", "代收货"),
+    WAIT_SEND("WAIT_SEND", "待发货"),
+    WAIT_RECEIVE("WAIT_RECEIVE", "待收货"),
     FINISH("FINISH", "订单完成"),
     CANCEL("CANCEL", "订单取消");
 
