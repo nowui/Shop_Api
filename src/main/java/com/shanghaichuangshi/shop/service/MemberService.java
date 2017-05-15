@@ -89,18 +89,10 @@ public class MemberService extends Service {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
         Member member = findByUser_id(request_user_id);
+        User user = userService.find(member.getUser_id());
 
-        String member_level_id = member.getMember_level_id();
+        resultMap.putAll(getMemberLevel(member.getMember_level_id(), user.getUser_name(), user.getUser_avatar(), member.getMember_status()));
 
-        if (Util.isNullOrEmpty(member_level_id)) {
-            resultMap.put(MemberLevel.MEMBER_LEVEL_NAME, "会员");
-        } else {
-            MemberLevel memberLevel = memberLevelService.find(member_level_id);
-
-            resultMap.put(MemberLevel.MEMBER_LEVEL_NAME, memberLevel.getMember_level_name());
-        }
-
-        resultMap.put(Member.MEMBER_STATUS, member.getMember_status());
         resultMap.put(Member.MEMBER_TOTAL_AMOUNT, member.getMember_total_amount());
         resultMap.put(OrderFlowEnum.WAIT_PAY.getKey(), 0);
         resultMap.put(OrderFlowEnum.WAIT_SEND.getKey(), 0);
@@ -144,6 +136,9 @@ public class MemberService extends Service {
             throw new RuntimeException("wechat open id is null");
         }
 
+        //过滤Emoji表情
+        user_name = Util.getEmoji(user_name);
+
         User user = userService.findByWechat_open_idAndWechat_union_idAndUser_type(wechat_open_id, wechat_union_id, UserType.MEMBER.getKey());
         if (user == null) {
             String user_id = Util.getRandomUUID();
@@ -166,6 +161,12 @@ public class MemberService extends Service {
 
             return member;
         } else {
+            String user_id = user.getUser_id();
+            String member_id = user.getObject_id();
+
+            userService.updateByUser_idAndUser_nameAndUser_avatar(user_id, user_name, user_avatar, user_id);
+            memberDao.updateByMember_idAndMember_name(member_id, user_name, user_id);
+
             Member member = memberDao.find(user.getObject_id());
 
             return member;
@@ -192,6 +193,10 @@ public class MemberService extends Service {
 
         }
         memberDao.updateAmount(memberList);
+    }
+
+    public boolean updateByMember_idAndMember_name(String member_id, String member_name, String request_user_id) {
+        return memberDao.updateByMember_idAndMember_name(member_id, member_name, request_user_id);
     }
 
     public boolean delete(Member member, String request_user_id) {
@@ -227,6 +232,12 @@ public class MemberService extends Service {
         JSONObject resultJSONObject = JSONObject.parseObject(result);
         String session_key = resultJSONObject.getString("session_key");
 
+//        System.out.println("---------------");
+//        System.out.println("wx_app_id:" + wx_app_id);
+//        System.out.println("wx_app_secret:" + wx_app_secret);
+//        System.out.println(resultJSONObject.toJSONString());
+//        System.out.println("---------------");
+
         String wechat_open_id = "";
         String wechat_union_id = "";
         String user_name = "";
@@ -235,11 +246,21 @@ public class MemberService extends Service {
         Boolean member_status = false;
         String request_user_id = "";
 
+//        System.out.println("---------------");
+//        System.out.println("encrypted_data:" + encrypted_data);
+//        System.out.println("session_key:" + session_key);
+//        System.out.println("iv:" + iv);
+//        System.out.println("---------------");
+
         try {
             result = decrypt(encrypted_data, session_key, iv, "UTF-8");
 
             if (result != null && result.length() > 0) {
                 resultJSONObject = JSONObject.parseObject(result);
+
+//                System.out.println("---------------");
+//                System.out.println(resultJSONObject.toJSONString());
+//                System.out.println("---------------");
 
                 wechat_open_id = resultJSONObject.getString("openId");
                 wechat_union_id = resultJSONObject.getString("unionId");
@@ -266,14 +287,22 @@ public class MemberService extends Service {
 
         resultMap.put("open_id", wechat_open_id);
         resultMap.put(Constant.TOKEN.toLowerCase(), token);
+
+        resultMap.putAll(getMemberLevel(member_level_id, user_name, user_avatar, member_status));
+
+        return resultMap;
+    }
+
+    private Map<String, Object> getMemberLevel(String member_level_id, String user_name, String user_avatar, Boolean member_status) {
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+
         resultMap.put(User.USER_NAME, user_name);
         resultMap.put(User.USER_AVATAR, user_avatar);
         resultMap.put(Member.MEMBER_STATUS, member_status);
-//        resultMap.put(Member.SCENE_QRCODE, member.getScene_qrcode());
 
         if (Util.isNullOrEmpty(member_level_id)) {
             resultMap.put(MemberLevel.MEMBER_LEVEL_ID, "");
-            resultMap.put(MemberLevel.MEMBER_LEVEL_NAME, "");
+            resultMap.put(MemberLevel.MEMBER_LEVEL_NAME, "会员");
             resultMap.put(MemberLevel.MEMBER_LEVEL_VALUE, 999);
         } else {
             MemberLevel memberLevel = memberLevelService.find(member_level_id);

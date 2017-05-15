@@ -85,6 +85,14 @@
     WHERE member_id = ?
   #end
 
+  #sql("updateByMember_idAndMember_name")
+    UPDATE table_member SET
+    member_name = #p(member_name),
+    system_update_user_id = #p(system_update_user_id),
+    system_update_time = #p(system_update_time)
+    WHERE member_id = #p(member_id)
+  #end
+
   #sql("delete")
     UPDATE table_member SET
     system_update_user_id = #p(system_update_user_id),

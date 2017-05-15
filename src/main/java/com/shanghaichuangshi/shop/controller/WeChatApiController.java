@@ -141,7 +141,13 @@ public class WeChatApiController extends ApiController {
         parameter.put("trade_type", trade_type);
         parameter.put("transaction_id", transaction_id);
 
-        String endsign = PaymentKit.createSign(parameter, WeChat.mch_key);
+        String wx_app_id = WeChat.wx_app_id;
+        String mch_key = WeChat.mch_key;
+        if (appid.equals(wx_app_id)) {
+            mch_key = WeChat.wx_mch_key;
+        }
+
+        String endsign = PaymentKit.createSign(parameter, mch_key);
 
         if (sign.equals(endsign)) {
             BigDecimal order_amount = new BigDecimal(total_fee).divide(BigDecimal.valueOf(100));

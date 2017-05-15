@@ -179,7 +179,9 @@ public class OrderDao extends Dao {
 
         order.save();
 
-        CacheUtil.put(ORDER_LIST_BY_USER_ID_CACHE, order_number, order);
+        CacheUtil.remove(ORDER_LIST_BY_USER_ID_CACHE, order.getUser_id());
+
+        CacheUtil.put(ORDER_BY_ORDER_NUMBER_CACHE, order_number, order);
 
         return order;
     }

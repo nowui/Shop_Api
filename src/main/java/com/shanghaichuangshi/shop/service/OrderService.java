@@ -387,9 +387,13 @@ public class OrderService extends Service {
     }
 
     public Map<String, String> unifiedorder(Order order, String open_id, String pay_type) {
-        String appid = WeChat.app_id;
+        String app_id = WeChat.app_id;
+        String mch_id = WeChat.mch_id;
+        String mch_key = WeChat.mch_key;
         if (pay_type.equals("WX")) {
-            appid = WeChat.wx_app_id;
+            app_id = WeChat.wx_app_id;
+            mch_id = WeChat.wx_mch_id;
+            mch_key = WeChat.wx_mch_key;
         }
 
         String nonce_str = Util.getRandomStringByLength(32);
@@ -403,9 +407,9 @@ public class OrderService extends Service {
         String trade_type = "JSAPI";
 
         SortedMap<String, String> parameter = new TreeMap<String, String>();
-        parameter.put("appid", appid);
+        parameter.put("appid", app_id);
         parameter.put("body", body);
-        parameter.put("mch_id", WeChat.mch_id);
+        parameter.put("mch_id", mch_id);
         parameter.put("nonce_str", nonce_str);
         parameter.put("notify_url", notify_url);
         parameter.put("openid", openid);
@@ -413,7 +417,7 @@ public class OrderService extends Service {
         parameter.put("spbill_create_ip", spbill_create_ip);
         parameter.put("total_fee", total_fee);
         parameter.put("trade_type", trade_type);
-        parameter.put("sign", PaymentKit.createSign(parameter, WeChat.mch_key));
+        parameter.put("sign", PaymentKit.createSign(parameter, mch_key));
 
         String result = HttpKit.post("https://api.mch.weixin.qq.com/pay/unifiedorder", PaymentKit.toXml(parameter));
 
@@ -425,12 +429,12 @@ public class OrderService extends Service {
         String signType = "MD5";
 
         SortedMap<String, String> parameter2 = new TreeMap<String, String>();
-        parameter2.put("appId", appid);
+        parameter2.put("appId", app_id);
         parameter2.put("timeStamp", timestamp);
         parameter2.put("nonceStr", nonce_str);
         parameter2.put("package", package_str);
         parameter2.put("signType", signType);
-        parameter2.put("paySign", PaymentKit.createSign(parameter2, WeChat.mch_key));
+        parameter2.put("paySign", PaymentKit.createSign(parameter2, mch_key));
         parameter2.put("orderId", order.getOrder_id());
 
         return parameter2;
