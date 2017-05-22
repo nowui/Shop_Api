@@ -11,6 +11,7 @@ public class Url {
 
     public static final String MEMBER_LIST = "/member/list";
     public static final String MEMBER_ADMIN_LIST = "/member/admin/list";
+    public static final String MEMBER_TREE_LIST = "/member/tree/list";
     public static final String MEMBER_FIND = "/member/find";
     public static final String MEMBER_ADMIN_FIND = "/member/admin/find";
     public static final String MEMBER_QRCODE_FIND = "/member/qrcode/find";
@@ -18,6 +19,7 @@ public class Url {
     public static final String MEMBER_SAVE = "/member/save";
     public static final String MEMBER_WECHAT_SAVE = "/member/wechat/save";
     public static final String MEMBERL_UPDATE = "/member/update";
+    public static final String MEMBER_ADMIN_MEMBER_LEVELL_UPDATE = "/member/admin/member/level/update";
     public static final String MEMBERL_CHILDREN_UPDATE = "/member/children/update";
     public static final String MEMBER_DELETE = "/member/delete";
     public static final String MEMBER_LOGIN = "/member/login";
@@ -70,6 +72,7 @@ public class Url {
     public static final String ORDER_FIND = "/order/find";
     public static final String ORDER_ADMIN_FIND = "/order/admin/find";
     public static final String ORDER_TEAM_FIND = "/order/team/find";
+    public static final String ORDER_TEAM_MEMBER_LEVEL_FIND = "/order/team/member/level/find";
     public static final String ORDER_SAVE = "/order/save";
     public static final String ORDERL_UPDATE = "/order/update";
     public static final String ORDER_DELETE = "/order/delete";

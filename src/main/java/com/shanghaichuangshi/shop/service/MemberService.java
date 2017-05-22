@@ -15,17 +15,13 @@ import com.shanghaichuangshi.shop.dao.MemberDao;
 import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.shop.model.MemberLevel;
-import com.shanghaichuangshi.shop.model.Order;
 import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.shop.type.SceneTypeEnum;
 import com.shanghaichuangshi.type.UserType;
 import com.shanghaichuangshi.util.Util;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.shanghaichuangshi.util.AesUtil.decrypt;
 
@@ -43,7 +39,60 @@ public class MemberService extends Service {
     }
 
     public List<Member> list(Member member, int m, int n) {
-        return memberDao.list(member.getMember_name(), m, n);
+        List<Member> memberList = memberDao.list(member.getMember_name(), m, n);
+
+        for (Member item : memberList) {
+            Member model = find(item.getMember_id());
+
+            item.put(User.USER_AVATAR, model.get(User.USER_AVATAR));
+        }
+
+        return memberList;
+    }
+
+    public List<Member> treeList() {
+        List<Member> memberList = memberDao.treeList();
+
+        Iterator<Member> iterator = memberList.iterator();
+        while (iterator.hasNext()) {
+            Member member = iterator.next();
+
+            User user = userService.find(member.getUser_id());
+            member.put(User.USER_AVATAR, user.getUser_avatar());
+            member.remove(Member.USER_ID);
+
+            MemberLevel memberLevel = memberLevelService.find(member.getMember_level_id());
+            if (memberLevel == null) {
+                member.put(MemberLevel.MEMBER_LEVEL_NAME, "");
+            } else {
+                member.put(MemberLevel.MEMBER_LEVEL_NAME, memberLevel.getMember_level_name());
+            }
+
+            if (member.getParent_id().equals(Constant.PARENT_ID) && member.getMember_name().equals("Ronaldo")) {
+                iterator.remove();
+            }
+        }
+
+        List<Member> resultList = getChildren(memberList, Constant.PARENT_ID);
+
+        return resultList;
+    }
+
+    private List<Member> getChildren(List<Member> memberList, String parent_id) {
+        List<Member> resultList = new ArrayList<Member>();
+
+        for (Member member : memberList) {
+            if (member.getParent_id().equals(parent_id)) {
+                List<Member> childrenList = getChildren(memberList, member.getMember_id());
+                if (childrenList.size() > 0) {
+                    member.put(Constant.CHILDREN, childrenList);
+                }
+
+                resultList.add(member);
+            }
+        }
+
+        return resultList;
     }
 
     public List<Member> teamList(String parent_id) {
@@ -197,6 +246,10 @@ public class MemberService extends Service {
 
     public boolean updateByMember_idAndMember_name(String member_id, String member_name, String request_user_id) {
         return memberDao.updateByMember_idAndMember_name(member_id, member_name, request_user_id);
+    }
+
+    public boolean updateByMember_idAndMember_level_id(String member_id, String member_level_id, String request_user_id) {
+        return memberDao.updateByMember_idAndMember_level_id(member_id, member_level_id, request_user_id);
     }
 
     public boolean delete(Member member, String request_user_id) {

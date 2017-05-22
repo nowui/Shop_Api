@@ -38,6 +38,13 @@ public class MemberDao extends Dao {
         return new Member().find(sqlPara.getSql(), sqlPara.getPara());
     }
 
+    public List<Member> treeList() {
+        Kv map = Kv.create();
+        SqlPara sqlPara = Db.getSqlPara("member.treeList", map);
+
+        return new Member().find(sqlPara.getSql(), sqlPara.getPara());
+    }
+
     public List<Member> teamList(String parent_id) {
         List<Member> memberList = CacheUtil.get(MEMBER_LIST_BY_PARENT_ID_CACHE, parent_id);
 
@@ -222,6 +229,24 @@ public class MemberDao extends Dao {
         map.put(Member.SYSTEM_UPDATE_USER_ID, request_user_id);
         map.put(Member.SYSTEM_UPDATE_TIME, new Date());
         SqlPara sqlPara = Db.getSqlPara("member.updateByMember_idAndMember_name", map);
+
+        return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
+    }
+
+    public boolean updateByMember_idAndMember_level_id(String member_id, String member_level_id, String request_user_id) {
+        Member member = CacheUtil.get(MEMBER_BY_MEMBER_ID_CACHE, member_id);
+        if (member != null) {
+            CacheUtil.remove(MEMBER_LIST_BY_PARENT_ID_CACHE, member.getParent_id());
+        }
+
+        CacheUtil.remove(MEMBER_BY_MEMBER_ID_CACHE, member_id);
+
+        Kv map = Kv.create();
+        map.put(Member.MEMBER_ID, member_id);
+        map.put(Member.MEMBER_LEVEL_ID, member_level_id);
+        map.put(Member.SYSTEM_UPDATE_USER_ID, request_user_id);
+        map.put(Member.SYSTEM_UPDATE_TIME, new Date());
+        SqlPara sqlPara = Db.getSqlPara("member.updateByMember_idAndMember_level_id", map);
 
         return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }

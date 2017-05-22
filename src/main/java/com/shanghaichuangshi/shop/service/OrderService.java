@@ -80,6 +80,7 @@ public class OrderService extends Service {
                     member_all_order_amount = member_all_order_amount.add(order.getOrder_amount());
                 }
             }
+            item.put(Member.MEMBER_TOTAL_AMOUNT, item.getMember_total_amount());
             item.put(Member.MEMBER_MONTH_ORDER_AMOUNT, member_month_order_amount);
             item.put(Member.MEMBER_ALL_ORDER_AMOUNT, member_all_order_amount);
 
@@ -131,7 +132,7 @@ public class OrderService extends Service {
 
         List<OrderProduct> orderProductList = orderProductService.listByOder_id(order_id);
         for (OrderProduct orderProduct : orderProductList) {
-            orderProduct.keep(OrderProduct.PRODUCT_ID, OrderProduct.PRODUCT_NAME, OrderProduct.PRODUCT_PRICE, OrderProduct.ORDER_PRODUCT_QUANTITY, OrderProduct.ORDER_PRODUCT_COMMISSION);
+            orderProduct.keep(OrderProduct.PRODUCT_ID, OrderProduct.PRODUCT_NAME, OrderProduct.ORDER_PRODUCT_PRICE, OrderProduct.ORDER_PRODUCT_QUANTITY, OrderProduct.ORDER_PRODUCT_COMMISSION);
         }
         order.put(Product.PRODUCT_LIST, orderProductList);
 
@@ -184,6 +185,29 @@ public class OrderService extends Service {
         return member;
     }
 
+    public List<MemberLevel> teamMemberLevelFind(String member_id) {
+        Member member = memberService.find(member_id);
+
+        Member parentMember = memberService.find(member.getParent_id());
+        MemberLevel parentMemberLevel = memberLevelService.find(parentMember.getMember_level_id());
+
+        List<MemberLevel> resultList = new ArrayList<MemberLevel>();
+        List<MemberLevel> memberLevelList = memberLevelService.listAll();
+        for(MemberLevel m : memberLevelList) {
+            if (m.getMember_level_value() > parentMemberLevel.getMember_level_value()) {
+                resultList.add(m);
+            }
+
+            if (m.getMember_level_id().equals(member.getMember_level_id())) {
+                m.put("is_select", true);
+            } else {
+                m.put("is_select", false);
+            }
+        }
+
+        return resultList;
+    }
+
     public Map<String, String> save(Order order, JSONObject jsonObject, String request_user_id) {
         JSONArray productListJSONArray = jsonObject.getJSONArray(Product.PRODUCT_LIST);
 
@@ -229,7 +253,7 @@ public class OrderService extends Service {
         for (int i = 0; i < parentPathArray.size(); i++) {
             String m_id = parentPathArray.getString(i);
 
-            if (!m_id.equals(Constant.father_id)) {
+            if (!m_id.equals(Constant.PARENT_ID)) {
                 Member m = memberService.find(m_id);
                 MemberLevel mLevel = memberLevelService.find(m.getMember_level_id());
 

@@ -46,6 +46,13 @@ public class MemberController extends Controller {
         renderSuccessJson(count, memberList);
     }
 
+    @ActionKey(Url.MEMBER_TREE_LIST)
+    public void treeList() {
+        List<Member> memberList = memberService.treeList();
+
+        renderSuccessJson( memberList);
+    }
+
     @ActionKey(Url.MEMBER_FIND)
     public void find() {
         Member model = getParameter(Member.class);
@@ -98,6 +105,18 @@ public class MemberController extends Controller {
 //
 //        renderSuccessJson();
 //    }
+
+    @ActionKey(Url.MEMBER_ADMIN_MEMBER_LEVELL_UPDATE)
+    public void adminMemberLevelUpdate() {
+        Member model = getParameter(Member.class);
+        String request_user_id = getRequest_user_id();
+
+        model.validate(Member.MEMBER_ID, Member.MEMBER_LEVEL_ID);
+
+        memberService.updateByMember_idAndMember_level_id(model.getMember_id(), model.getMember_level_id(), request_user_id);
+
+        renderSuccessJson();
+    }
 
     @ActionKey(Url.MEMBERL_CHILDREN_UPDATE)
     public void childrenUpdate() {

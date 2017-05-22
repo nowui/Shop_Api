@@ -5,6 +5,7 @@ import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.controller.Controller;
 import com.shanghaichuangshi.shop.model.Member;
+import com.shanghaichuangshi.shop.model.MemberLevel;
 import com.shanghaichuangshi.shop.model.Order;
 import com.shanghaichuangshi.shop.model.Product;
 import com.shanghaichuangshi.shop.service.OrderService;
@@ -97,6 +98,17 @@ public class OrderController extends Controller {
         Member member = orderService.teamFind(model.getMember_id());
 
         renderSuccessJson(member.removeUnfindable());
+    }
+
+    @ActionKey(Url.ORDER_TEAM_MEMBER_LEVEL_FIND)
+    public void teamMemberLevelFind() {
+        Member model = getParameter(Member.class);
+
+        model.validate(Member.MEMBER_ID);
+
+        List<MemberLevel> memberLevelList = orderService.teamMemberLevelFind(model.getMember_id());
+
+        renderSuccessJson(memberLevelList);
     }
 
     @ActionKey(Url.ORDER_SAVE)

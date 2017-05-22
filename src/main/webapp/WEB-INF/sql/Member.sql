@@ -25,12 +25,26 @@
     #end
   #end
 
+  #sql("treeList")
+    SELECT
+    member_id,
+    member_name,
+    parent_id,
+    user_id,
+    member_level_id,
+    member_total_amount
+    FROM table_member
+    WHERE system_status = 1
+  #end
+
   #sql("teamList")
     SELECT
     member_id,
     member_name,
     user_id,
     member_level_id,
+    member_total_amount,
+    member_withdrawal_amount,
     member_month_order_amount,
     member_all_order_amount,
     member_status
@@ -42,12 +56,10 @@
 
   #sql("find")
     SELECT
-    table_member.*,
-    table_user.user_phone
+    *
     FROM table_member
-    LEFT JOIN table_user ON table_user.user_id = table_member.user_id
-    WHERE table_member.system_status = 1
-    AND table_member.member_id = #p(member_id)
+    WHERE system_status = 1
+    AND member_id = #p(member_id)
   #end
 
   #sql("updateByMember_idAndScene_idAndScene_qrcode")
@@ -88,6 +100,14 @@
   #sql("updateByMember_idAndMember_name")
     UPDATE table_member SET
     member_name = #p(member_name),
+    system_update_user_id = #p(system_update_user_id),
+    system_update_time = #p(system_update_time)
+    WHERE member_id = #p(member_id)
+  #end
+
+  #sql("updateByMember_idAndMember_level_id")
+    UPDATE table_member SET
+    member_level_id = #p(member_level_id),
     system_update_user_id = #p(system_update_user_id),
     system_update_time = #p(system_update_time)
     WHERE member_id = #p(member_id)
