@@ -199,9 +199,9 @@ public class OrderService extends Service {
             }
 
             if (m.getMember_level_id().equals(member.getMember_level_id())) {
-                m.put("is_select", true);
+                m.put(Constant.IS_SELECT, true);
             } else {
-                m.put("is_select", false);
+                m.put(Constant.IS_SELECT, false);
             }
         }
 

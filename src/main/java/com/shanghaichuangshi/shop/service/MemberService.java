@@ -266,12 +266,14 @@ public class MemberService extends Service {
 //        return getMember(user, platform, version, ip_address, request_user_id);
 //    }
 
-    public Map<String, Object> weChatH5Login(String wechat_open_id, String wechat_union_id, String platform, String version, String ip_address, String request_user_id) {
-        User user = userService.findByWechat_open_idAndWechat_union_idAndUser_type(wechat_open_id, wechat_union_id, UserType.MEMBER.getKey());
+    public Map<String, Object> weChatH5Login(String wechat_open_id, String wechat_union_id, String user_name, String user_avatar, String scene_id, Boolean member_status, String platform, String version, String ip_address, String request_user_id) {
+//        User user = userService.findByWechat_open_idAndWechat_union_idAndUser_type(wechat_open_id, wechat_union_id, UserType.MEMBER.getKey());
+//
+//        Member member = find(user.getObject_id());
 
-        Member member = find(user.getObject_id());
+        Member member = saveByWechat_open_idAndWechat_union_idAndUser_nameAndUser_avatarAndFrom_scene_idAndMember_status(wechat_open_id, wechat_union_id, user_name, user_avatar, scene_id, member_status);
 
-        return getMember(wechat_open_id, user.getUser_id(), user.getUser_name(), user.getUser_avatar(), member.getMember_level_id(), member.getMember_status(), platform, version, ip_address, request_user_id);
+        return getMember(wechat_open_id, member.getUser_id(), user_name, user_avatar, member.getMember_level_id(), member.getMember_status(), platform, version, ip_address, request_user_id);
     }
 
     public Map<String, Object> weChatWXLogin(JSONObject jsonObject, String platform, String version, String ip_address) {

@@ -152,15 +152,15 @@ public class MemberController extends Controller {
 //        renderSuccessJson(resultMap);
 //    }
 
-    @ActionKey(Url.MEMBER_WECHAT_H5_LOGIN)
-    public void weChatH5Login() {
-        User model = getParameter(User.class);
-        String request_user_id = getRequest_user_id();
-
-        Map<String, Object> resultMap = memberService.weChatH5Login(model.getWechat_open_id(), model.getWechat_union_id(), getPlatform(), getVersion(), getIp_address(), request_user_id);
-
-        renderSuccessJson(resultMap);
-    }
+//    @ActionKey(Url.MEMBER_WECHAT_H5_LOGIN)
+//    public void weChatH5Login() {
+//        User model = getParameter(User.class);
+//        String request_user_id = getRequest_user_id();
+//
+//        Map<String, Object> resultMap = memberService.weChatH5Login(model.getWechat_open_id(), model.getWechat_union_id(), getPlatform(), getVersion(), getIp_address(), request_user_id);
+//
+//        renderSuccessJson(resultMap);
+//    }
 
     @ActionKey(Url.MEMBER_WECHAT_WX_LOGIN)
     public void weChatWX5Login() {
