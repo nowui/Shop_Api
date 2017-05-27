@@ -128,4 +128,12 @@ public class Url {
     public static final String CART_SAVE = "/cart/save";
     public static final String CARTL_UPDATE = "/cart/update";
     public static final String CART_DELETE = "/cart/delete";
+
+    public static final String EXPRESS_LIST = "/express/list";
+    public static final String EXPRESS_ADMIN_LIST = "/express/admin/list";
+    public static final String EXPRESS_FIND = "/express/find";
+    public static final String EXPRESS_ADMIN_FIND = "/express/admin/find";
+    public static final String EXPRESS_SAVE = "/express/save";
+    public static final String EXPRESSL_UPDATE = "/express/update";
+    public static final String EXPRESS_DELETE = "/express/delete";
 }

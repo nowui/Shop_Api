@@ -111,7 +111,7 @@ public class SkuDao extends Dao {
 
         for (int i : result) {
             if (i == 0) {
-                throw new RuntimeException("SKU更新不成功");
+                throw new RuntimeException("SKU库存更新不成功");
             }
         }
     }

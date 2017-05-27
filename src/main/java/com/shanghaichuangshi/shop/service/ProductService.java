@@ -168,7 +168,7 @@ public class ProductService extends Service {
         Product product = productDao.find(product_id);
 
         File productImageFile = fileService.find(product.getProduct_image());
-        product.put(Product.PRODUCT_IMAGE_FILE, productImageFile);
+        product.put(Product.PRODUCT_IMAGE_FILE, productImageFile.keep(File.FILE_ID, File.FILE_NAME, File.FILE_PATH));
 
         List<File> productImageFileList = new ArrayList<File>();
         JSONArray productImageList = JSONArray.parseArray(product.getProduct_image_list().toString());
@@ -192,7 +192,7 @@ public class ProductService extends Service {
         Product product = productDao.find(product_id);
 
         File productImageFile = fileService.find(product.getProduct_image());
-        product.put(Product.PRODUCT_IMAGE_FILE, productImageFile);
+        product.put(Product.PRODUCT_IMAGE_FILE, productImageFile.keep(File.FILE_ID, File.FILE_NAME, File.FILE_PATH, File.FILE_IMAGE));
 
         List<File> productImageFileList = new ArrayList<File>();
         JSONArray productImageList = JSONArray.parseArray(product.getProduct_image_list().toString());
@@ -277,6 +277,7 @@ public class ProductService extends Service {
 
                     //判断商品库存是否修改
                     if (!sku.getProduct_stock().equals(s.getProduct_stock())) {
+                        s.setSku_id(sku.getSku_id());
                         skuUpdateList.add(s);
                     }
 

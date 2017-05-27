@@ -27,8 +27,6 @@ public class CartController extends Controller {
     public void adminList() {
         Cart model = getParameter(Cart.class);
 
-        model.validate(Cart.USER_ID);
-
         int count = cartService.count(model);
 
         List<Cart> cartListvice = cartService.list(model);

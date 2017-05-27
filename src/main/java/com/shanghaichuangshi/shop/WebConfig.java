@@ -23,6 +23,7 @@ public class WebConfig {
         routes.add("/scene", SceneController.class);
         routes.add("/bill", BillController.class);
         routes.add("/cart", CartController.class);
+        routes.add("/express", ExpressController.class);
 
         return routes;
     }
@@ -43,6 +44,7 @@ public class WebConfig {
         activeRecordPlugin.addMapping("table_commission", "commission_id", Commission.class);
         activeRecordPlugin.addMapping("table_bill", "bill_id", Bill.class);
         activeRecordPlugin.addMapping("table_cart", "cart_id", Cart.class);
+        activeRecordPlugin.addMapping("table_express", "express_id", Express.class);
 
         return activeRecordPlugin;
     }

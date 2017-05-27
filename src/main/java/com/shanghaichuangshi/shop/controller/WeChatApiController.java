@@ -9,7 +9,6 @@ import com.jfinal.weixin.sdk.jfinal.ApiController;
 import com.jfinal.weixin.sdk.kit.PaymentKit;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.constant.WeChat;
-import com.shanghaichuangshi.model.User;
 import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.shop.service.*;

@@ -21,6 +21,8 @@ public class Brand extends Model<Brand> {
     @Column(type = ColumnType.LONGTEXT, length = 0, comment = "品牌内容")
     public static final String BRAND_CONTENT = "brand_content";
 
+    public static final String BRAND_IMAGE_FILE = "brand_image_file";
+
     
     public String getBrand_id() {
         return getStr(BRAND_ID);

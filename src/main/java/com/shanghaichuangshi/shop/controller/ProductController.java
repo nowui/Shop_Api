@@ -138,7 +138,7 @@ public class ProductController extends Controller {
         Product model = getParameter(Product.class);
         String request_user_id = getRequest_user_id();
 
-        model.validate(Product.PRODUCT_ID, Product.PRODUCT_NAME);
+        model.validate(Product.PRODUCT_ID, Product.CATEGORY_ID, Product.BRAND_ID, Product.PRODUCT_NAME, Product.PRODUCT_PRICE, Product.PRODUCT_STOCK);
 
         validate(Product.PRODUCT_IMAGE_LIST, Sku.SKU_LIST, Commission.COMMISSION_LIST);
 
