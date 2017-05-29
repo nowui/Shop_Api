@@ -21,7 +21,7 @@ public class SceneController extends Controller {
 
         model.validate(Scene.SCENE_TYPE);
 
-        List<Scene> sceneListvice = sceneService.list(model, getM(), getN());
+        List<Scene> sceneListvice = sceneService.list(model.getScene_type(), getM(), getN());
 
         renderSuccessJson(sceneListvice);
     }
@@ -34,9 +34,9 @@ public class SceneController extends Controller {
 
         model.validate(Scene.SCENE_TYPE);
 
-        int count = sceneService.count(model);
+        int count = sceneService.count(model.getScene_type());
 
-        List<Scene> sceneListvice = sceneService.list(model, getM(), getN());
+        List<Scene> sceneListvice = sceneService.list(model.getScene_type(), getM(), getN());
 
         renderSuccessJson(count, sceneListvice);
     }

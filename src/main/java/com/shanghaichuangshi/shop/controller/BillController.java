@@ -46,9 +46,9 @@ public class BillController extends Controller {
 
         model.validate(Bill.BILL_NAME);
 
-        int count = billService.count(model);
+        int count = billService.count(model.getBill_name());
 
-        List<Bill> billListvice = billService.list(model, getM(), getN());
+        List<Bill> billListvice = billService.list(model.getBill_name(), getM(), getN());
 
         renderSuccessJson(count, billListvice);
     }

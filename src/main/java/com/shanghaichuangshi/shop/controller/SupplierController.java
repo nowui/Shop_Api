@@ -22,7 +22,7 @@ public class SupplierController extends Controller {
 
         model.validate(Supplier.SUPPLIER_NAME);
 
-        List<Supplier> supplierListvice = supplierService.list(model, getM(), getN());
+        List<Supplier> supplierListvice = supplierService.list(model.getSupplier_name(), getM(), getN());
 
         renderSuccessJson(supplierListvice);
     }
@@ -35,9 +35,9 @@ public class SupplierController extends Controller {
 
         model.validate(Supplier.SUPPLIER_NAME);
 
-        int count = supplierService.count(model);
+        int count = supplierService.count(model.getSupplier_name());
 
-        List<Supplier> supplierListvice = supplierService.list(model, getM(), getN());
+        List<Supplier> supplierListvice = supplierService.list(model.getSupplier_name(), getM(), getN());
 
         renderSuccessJson(count, supplierListvice);
     }

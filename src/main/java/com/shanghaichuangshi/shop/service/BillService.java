@@ -13,12 +13,12 @@ public class BillService extends Service {
 
     private final MemberService memberService = new MemberService();
 
-    public int count(Bill bill) {
-        return billDao.count(bill.getBill_name());
+    public int count(String bill_name) {
+        return billDao.count(bill_name);
     }
 
-    public List<Bill> list(Bill bill, int m, int n) {
-        return billDao.list(bill.getBill_name(), m, n);
+    public List<Bill> list(String bill_name, int m, int n) {
+        return billDao.list(bill_name, m, n);
     }
 
     public List<Bill> listByUser_id(String user_id, int m, int n) {

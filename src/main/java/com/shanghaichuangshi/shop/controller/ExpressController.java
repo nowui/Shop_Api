@@ -21,7 +21,7 @@ public class ExpressController extends Controller {
 
         model.validate(Express.ORDER_ID);
 
-        List<Express> expressListvice = expressService.list(model, getM(), getN());
+        List<Express> expressListvice = expressService.list(model.getOrder_id(), getM(), getN());
 
         renderSuccessJson(expressListvice);
     }
@@ -34,9 +34,9 @@ public class ExpressController extends Controller {
 
         model.validate(Express.ORDER_ID);
 
-        int count = expressService.count(model);
+        int count = expressService.count(model.getOrder_id());
 
-        List<Express> expressListvice = expressService.list(model, getM(), getN());
+        List<Express> expressListvice = expressService.list(model.getOrder_id(), getM(), getN());
 
         renderSuccessJson(count, expressListvice);
     }

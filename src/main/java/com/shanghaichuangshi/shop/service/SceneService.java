@@ -16,12 +16,12 @@ public class SceneService extends Service {
 
     private final SceneDao sceneDao = new SceneDao();
 
-    public int count(Scene scene) {
-        return sceneDao.count(scene.getScene_type());
+    public int count(String scene_type) {
+        return sceneDao.count(scene_type);
     }
 
-    public List<Scene> list(Scene scene, int m, int n) {
-        return sceneDao.list(scene.getScene_type(), m, n);
+    public List<Scene> list(String scene_type, int m, int n) {
+        return sceneDao.list(scene_type, m, n);
     }
 
     public Scene find(String scene_id) {

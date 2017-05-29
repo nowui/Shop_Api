@@ -21,7 +21,7 @@ public class BrandController extends Controller {
 
         model.validate(Brand.BRAND_NAME);
 
-        List<Brand> brandList = brandService.list(model, getM(), getN());
+        List<Brand> brandList = brandService.list(model.getBrand_name(), getM(), getN());
 
         renderSuccessJson(brandList);
     }
@@ -34,16 +34,16 @@ public class BrandController extends Controller {
 
         model.validate(Brand.BRAND_NAME);
 
-        int count = brandService.count(model);
+        int count = brandService.count(model.getBrand_name());
 
-        List<Brand> brandList = brandService.list(model, getM(), getN());
+        List<Brand> brandList = brandService.list(model.getBrand_name(), getM(), getN());
 
         renderSuccessJson(count, brandList);
     }
 
     @ActionKey(Url.BRAND_CATEGORY_LIST)
     public void categoryList() {
-        List<Brand> brandList = brandService.list(new Brand(), 0, 0);
+        List<Brand> brandList = brandService.list("", 0, 0);
 
         renderSuccessJson(brandList);
     }

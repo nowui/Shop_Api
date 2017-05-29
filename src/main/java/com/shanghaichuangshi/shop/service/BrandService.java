@@ -15,12 +15,12 @@ public class BrandService extends Service {
 
     private final FileService fileService = new FileService();
 
-    public int count(Brand brand) {
-        return brandDao.count(brand.getBrand_name());
+    public int count(String brand_name) {
+        return brandDao.count(brand_name);
     }
 
-    public List<Brand> list(Brand brand, int m, int n) {
-        return brandDao.list(brand.getBrand_name(), m, n);
+    public List<Brand> list(String brand_name, int m, int n) {
+        return brandDao.list(brand_name, m, n);
     }
 
     public Brand find(String brand_id) {

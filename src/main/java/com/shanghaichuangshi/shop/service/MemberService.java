@@ -34,12 +34,12 @@ public class MemberService extends Service {
     private final MemberLevelService memberLevelService = new MemberLevelService();
     private final SceneService sceneService = new SceneService();
 
-    public int count(Member member) {
-        return memberDao.count(member.getMember_name());
+    public int count(String member_name) {
+        return memberDao.count(member_name);
     }
 
-    public List<Member> list(Member member, int m, int n) {
-        List<Member> memberList = memberDao.list(member.getMember_name(), m, n);
+    public List<Member> list(String member_name, int m, int n) {
+        List<Member> memberList = memberDao.list(member_name, m, n);
 
         for (Member item : memberList) {
             Member model = find(item.getMember_id());

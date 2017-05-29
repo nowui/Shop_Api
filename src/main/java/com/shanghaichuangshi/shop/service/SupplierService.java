@@ -16,12 +16,12 @@ public class SupplierService extends Service {
 
     private UserService userService = new UserService();
 
-    public int count(Supplier supplier) {
-        return supplierDao.count(supplier.getSupplier_name());
+    public int count(String supplier_name) {
+        return supplierDao.count(supplier_name);
     }
 
-    public List<Supplier> list(Supplier supplier, int m, int n) {
-        return supplierDao.list(supplier.getSupplier_name(), m, n);
+    public List<Supplier> list(String supplier_name, int m, int n) {
+        return supplierDao.list(supplier_name, m, n);
     }
 
     public Supplier find(String supplier_id) {

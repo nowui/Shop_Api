@@ -10,12 +10,12 @@ public class DeliveryService extends Service {
 
     private final DeliveryDao deliveryDao = new DeliveryDao();
 
-    public int count(Delivery delivery, String request_user_id) {
-        return deliveryDao.count(delivery.getDelivery_name(), request_user_id);
+    public int count(String delivery_name, String request_user_id) {
+        return deliveryDao.count(delivery_name, request_user_id);
     }
 
-    public List<Delivery> list(Delivery delivery, int m, int n) {
-        return deliveryDao.list(delivery.getDelivery_name(), m, n);
+    public List<Delivery> list(String delivery_name, int m, int n) {
+        return deliveryDao.list(delivery_name, m, n);
     }
 
     public List<Delivery> listByUser_id(String user_id, Integer m, Integer n) {

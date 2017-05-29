@@ -26,7 +26,7 @@ public class MemberController extends Controller {
 
         model.validate(Member.MEMBER_NAME);
 
-        List<Member> memberList = memberService.list(model, getM(), getN());
+        List<Member> memberList = memberService.list(model.getMember_name(), getM(), getN());
 
         renderSuccessJson(memberList);
     }
@@ -39,9 +39,9 @@ public class MemberController extends Controller {
 
         model.validate(Member.MEMBER_NAME);
 
-        int count = memberService.count(model);
+        int count = memberService.count(model.getMember_name());
 
-        List<Member> memberList = memberService.list(model, getM(), getN());
+        List<Member> memberList = memberService.list(model.getMember_name(), getM(), getN());
 
         renderSuccessJson(count, memberList);
     }
@@ -177,9 +177,9 @@ public class MemberController extends Controller {
 
         model.validate(MemberLevel.MEMBER_LEVEL_NAME);
 
-        int count = memberLevelService.count(model);
+        int count = memberLevelService.count(model.getMember_level_name());
 
-        List<MemberLevel> memberLevelListvice = memberLevelService.list(model, getM(), getN());
+        List<MemberLevel> memberLevelListvice = memberLevelService.list(model.getMember_level_name(), getM(), getN());
 
         renderSuccessJson(count, memberLevelListvice);
     }
@@ -187,7 +187,7 @@ public class MemberController extends Controller {
     @ActionKey(Url.MEMBER_LEVEL_CATEGORY_LIST)
     public void levelCategoryList() {
 
-        List<MemberLevel> memberLevelListvice = memberLevelService.list(new MemberLevel(), 0, 0);
+        List<MemberLevel> memberLevelListvice = memberLevelService.list("", 0, 0);
 
         renderSuccessJson(memberLevelListvice);
     }

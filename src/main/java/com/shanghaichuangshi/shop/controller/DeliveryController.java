@@ -32,9 +32,9 @@ public class DeliveryController extends Controller {
 
         model.validate(Delivery.DELIVERY_NAME);
 
-        int count = deliveryService.count(model, request_user_id);
+        int count = deliveryService.count(model.getDelivery_name(), "");
 
-        List<Delivery> deliveryList = deliveryService.list(model, getM(), getN());
+        List<Delivery> deliveryList = deliveryService.list(model.getDelivery_name(), getM(), getN());
 
         renderSuccessJson(count, deliveryList);
     }

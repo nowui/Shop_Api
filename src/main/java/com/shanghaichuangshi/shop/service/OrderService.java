@@ -38,12 +38,12 @@ public class OrderService extends Service {
     private final FileService fileService = new FileService();
     private final UserService userService = new UserService();
 
-    public int count(Order order) {
-        return orderDao.count(order.getOrder_number());
+    public int count(String order_number) {
+        return orderDao.count(order_number);
     }
 
-    public List<Order> list(Order order, int m, int n) {
-        return orderDao.list(order.getOrder_number(), m, n);
+    public List<Order> list(String order_number, int m, int n) {
+        return orderDao.list(order_number, m, n);
     }
 
     public List<Order> videoList(Order order, int m, int n) {

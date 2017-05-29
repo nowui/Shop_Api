@@ -10,12 +10,12 @@ public class MemberLevelService extends Service {
 
     private final MemberLevelDao memberLevelDao = new MemberLevelDao();
 
-    public int count(MemberLevel member_level) {
-        return memberLevelDao.count(member_level.getMember_level_name());
+    public int count(String member_level_name) {
+        return memberLevelDao.count(member_level_name);
     }
 
-    public List<MemberLevel> list(MemberLevel member_level, int m, int n) {
-        return memberLevelDao.list(member_level.getMember_level_name(), m, n);
+    public List<MemberLevel> list(String member_level_name, int m, int n) {
+        return memberLevelDao.list(member_level_name, m, n);
     }
 
     public List<MemberLevel> listAll() {
