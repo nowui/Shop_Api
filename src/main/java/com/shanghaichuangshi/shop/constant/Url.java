@@ -50,9 +50,7 @@ public class Url {
     public static final String PRODUCT_HOT_LIST = "/product/hot/list";
     public static final String PRODUCT_MY_LIST = "/product/my/list";
     public static final String PRODUCT_FIND = "/product/find";
-    public static final String PRODUCT_VIDEO_FIND = "/product/video/find";
     public static final String PRODUCT_ADMIN_FIND = "/product/admin/find";
-    public static final String PRODUCT_ADMIN_VIDEO_FIND = "/product/admin/video/find";
     public static final String PRODUCT_SAVE = "/product/save";
     public static final String PRODUCTL_UPDATE = "/product/update";
     public static final String PRODUCT_DELETE = "/product/delete";
@@ -67,7 +65,6 @@ public class Url {
 
     public static final String ORDER_LIST = "/order/list";
     public static final String ORDER_ADMIN_LIST = "/order/admin/list";
-    public static final String ORDER_ADMIN_VIDEO_LIST = "/order/admin/video/list";
     public static final String ORDER_TEAM_LIST = "/order/team/list";
     public static final String ORDER_FIND = "/order/find";
     public static final String ORDER_ADMIN_FIND = "/order/admin/find";

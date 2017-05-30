@@ -46,22 +46,6 @@ public class OrderService extends Service {
         return orderDao.list(order_number, m, n);
     }
 
-    public List<Order> videoList(Order order, int m, int n) {
-        List<Order> orderList = orderDao.list(order.getOrder_number(), m, n);
-        for (Order o : orderList) {
-            List<OrderProduct> orderProductList = orderProductService.listByOder_id(o.getOrder_id());
-            User user = userService.find(o.getUser_id());
-
-            o.put(User.USER_NAME, user.getUser_name());
-            o.put(User.USER_AVATAR, user.getUser_avatar());
-            o.put(OrderProduct.PRODUCT_NAME, orderProductList.get(0).getProduct_name());
-
-            File productImageFile = fileService.find(orderProductList.get(0).getProduct_image());
-            o.put(OrderProduct.PRODUCT_IMAGE, productImageFile.getFile_thumbnail_path());
-        }
-        return orderList;
-    }
-
     public List<Member> teamList(String user_id) {
         Member member = memberService.findByUser_id(user_id);
 

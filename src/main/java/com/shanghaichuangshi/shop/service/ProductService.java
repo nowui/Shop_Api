@@ -115,55 +115,6 @@ public class ProductService extends Service {
         return product;
     }
 
-    public Product videoFindByUser_id(String product_id, String user_id) {
-        Product product = productDao.find(product_id);
-
-        Member member = null;
-        Boolean product_is_pay = false;
-
-        if (Util.isNullOrEmpty(user_id)) {
-
-        } else {
-            member = memberService.findByUser_id(user_id);
-
-            List<OrderProduct> orderProductList = orderProductService.listByUser_id(user_id);
-            for (OrderProduct orderProduct : orderProductList) {
-
-                if (orderProduct.getProduct_id().equals(product_id)) {
-                    product_is_pay = true;
-
-                    break;
-                }
-            }
-        }
-
-        product.put(Product.PRODUCT_IS_PAY, product_is_pay);
-
-        File productImageFile = fileService.find(product.getProduct_image());
-        product.put(Product.PRODUCT_IMAGE_FILE, productImageFile.getFile_thumbnail_path());
-
-        List<File> productImageFileList = new ArrayList<File>();
-        JSONArray productImageList = JSONArray.parseArray(product.getProduct_image_list().toString());
-        for (int i = 0; i < productImageList.size(); i++) {
-            File file = fileService.find(productImageList.getString(i));
-            file.setFile_path(AesUtil.encrypt(file.getFile_path()));
-            file.keep(File.FILE_ID, File.FILE_NAME, File.FILE_PATH, File.FILE_IMAGE);
-            productImageFileList.add(file);
-        }
-        product.put(Product.PRODUCT_IMAGE_FILE_LIST, productImageFileList);
-
-        String member_level_id = "";
-        if (member != null) {
-            member_level_id = member.getMember_level_id();
-        }
-
-        List<Sku> skuList = skuService.listByProduct_idAndMember_level_id(product.getProduct_id(), member_level_id);
-
-        product.put(Sku.SKU_LIST, skuList);
-
-        return product;
-    }
-
     public Product adminFind(String product_id) {
         Product product = productDao.find(product_id);
 
@@ -175,30 +126,6 @@ public class ProductService extends Service {
         for (int i = 0; i < productImageList.size(); i++) {
             File file = fileService.find(productImageList.getString(i));
             file.keep(File.FILE_ID, File.FILE_NAME, File.FILE_PATH);
-            productImageFileList.add(file);
-        }
-        product.put(Product.PRODUCT_IMAGE_FILE_LIST, productImageFileList);
-
-        List<Sku> skuList = skuService.list(product_id);
-        product.put(Sku.SKU_LIST, skuList);
-
-        List<Commission> commissionList = commissionService.list(product.getProduct_id());
-        product.put(Commission.COMMISSION_LIST, commissionList);
-
-        return product;
-    }
-
-    public Product adminVideoFind(String product_id) {
-        Product product = productDao.find(product_id);
-
-        File productImageFile = fileService.find(product.getProduct_image());
-        product.put(Product.PRODUCT_IMAGE_FILE, productImageFile.keep(File.FILE_ID, File.FILE_NAME, File.FILE_PATH, File.FILE_IMAGE));
-
-        List<File> productImageFileList = new ArrayList<File>();
-        JSONArray productImageList = JSONArray.parseArray(product.getProduct_image_list().toString());
-        for (int i = 0; i < productImageList.size(); i++) {
-            File file = fileService.find(productImageList.getString(i));
-            file.keep(File.FILE_ID, File.FILE_NAME, File.FILE_PATH, File.FILE_IMAGE);
             productImageFileList.add(file);
         }
         product.put(Product.PRODUCT_IMAGE_FILE_LIST, productImageFileList);
