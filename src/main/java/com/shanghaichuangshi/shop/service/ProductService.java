@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.shanghaichuangshi.dao.CategoryDao;
 import com.shanghaichuangshi.dao.FileDao;
+import com.shanghaichuangshi.dao.UserDao;
 import com.shanghaichuangshi.model.File;
+import com.shanghaichuangshi.model.User;
 import com.shanghaichuangshi.shop.dao.CommissionDao;
 import com.shanghaichuangshi.shop.dao.OrderProductDao;
 import com.shanghaichuangshi.shop.dao.ProductDao;
@@ -21,6 +23,7 @@ public class ProductService extends Service {
 
     private final ProductDao productDao = new ProductDao();
 
+    private final UserDao userDao = new UserDao();
     private final CategoryDao categoryDao = new CategoryDao();
     private final SkuDao skuDao = new SkuDao();
     private final CommissionDao commissionDao = new CommissionDao();
@@ -102,7 +105,8 @@ public class ProductService extends Service {
         }
         product.put(Product.PRODUCT_IMAGE_FILE_LIST, productImageFileList);
 
-        Member member = memberService.findByUser_id(user_id);
+        User user = userDao.find(user_id);
+        Member member = memberService.find(user.getObject_id());
 
         String member_level_id = "";
         if (member != null) {

@@ -14,10 +14,12 @@ import com.shanghaichuangshi.model.Authorization;
 import com.shanghaichuangshi.model.User;
 import com.shanghaichuangshi.shop.dao.MemberDao;
 import com.shanghaichuangshi.shop.dao.MemberLevelDao;
+import com.shanghaichuangshi.shop.dao.OrderDao;
 import com.shanghaichuangshi.shop.dao.SceneDao;
 import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.shop.model.MemberLevel;
+import com.shanghaichuangshi.shop.model.Order;
 import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.shop.type.SceneTypeEnum;
 import com.shanghaichuangshi.type.UserType;
@@ -36,6 +38,7 @@ public class MemberService extends Service {
     private final AuthorizationDao authorizationDao = new AuthorizationDao();
     private final MemberLevelDao memberLevelDao = new MemberLevelDao();
     private final SceneDao sceneDao = new SceneDao();
+    private final OrderDao orderDao = new OrderDao();
 
     public int count(String member_name) {
         return memberDao.count(member_name);
@@ -81,6 +84,37 @@ public class MemberService extends Service {
         return resultList;
     }
 
+    public List<Member> teamList(String user_id) {
+        List<Member> memberList = memberDao.teamList(userDao.find(user_id).getObject_id());
+
+        for (Member item : memberList) {
+            User user = userDao.find(item.getUser_id());
+            item.put(User.USER_AVATAR, user.getUser_avatar());
+
+            List<Order> orderList = orderDao.listByUser_id(item.getUser_id());
+            BigDecimal member_month_order_amount = BigDecimal.ZERO;
+            BigDecimal member_all_order_amount = BigDecimal.ZERO;
+            for (Order order : orderList) {
+                if (order.getOrder_status() && order.getOrder_is_pay()) {
+                    member_month_order_amount = member_month_order_amount.add(order.getOrder_amount());
+                    member_all_order_amount = member_all_order_amount.add(order.getOrder_amount());
+                }
+            }
+            item.put(Member.MEMBER_TOTAL_AMOUNT, item.getMember_total_amount());
+            item.put(Member.MEMBER_MONTH_ORDER_AMOUNT, member_month_order_amount);
+            item.put(Member.MEMBER_ALL_ORDER_AMOUNT, member_all_order_amount);
+
+            if (Util.isNullOrEmpty(item.getMember_level_id())) {
+                item.put(MemberLevel.MEMBER_LEVEL_NAME, "");
+            } else {
+                MemberLevel memberLevel = memberLevelDao.find(item.getMember_level_id());
+                item.put(MemberLevel.MEMBER_LEVEL_NAME, memberLevel.getMember_level_name());
+            }
+        }
+
+        return memberList;
+    }
+
     private List<Member> getChildren(List<Member> memberList, String parent_id) {
         List<Member> resultList = new ArrayList<Member>();
 
@@ -98,10 +132,6 @@ public class MemberService extends Service {
         return resultList;
     }
 
-    public List<Member> teamList(String parent_id) {
-        return memberDao.teamList(parent_id);
-    }
-
     public Member find(String member_id) {
         Member member = memberDao.find(member_id);
 
@@ -112,7 +142,8 @@ public class MemberService extends Service {
     }
 
     public String qrcodeFind(String user_id) {
-        Member member = findByUser_id(user_id);
+        User user = userDao.find(user_id);
+        Member member = find(user.getObject_id());
 
         if (!member.getMember_status()) {
             throw new RuntimeException("您还没有通过审核");
@@ -140,8 +171,8 @@ public class MemberService extends Service {
     public Map<String, Object> myFind(String request_user_id) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
-        Member member = findByUser_id(request_user_id);
-        User user = userDao.find(member.getUser_id());
+        User user = userDao.find(request_user_id);
+        Member member = find(user.getObject_id());
 
         resultMap.putAll(getMemberLevel(member.getMember_level_id(), user.getUser_name(), user.getUser_avatar(), member.getMember_status()));
 
@@ -153,19 +184,46 @@ public class MemberService extends Service {
         return resultMap;
     }
 
-    public Member findByUser_id(String user_id) {
-        if (Util.isNullOrEmpty(user_id)) {
-            return null;
-        }
-
-        User user = userDao.find(user_id);
-
-        if (user == null) {
-            return null;
-        }
-
-        return memberDao.find(user.getObject_id());
+    public Member teamFind(String member_id) {
+        return memberDao.find(member_id);
     }
+
+    public List<MemberLevel> teamMemberLevelFind(String member_id) {
+        Member member = memberDao.find(member_id);
+
+        Member parentMember = memberDao.find(member.getParent_id());
+        MemberLevel parentMemberLevel = memberLevelDao.find(parentMember.getMember_level_id());
+
+        List<MemberLevel> resultList = new ArrayList<MemberLevel>();
+        List<MemberLevel> memberLevelList = memberLevelDao.listAll();
+        for(MemberLevel m : memberLevelList) {
+            if (m.getMember_level_value() > parentMemberLevel.getMember_level_value()) {
+                resultList.add(m);
+            }
+
+            if (m.getMember_level_id().equals(member.getMember_level_id())) {
+                m.put(Constant.IS_SELECT, true);
+            } else {
+                m.put(Constant.IS_SELECT, false);
+            }
+        }
+
+        return resultList;
+    }
+
+//    public Member findByUser_id(String user_id) {
+//        if (Util.isNullOrEmpty(user_id)) {
+//            return null;
+//        }
+//
+//        User user = userDao.find(user_id);
+//
+//        if (user == null) {
+//            return null;
+//        }
+//
+//        return memberDao.find(user.getObject_id());
+//    }
 
 //    public Member save(Member member, User user, String request_user_id) {
 //        String user_id = Util.getRandomUUID();
@@ -227,7 +285,8 @@ public class MemberService extends Service {
 
     public boolean childrenUpdate(String member_id, String member_level_id, String request_user_id) {
         Member member = memberDao.find(member_id);
-        Member parentMember = findByUser_id(request_user_id);
+        User parentUser = userDao.find(request_user_id);
+        Member parentMember = find(parentUser.getObject_id());
 
         if (member.getParent_id().equals(parentMember.getMember_id())) {
             return memberDao.childrenUpdate(member_id, member_level_id, request_user_id);

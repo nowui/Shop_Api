@@ -46,37 +46,6 @@ public class OrderService extends Service {
         return orderDao.list(order_number, m, n);
     }
 
-    public List<Member> teamList(String user_id) {
-        List<Member> memberList = memberDao.teamList(userDao.find(user_id).getObject_id());
-
-        for (Member item : memberList) {
-            User user = userDao.find(item.getUser_id());
-            item.put(User.USER_AVATAR, user.getUser_avatar());
-
-            List<Order> orderList = listByUser_id(item.getUser_id());
-            BigDecimal member_month_order_amount = BigDecimal.ZERO;
-            BigDecimal member_all_order_amount = BigDecimal.ZERO;
-            for (Order order : orderList) {
-                if (order.getOrder_status() && order.getOrder_is_pay()) {
-                    member_month_order_amount = member_month_order_amount.add(order.getOrder_amount());
-                    member_all_order_amount = member_all_order_amount.add(order.getOrder_amount());
-                }
-            }
-            item.put(Member.MEMBER_TOTAL_AMOUNT, item.getMember_total_amount());
-            item.put(Member.MEMBER_MONTH_ORDER_AMOUNT, member_month_order_amount);
-            item.put(Member.MEMBER_ALL_ORDER_AMOUNT, member_all_order_amount);
-
-            if (Util.isNullOrEmpty(item.getMember_level_id())) {
-                item.put(MemberLevel.MEMBER_LEVEL_NAME, "");
-            } else {
-                MemberLevel memberLevel = memberLevelDao.find(item.getMember_level_id());
-                item.put(MemberLevel.MEMBER_LEVEL_NAME, memberLevel.getMember_level_name());
-            }
-        }
-
-        return memberList;
-    }
-
     public List<Order> listByUser_id(String user_id) {
         List<Order> orderList = orderDao.listByUser_id(user_id);
 
@@ -119,75 +88,6 @@ public class OrderService extends Service {
         order.put(Product.PRODUCT_LIST, orderProductList);
 
         return order;
-    }
-
-    public Member teamFind(String member_id) {
-        Member member = memberDao.find(member_id);
-
-        User user = userDao.find(member.getUser_id());
-
-        member.put(User.USER_AVATAR, user.getUser_avatar());
-
-        if (member.getMember_status()) {
-            MemberLevel memberLevel = memberLevelDao.find(member.getMember_level_id());
-            member.put(MemberLevel.MEMBER_LEVEL_NAME, memberLevel.getMember_level_name());
-
-            List<Order> orderList = listByUser_id(member.getUser_id());
-            member.put(Order.ORDER_LIST, orderList);
-
-            BigDecimal member_month_order_amount = BigDecimal.ZERO;
-            BigDecimal member_all_order_amount = BigDecimal.ZERO;
-            for (Order order : orderList) {
-                if (order.getOrder_status() && order.getOrder_is_pay()) {
-                    member_month_order_amount = member_month_order_amount.add(order.getOrder_amount());
-                    member_all_order_amount = member_all_order_amount.add(order.getOrder_amount());
-                }
-            }
-            member.put(Member.MEMBER_MONTH_ORDER_AMOUNT, member_month_order_amount);
-            member.put(Member.MEMBER_ALL_ORDER_AMOUNT, member_all_order_amount);
-        } else {
-            member.put(MemberLevel.MEMBER_LEVEL_NAME, "");
-
-            if (!member.getMember_status()) {
-                Member parentMember = memberDao.find(member.getParent_id());
-                MemberLevel parentMemberLevel = memberLevelDao.find(parentMember.getMember_level_id());
-                List<MemberLevel> list = new ArrayList<MemberLevel>();
-                List<MemberLevel> memberLevelList = memberLevelDao.listAll();
-                for(MemberLevel m : memberLevelList) {
-                    if (m.getMember_level_value() > parentMemberLevel.getMember_level_value()) {
-                        list.add(m);
-                    }
-                }
-                member.put(MemberLevel.MEMBER_LEVEL_LIST, list);
-            }
-
-            member.put(Order.ORDER_LIST, new JSONArray());
-        }
-
-        return member;
-    }
-
-    public List<MemberLevel> teamMemberLevelFind(String member_id) {
-        Member member = memberDao.find(member_id);
-
-        Member parentMember = memberDao.find(member.getParent_id());
-        MemberLevel parentMemberLevel = memberLevelDao.find(parentMember.getMember_level_id());
-
-        List<MemberLevel> resultList = new ArrayList<MemberLevel>();
-        List<MemberLevel> memberLevelList = memberLevelDao.listAll();
-        for(MemberLevel m : memberLevelList) {
-            if (m.getMember_level_value() > parentMemberLevel.getMember_level_value()) {
-                resultList.add(m);
-            }
-
-            if (m.getMember_level_id().equals(member.getMember_level_id())) {
-                m.put(Constant.IS_SELECT, true);
-            } else {
-                m.put(Constant.IS_SELECT, false);
-            }
-        }
-
-        return resultList;
     }
 
     public Map<String, String> save(Order order, JSONObject jsonObject, String request_user_id) {

@@ -43,15 +43,6 @@ public class OrderController extends Controller {
         renderSuccessJson(count, orderListvice);
     }
 
-    @ActionKey(Url.ORDER_TEAM_LIST)
-    public void teamList() {
-        String request_user_id = getRequest_user_id();
-
-        List<Member> memberList = orderService.teamList(request_user_id);
-
-        renderSuccessJson(memberList);
-    }
-
     @ActionKey(Url.ORDER_FIND)
     public void find() {
         Order model = getParameter(Order.class);
@@ -72,28 +63,6 @@ public class OrderController extends Controller {
         Order order = orderService.adminFind(model.getOrder_id());
 
         renderSuccessJson(order.removeSystemInfo());
-    }
-
-    @ActionKey(Url.ORDER_TEAM_FIND)
-    public void teamFind() {
-        Member model = getParameter(Member.class);
-
-        model.validate(Member.MEMBER_ID);
-
-        Member member = orderService.teamFind(model.getMember_id());
-
-        renderSuccessJson(member.removeUnfindable());
-    }
-
-    @ActionKey(Url.ORDER_TEAM_MEMBER_LEVEL_FIND)
-    public void teamMemberLevelFind() {
-        Member model = getParameter(Member.class);
-
-        model.validate(Member.MEMBER_ID);
-
-        List<MemberLevel> memberLevelList = orderService.teamMemberLevelFind(model.getMember_id());
-
-        renderSuccessJson(memberLevelList);
     }
 
     @ActionKey(Url.ORDER_SAVE)
