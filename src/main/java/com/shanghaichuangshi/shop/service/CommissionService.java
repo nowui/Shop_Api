@@ -19,9 +19,7 @@ public class CommissionService extends Service {
     }
 
     public void save(List<Commission> commissionList, String request_user_id) {
-        if (commissionList.size() > 0) {
-            commissionDao.save(commissionList, request_user_id);
-        }
+        commissionDao.save(commissionList, request_user_id);
     }
 
     public void delete(List<Commission> commissionList, String product_id, String request_user_id) {

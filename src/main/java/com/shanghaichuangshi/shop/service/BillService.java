@@ -1,6 +1,7 @@
 package com.shanghaichuangshi.shop.service;
 
 import com.shanghaichuangshi.shop.dao.BillDao;
+import com.shanghaichuangshi.shop.dao.MemberDao;
 import com.shanghaichuangshi.shop.model.Bill;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.shop.model.Member;
@@ -11,7 +12,7 @@ public class BillService extends Service {
 
     private final BillDao billDao = new BillDao();
 
-    private final MemberService memberService = new MemberService();
+    private final MemberDao memberDao = new MemberDao();
 
     public int count(String bill_name) {
         return billDao.count(bill_name);
@@ -26,7 +27,7 @@ public class BillService extends Service {
     }
 
     public List<Bill> listByMember_id(String member_id, Integer m, Integer n) {
-        Member member = memberService.find(member_id);
+        Member member = memberDao.find(member_id);
 
         return billDao.listByUser_id(member.getUser_id(), m, n);
     }
@@ -36,9 +37,7 @@ public class BillService extends Service {
     }
 
     public void save(List<Bill> billList, String request_user_id) {
-        if (billList.size() > 0) {
-            billDao.save(billList, request_user_id);
-        }
+        billDao.save(billList, request_user_id);
     }
 
 //    public boolean update(Bill bill, String request_user_id) {

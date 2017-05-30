@@ -1,10 +1,14 @@
 package com.shanghaichuangshi.shop.dao;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.dao.Dao;
+import com.shanghaichuangshi.shop.model.MemberLevel;
 import com.shanghaichuangshi.shop.model.Sku;
 import com.shanghaichuangshi.util.CacheUtil;
 import com.shanghaichuangshi.util.Util;
@@ -36,6 +40,22 @@ public class SkuDao extends Dao {
         return skuList;
     }
 
+    public List<Sku> listByProduct_idAndMember_level_id(String product_id, String member_level_id) {
+        List<Sku> skuList = list(product_id);
+
+        for (Sku sku : skuList) {
+            JSONArray priceArray = new JSONArray();
+
+            JSONObject jsonObject = findProduct_price(sku, member_level_id);
+
+            priceArray.add(jsonObject);
+
+            sku.setProduct_price(priceArray.toJSONString());
+        }
+
+        return skuList;
+    }
+
     public Sku find(String sku_id) {
         Sku sku = CacheUtil.get(SKU_BY_SKU_ID_CACHE, sku_id);
 
@@ -57,7 +77,34 @@ public class SkuDao extends Dao {
         return sku;
     }
 
+    public JSONObject findProduct_price(Sku sku, String member_level_id) {
+        JSONArray jsonArray = JSON.parseArray(sku.getProduct_price());
+
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+            if (jsonObject.getString(MemberLevel.MEMBER_LEVEL_ID).equals(member_level_id)) {
+                return jsonObject;
+            }
+        }
+
+        //如果没有匹配的会员等级价格就设置为默认价格
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+            if (Util.isNullOrEmpty(jsonObject.getString(MemberLevel.MEMBER_LEVEL_ID))) {
+                return jsonObject;
+            }
+        }
+
+        throw new RuntimeException("找不到价格");
+    }
+
     public void save(List<Sku> skuList, String request_user_id) {
+        if (skuList.size() == 0) {
+            return;
+        }
+
         Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("sku.save", map);
 
@@ -87,6 +134,10 @@ public class SkuDao extends Dao {
     }
 
     public void updateProduct_stock(List<Sku> skuList, String product_id, String request_user_id) {
+        if (skuList.size() == 0) {
+            return;
+        }
+
         List<Sku> skuListCache = CacheUtil.get(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
         for(Sku sku : skuListCache) {
             CacheUtil.remove(SKU_BY_SKU_ID_CACHE, sku.getSku_id());
@@ -117,6 +168,10 @@ public class SkuDao extends Dao {
     }
 
     public void delete(List<Sku> skuList, String product_id, String request_user_id) {
+        if (skuList.size() == 0) {
+            return;
+        }
+
         List<Sku> skuListCache = CacheUtil.get(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
         for(Sku sku : skuListCache) {
             CacheUtil.remove(SKU_BY_SKU_ID_CACHE, sku.getSku_id());

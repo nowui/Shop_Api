@@ -188,6 +188,10 @@ public class MemberDao extends Dao {
     }
 
     public void updateAmount(List<Member> memberList) {
+        if (memberList.size() == 0) {
+            return;
+        }
+
         Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("member.updateAmount", map);
 

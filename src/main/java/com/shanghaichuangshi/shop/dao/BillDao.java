@@ -70,6 +70,10 @@ public class BillDao extends Dao {
     }
 
     public void save(List<Bill> billList, String request_user_id) {
+        if (billList.size() == 0) {
+            return;
+        }
+
         Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("bill.save", map);
 

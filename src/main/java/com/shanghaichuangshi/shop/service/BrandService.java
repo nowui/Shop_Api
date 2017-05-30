@@ -1,7 +1,7 @@
 package com.shanghaichuangshi.shop.service;
 
+import com.shanghaichuangshi.dao.FileDao;
 import com.shanghaichuangshi.model.File;
-import com.shanghaichuangshi.service.FileService;
 import com.shanghaichuangshi.shop.dao.BrandDao;
 import com.shanghaichuangshi.shop.model.Brand;
 import com.shanghaichuangshi.service.Service;
@@ -13,7 +13,7 @@ public class BrandService extends Service {
 
     private final BrandDao brandDao = new BrandDao();
 
-    private final FileService fileService = new FileService();
+    private final FileDao fileDao = new FileDao();
 
     public int count(String brand_name) {
         return brandDao.count(brand_name);
@@ -29,7 +29,7 @@ public class BrandService extends Service {
         if (Util.isNullOrEmpty(brand.getBrand_image())) {
             brand.put(Brand.BRAND_IMAGE_FILE, "");
         } else {
-            File productImageFile = fileService.find(brand.getBrand_image());
+            File productImageFile = fileDao.find(brand.getBrand_image());
             brand.put(Brand.BRAND_IMAGE_FILE, productImageFile.keep(File.FILE_ID, File.FILE_NAME, File.FILE_PATH));
         }
 

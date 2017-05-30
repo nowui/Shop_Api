@@ -6,13 +6,13 @@ import com.jfinal.kit.HttpKit;
 import com.jfinal.weixin.sdk.kit.PaymentKit;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.constant.WeChat;
+import com.shanghaichuangshi.dao.FileDao;
+import com.shanghaichuangshi.dao.UserDao;
 import com.shanghaichuangshi.model.Category;
 import com.shanghaichuangshi.model.File;
 import com.shanghaichuangshi.model.User;
 import com.shanghaichuangshi.service.CategoryService;
-import com.shanghaichuangshi.service.FileService;
-import com.shanghaichuangshi.service.UserService;
-import com.shanghaichuangshi.shop.dao.OrderDao;
+import com.shanghaichuangshi.shop.dao.*;
 import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.shop.type.OrderFlowEnum;
@@ -26,17 +26,17 @@ public class OrderService extends Service {
 
     private final OrderDao orderDao = new OrderDao();
 
-    private final SkuService skuService = new SkuService();
-    private final ProductService productService = new ProductService();
-    private final MemberService memberService = new MemberService();
-    private final MemberLevelService memberLevelService = new MemberLevelService();
+    private final SkuDao skuDao = new SkuDao();
+    private final ProductDao productDao = new ProductDao();
+    private final MemberDao memberDao = new MemberDao();
+    private final MemberLevelDao memberLevelDao = new MemberLevelDao();
     private final CategoryService categoryService = new CategoryService();
-    private final BrandService brandService = new BrandService();
-    private final OrderProductService orderProductService = new OrderProductService();
-    private final CommissionService commissionService = new CommissionService();
-    private final DeliveryService deliveryService = new DeliveryService();
-    private final FileService fileService = new FileService();
-    private final UserService userService = new UserService();
+    private final BrandDao brandDao = new BrandDao();
+    private final OrderProductDao orderProductDao = new OrderProductDao();
+    private final CommissionDao commissionDao = new CommissionDao();
+    private final DeliveryDao deliveryDao = new DeliveryDao();
+    private final FileDao fileDao = new FileDao();
+    private final UserDao userDao = new UserDao();
 
     public int count(String order_number) {
         return orderDao.count(order_number);
@@ -47,12 +47,10 @@ public class OrderService extends Service {
     }
 
     public List<Member> teamList(String user_id) {
-        Member member = memberService.findByUser_id(user_id);
-
-        List<Member> memberList = memberService.teamList(member.getMember_id());
+        List<Member> memberList = memberDao.teamList(userDao.find(user_id).getObject_id());
 
         for (Member item : memberList) {
-            User user = userService.find(item.getUser_id());
+            User user = userDao.find(item.getUser_id());
             item.put(User.USER_AVATAR, user.getUser_avatar());
 
             List<Order> orderList = listByUser_id(item.getUser_id());
@@ -71,7 +69,7 @@ public class OrderService extends Service {
             if (Util.isNullOrEmpty(item.getMember_level_id())) {
                 item.put(MemberLevel.MEMBER_LEVEL_NAME, "");
             } else {
-                MemberLevel memberLevel = memberLevelService.find(item.getMember_level_id());
+                MemberLevel memberLevel = memberLevelDao.find(item.getMember_level_id());
                 item.put(MemberLevel.MEMBER_LEVEL_NAME, memberLevel.getMember_level_name());
             }
         }
@@ -83,9 +81,9 @@ public class OrderService extends Service {
         List<Order> orderList = orderDao.listByUser_id(user_id);
 
         for (Order order : orderList) {
-            List<OrderProduct> orderProductList = orderProductService.listByOder_id(order.getOrder_id());
+            List<OrderProduct> orderProductList = orderProductDao.listByOder_id(order.getOrder_id());
             for (OrderProduct orderProduct : orderProductList) {
-                File productImageFile = fileService.find(orderProduct.getProduct_image());
+                File productImageFile = fileDao.find(orderProduct.getProduct_image());
                 orderProduct.put(Product.PRODUCT_IMAGE_FILE, productImageFile.getFile_thumbnail_path());
 
                 orderProduct.keep(OrderProduct.PRODUCT_ID, OrderProduct.PRODUCT_NAME, Product.PRODUCT_IMAGE_FILE, OrderProduct.ORDER_PRODUCT_PRICE, OrderProduct.ORDER_PRODUCT_QUANTITY);
@@ -99,9 +97,9 @@ public class OrderService extends Service {
     public Order find(String order_id) {
         Order order = orderDao.find(order_id);
 
-        List<OrderProduct> orderProductList = orderProductService.listByOder_id(order_id);
+        List<OrderProduct> orderProductList = orderProductDao.listByOder_id(order_id);
         for (OrderProduct orderProduct : orderProductList) {
-            File productImageFile = fileService.find(orderProduct.getProduct_image());
+            File productImageFile = fileDao.find(orderProduct.getProduct_image());
             orderProduct.put(Product.PRODUCT_IMAGE_FILE, productImageFile.getFile_thumbnail_path());
 
             orderProduct.keep(OrderProduct.PRODUCT_ID, OrderProduct.PRODUCT_NAME, Product.PRODUCT_IMAGE_FILE, OrderProduct.ORDER_PRODUCT_PRICE, OrderProduct.ORDER_PRODUCT_QUANTITY);
@@ -114,7 +112,7 @@ public class OrderService extends Service {
     public Order adminFind(String order_id) {
         Order order = orderDao.find(order_id);
 
-        List<OrderProduct> orderProductList = orderProductService.listByOder_id(order_id);
+        List<OrderProduct> orderProductList = orderProductDao.listByOder_id(order_id);
         for (OrderProduct orderProduct : orderProductList) {
             orderProduct.keep(OrderProduct.PRODUCT_ID, OrderProduct.PRODUCT_NAME, OrderProduct.ORDER_PRODUCT_PRICE, OrderProduct.ORDER_PRODUCT_QUANTITY, OrderProduct.ORDER_PRODUCT_COMMISSION);
         }
@@ -124,14 +122,14 @@ public class OrderService extends Service {
     }
 
     public Member teamFind(String member_id) {
-        Member member = memberService.find(member_id);
+        Member member = memberDao.find(member_id);
 
-        User user = userService.find(member.getUser_id());
+        User user = userDao.find(member.getUser_id());
 
         member.put(User.USER_AVATAR, user.getUser_avatar());
 
         if (member.getMember_status()) {
-            MemberLevel memberLevel = memberLevelService.find(member.getMember_level_id());
+            MemberLevel memberLevel = memberLevelDao.find(member.getMember_level_id());
             member.put(MemberLevel.MEMBER_LEVEL_NAME, memberLevel.getMember_level_name());
 
             List<Order> orderList = listByUser_id(member.getUser_id());
@@ -151,10 +149,10 @@ public class OrderService extends Service {
             member.put(MemberLevel.MEMBER_LEVEL_NAME, "");
 
             if (!member.getMember_status()) {
-                Member parentMember = memberService.find(member.getParent_id());
-                MemberLevel parentMemberLevel = memberLevelService.find(parentMember.getMember_level_id());
+                Member parentMember = memberDao.find(member.getParent_id());
+                MemberLevel parentMemberLevel = memberLevelDao.find(parentMember.getMember_level_id());
                 List<MemberLevel> list = new ArrayList<MemberLevel>();
-                List<MemberLevel> memberLevelList = memberLevelService.listAll();
+                List<MemberLevel> memberLevelList = memberLevelDao.listAll();
                 for(MemberLevel m : memberLevelList) {
                     if (m.getMember_level_value() > parentMemberLevel.getMember_level_value()) {
                         list.add(m);
@@ -170,13 +168,13 @@ public class OrderService extends Service {
     }
 
     public List<MemberLevel> teamMemberLevelFind(String member_id) {
-        Member member = memberService.find(member_id);
+        Member member = memberDao.find(member_id);
 
-        Member parentMember = memberService.find(member.getParent_id());
-        MemberLevel parentMemberLevel = memberLevelService.find(parentMember.getMember_level_id());
+        Member parentMember = memberDao.find(member.getParent_id());
+        MemberLevel parentMemberLevel = memberLevelDao.find(parentMember.getMember_level_id());
 
         List<MemberLevel> resultList = new ArrayList<MemberLevel>();
-        List<MemberLevel> memberLevelList = memberLevelService.listAll();
+        List<MemberLevel> memberLevelList = memberLevelDao.listAll();
         for(MemberLevel m : memberLevelList) {
             if (m.getMember_level_value() > parentMemberLevel.getMember_level_value()) {
                 resultList.add(m);
@@ -207,7 +205,8 @@ public class OrderService extends Service {
         BigDecimal order_freight_amount = BigDecimal.valueOf(0);
         BigDecimal order_discount_amount = BigDecimal.valueOf(0);
 
-        Member member = memberService.findByUser_id(request_user_id);
+        User user = userDao.find(request_user_id);
+        Member member = memberDao.find(user.getObject_id());
         JSONArray fatherMemberJSONArray = new JSONArray();
 
         if (member == null) {
@@ -220,7 +219,7 @@ public class OrderService extends Service {
         String member_level_name = "";
         Integer member_level_value = 0;
         if (!Util.isNullOrEmpty(member_level_id)) {
-            MemberLevel memberLevel = memberLevelService.find(member_level_id);
+            MemberLevel memberLevel = memberLevelDao.find(member_level_id);
             if (memberLevel != null) {
                 member_level_name = memberLevel.getMember_level_name();
                 member_level_value = memberLevel.getMember_level_value();
@@ -238,8 +237,8 @@ public class OrderService extends Service {
             String m_id = parentPathArray.getString(i);
 
             if (!m_id.equals(Constant.PARENT_ID)) {
-                Member m = memberService.find(m_id);
-                MemberLevel mLevel = memberLevelService.find(m.getMember_level_id());
+                Member m = memberDao.find(m_id);
+                MemberLevel mLevel = memberLevelDao.find(m.getMember_level_id());
 
                 JSONObject mObject = new JSONObject();
                 mObject.put(Member.MEMBER_ID, m_id);
@@ -270,13 +269,13 @@ public class OrderService extends Service {
             String sku_id = productJSONObject.getString(Sku.SKU_ID);
             Integer product_quantity = productJSONObject.getInteger(Product.PRODUCT_QUANTITY);
 
-            Sku sku = skuService.find(sku_id);
+            Sku sku = skuDao.find(sku_id);
 
             if (sku == null) {
                 throw new RuntimeException("SKU不存在:" + sku_id);
             }
 
-            Product product = productService.find(sku.getProduct_id());
+            Product product = productDao.find(sku.getProduct_id());
 
 //            if (product_quantity > sku.getProduct_stock()) {
 //                throw new RuntimeException("库存不足:" + product.getProduct_name());
@@ -286,18 +285,18 @@ public class OrderService extends Service {
             order_product_quantity += product_quantity;
 
             //更新商品应付价格
-            JSONObject productPriceJSONObject = skuService.getProduct_price(sku, member_level_id);
+            JSONObject productPriceJSONObject = skuDao.findProduct_price(sku, member_level_id);
             BigDecimal product_price = productPriceJSONObject.getBigDecimal(Product.PRODUCT_PRICE);
             order_product_amount = order_product_amount.add(product_price.multiply(BigDecimal.valueOf(product_quantity)));
 
             //订单的商品
             Category category = categoryService.find(product.getCategory_id());
-            Brand brand = brandService.find(product.getBrand_id());
+            Brand brand = brandDao.find(product.getBrand_id());
 
             //佣金
             String commission_id = "";
             Commission commission = null;
-            List<Commission> commissionList = commissionService.list(product.getProduct_id());
+            List<Commission> commissionList = commissionDao.list(product.getProduct_id());
             for (Commission c : commissionList) {
                 if (c.getProduct_attribute().equals(sku.getProduct_attribute())) {
                     commission_id = c.getCommission_id();
@@ -376,7 +375,7 @@ public class OrderService extends Service {
         for (OrderProduct orderProduct : orderProductList) {
             orderProduct.setOrder_id(o.getOrder_id());
         }
-        orderProductService.save(orderProductList, request_user_id);
+        orderProductDao.save(orderProductList, request_user_id);
 
         return unifiedorder(o, open_id, pay_type);
     }
@@ -463,9 +462,9 @@ public class OrderService extends Service {
     public Map<String, Object> check(String request_user_id) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
-        Delivery delivery = deliveryService.findDefaultByUser_id(request_user_id);
+        Delivery delivery = deliveryDao.findDefaultByUser_id(request_user_id);
         if (delivery == null) {
-            List<Delivery> deliveryList = deliveryService.listByUser_id(request_user_id, 0, 0);
+            List<Delivery> deliveryList = deliveryDao.listByUser_id(request_user_id, 0, 0);
 
             if (deliveryList.size() == 0) {
                 resultMap.put(Delivery.DELIVERY_NAME, "");

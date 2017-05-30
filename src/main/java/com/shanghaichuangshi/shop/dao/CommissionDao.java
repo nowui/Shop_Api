@@ -58,6 +58,10 @@ public class CommissionDao extends Dao {
     }
 
     public void save(List<Commission> commissionList, String request_user_id) {
+        if (commissionList.size() == 0) {
+            return;
+        }
+
         Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("commission.save", map);
 

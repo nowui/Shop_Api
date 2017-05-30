@@ -47,9 +47,9 @@ public class ProductController extends Controller {
 
     @ActionKey(Url.PRODUCT_CATEGORY_LIST)
     public void categoryList() {
-        List<Category> categoryList = productService.categoryList();
+        List<Map<String, Object>> resultList = productService.categoryList();
 
-        renderSuccessJson(categoryList);
+        renderSuccessJson(resultList);
     }
 
     @ActionKey(Url.PRODUCT_ALL_LIST)
