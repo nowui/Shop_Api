@@ -10,7 +10,6 @@ import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.model.MemberLevel;
 import com.shanghaichuangshi.shop.model.Sku;
-import com.shanghaichuangshi.util.CacheUtil;
 import com.shanghaichuangshi.util.Util;
 
 import java.util.ArrayList;
@@ -19,25 +18,12 @@ import java.util.List;
 
 public class SkuDao extends Dao {
 
-    private final String SKU_LIST_BY_PRODUCT_ID_CACHE = "sku_list_by_product_id_cache";
-    private final String SKU_BY_SKU_ID_CACHE = "sku_by_sku_id_cache";
-
     public List<Sku> list(String product_id) {
-        List<Sku> skuList = CacheUtil.get(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
+        Kv map = Kv.create();
+        map.put(Sku.PRODUCT_ID, product_id);
+        SqlPara sqlPara = Db.getSqlPara("sku.list", map);
 
-        if (skuList == null) {
-            Kv map = Kv.create();
-            map.put(Sku.PRODUCT_ID, product_id);
-            SqlPara sqlPara = Db.getSqlPara("sku.list", map);
-
-            skuList = new Sku().find(sqlPara.getSql(), sqlPara.getPara());
-
-            if (skuList.size() > 0) {
-                CacheUtil.put(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id, skuList);
-            }
-        }
-
-        return skuList;
+        return new Sku().find(sqlPara.getSql(), sqlPara.getPara());
     }
 
     public List<Sku> listByProduct_idAndMember_level_id(String product_id, String member_level_id) {
@@ -57,24 +43,16 @@ public class SkuDao extends Dao {
     }
 
     public Sku find(String sku_id) {
-        Sku sku = CacheUtil.get(SKU_BY_SKU_ID_CACHE, sku_id);
+        Kv map = Kv.create();
+        map.put(Sku.SKU_ID, sku_id);
+        SqlPara sqlPara = Db.getSqlPara("sku.find", map);
 
-        if (sku == null) {
-            Kv map = Kv.create();
-            map.put(Sku.SKU_ID, sku_id);
-            SqlPara sqlPara = Db.getSqlPara("sku.find", map);
-
-            List<Sku> skuList = new Sku().find(sqlPara.getSql(), sqlPara.getPara());
-            if (skuList.size() == 0) {
-                sku = null;
-            } else {
-                sku = skuList.get(0);
-
-                CacheUtil.put(SKU_BY_SKU_ID_CACHE, sku_id, sku);
-            }
+        List<Sku> skuList = new Sku().find(sqlPara.getSql(), sqlPara.getPara());
+        if (skuList.size() == 0) {
+            return null;
+        } else {
+            return skuList.get(0);
         }
-
-        return sku;
     }
 
     public JSONObject findProduct_price(Sku sku, String member_level_id) {
@@ -138,13 +116,6 @@ public class SkuDao extends Dao {
             return;
         }
 
-        List<Sku> skuListCache = CacheUtil.get(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
-        for(Sku sku : skuListCache) {
-            CacheUtil.remove(SKU_BY_SKU_ID_CACHE, sku.getSku_id());
-        }
-
-        CacheUtil.remove(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
-
         Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("sku.updateProduct_stock", map);
 
@@ -172,13 +143,6 @@ public class SkuDao extends Dao {
             return;
         }
 
-        List<Sku> skuListCache = CacheUtil.get(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
-        for(Sku sku : skuListCache) {
-            CacheUtil.remove(SKU_BY_SKU_ID_CACHE, sku.getSku_id());
-        }
-
-        CacheUtil.remove(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
-
         Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("sku.delete", map);
 
@@ -201,16 +165,6 @@ public class SkuDao extends Dao {
     }
 
     public boolean deleteByProduct_id(String product_id, String request_user_id) {
-        List<Sku> skuListCache = CacheUtil.get(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
-
-        if (skuListCache != null) {
-            for(Sku sku : skuListCache) {
-                CacheUtil.remove(SKU_BY_SKU_ID_CACHE, sku.getSku_id());
-            }
-        }
-
-        CacheUtil.remove(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
-
         Kv map = Kv.create();
         map.put(Sku.PRODUCT_ID, product_id);
         map.put(Sku.SYSTEM_UPDATE_USER_ID, request_user_id);

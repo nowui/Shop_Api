@@ -5,15 +5,12 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.model.Product;
-import com.shanghaichuangshi.util.CacheUtil;
 import com.shanghaichuangshi.util.Util;
 
 import java.util.Date;
 import java.util.List;
 
 public class ProductDao extends Dao {
-
-    private final String PRODUCT_BY_PRODUCT_ID_CACHE = "product_by_product_id_cache";
 
     public int count(String product_name) {
         Kv map = Kv.create();
@@ -49,24 +46,16 @@ public class ProductDao extends Dao {
     }
 
     public Product find(String product_id) {
-        Product product = CacheUtil.get(PRODUCT_BY_PRODUCT_ID_CACHE, product_id);
+        Kv map = Kv.create();
+        map.put(Product.PRODUCT_ID, product_id);
+        SqlPara sqlPara = Db.getSqlPara("product.find", map);
 
-        if (product == null) {
-            Kv map = Kv.create();
-            map.put(Product.PRODUCT_ID, product_id);
-            SqlPara sqlPara = Db.getSqlPara("product.find", map);
-
-            List<Product> productList = new Product().find(sqlPara.getSql(), sqlPara.getPara());
-            if (productList.size() == 0) {
-                product = null;
-            } else {
-                product = productList.get(0);
-
-                CacheUtil.put(PRODUCT_BY_PRODUCT_ID_CACHE, product_id, product);
-            }
+        List<Product> productList = new Product().find(sqlPara.getSql(), sqlPara.getPara());
+        if (productList.size() == 0) {
+            return null;
+        } else {
+            return productList.get(0);
         }
-
-        return product;
     }
 
     public Product save(Product product, String request_user_id) {
@@ -83,8 +72,6 @@ public class ProductDao extends Dao {
     }
 
     public boolean update(Product product, String request_user_id) {
-        CacheUtil.remove(PRODUCT_BY_PRODUCT_ID_CACHE, product.getProduct_id());
-
         product.remove(Product.SYSTEM_CREATE_USER_ID);
         product.remove(Product.SYSTEM_CREATE_TIME);
         product.setSystem_update_user_id(request_user_id);
@@ -95,8 +82,6 @@ public class ProductDao extends Dao {
     }
 
     public boolean delete(String product_id, String request_user_id) {
-        CacheUtil.remove(PRODUCT_BY_PRODUCT_ID_CACHE, product_id);
-
         Kv map = Kv.create();
         map.put(Product.PRODUCT_ID, product_id);
         map.put(Product.SYSTEM_UPDATE_USER_ID, request_user_id);

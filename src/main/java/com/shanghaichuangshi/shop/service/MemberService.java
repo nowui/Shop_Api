@@ -8,14 +8,14 @@ import com.jfinal.weixin.sdk.api.ApiResult;
 import com.jfinal.weixin.sdk.api.QrcodeApi;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.constant.WeChat;
-import com.shanghaichuangshi.dao.AuthorizationDao;
-import com.shanghaichuangshi.dao.UserDao;
+import com.shanghaichuangshi.cache.AuthorizationCache;
+import com.shanghaichuangshi.cache.UserCache;
 import com.shanghaichuangshi.model.Authorization;
 import com.shanghaichuangshi.model.User;
-import com.shanghaichuangshi.shop.dao.MemberDao;
-import com.shanghaichuangshi.shop.dao.MemberLevelDao;
-import com.shanghaichuangshi.shop.dao.OrderDao;
-import com.shanghaichuangshi.shop.dao.SceneDao;
+import com.shanghaichuangshi.shop.cache.MemberCache;
+import com.shanghaichuangshi.shop.cache.MemberLevelCache;
+import com.shanghaichuangshi.shop.cache.OrderCache;
+import com.shanghaichuangshi.shop.cache.SceneCache;
 import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.shop.model.MemberLevel;
@@ -32,20 +32,20 @@ import static com.shanghaichuangshi.util.AesUtil.decrypt;
 
 public class MemberService extends Service {
 
-    private final MemberDao memberDao = new MemberDao();
+    private final MemberCache memberCache = new MemberCache();
 
-    private final UserDao userDao = new UserDao();
-    private final AuthorizationDao authorizationDao = new AuthorizationDao();
-    private final MemberLevelDao memberLevelDao = new MemberLevelDao();
-    private final SceneDao sceneDao = new SceneDao();
-    private final OrderDao orderDao = new OrderDao();
+    private final UserCache userCache = new UserCache();
+    private final AuthorizationCache authorizationCache = new AuthorizationCache();
+    private final MemberLevelCache memberLevelCache = new MemberLevelCache();
+    private final SceneCache sceneCache = new SceneCache();
+    private final OrderCache orderCache = new OrderCache();
 
     public int count(String member_name) {
-        return memberDao.count(member_name);
+        return memberCache.count(member_name);
     }
 
     public List<Member> list(String member_name, int m, int n) {
-        List<Member> memberList = memberDao.list(member_name, m, n);
+        List<Member> memberList = memberCache.list(member_name, m, n);
 
         for (Member item : memberList) {
             Member model = find(item.getMember_id());
@@ -57,17 +57,17 @@ public class MemberService extends Service {
     }
 
     public List<Member> treeList() {
-        List<Member> memberList = memberDao.treeList();
+        List<Member> memberList = memberCache.treeList();
 
         Iterator<Member> iterator = memberList.iterator();
         while (iterator.hasNext()) {
             Member member = iterator.next();
 
-            User user = userDao.find(member.getUser_id());
+            User user = userCache.find(member.getUser_id());
             member.put(User.USER_AVATAR, user.getUser_avatar());
             member.remove(Member.USER_ID);
 
-            MemberLevel memberLevel = memberLevelDao.find(member.getMember_level_id());
+            MemberLevel memberLevel = memberLevelCache.find(member.getMember_level_id());
             if (memberLevel == null) {
                 member.put(MemberLevel.MEMBER_LEVEL_NAME, "");
             } else {
@@ -85,13 +85,13 @@ public class MemberService extends Service {
     }
 
     public List<Member> teamList(String user_id) {
-        List<Member> memberList = memberDao.teamList(userDao.find(user_id).getObject_id());
+        List<Member> memberList = memberCache.teamList(userCache.find(user_id).getObject_id());
 
         for (Member item : memberList) {
-            User user = userDao.find(item.getUser_id());
+            User user = userCache.find(item.getUser_id());
             item.put(User.USER_AVATAR, user.getUser_avatar());
 
-            List<Order> orderList = orderDao.listByUser_id(item.getUser_id());
+            List<Order> orderList = orderCache.listByUser_id(item.getUser_id());
             BigDecimal member_month_order_amount = BigDecimal.ZERO;
             BigDecimal member_all_order_amount = BigDecimal.ZERO;
             for (Order order : orderList) {
@@ -107,7 +107,7 @@ public class MemberService extends Service {
             if (Util.isNullOrEmpty(item.getMember_level_id())) {
                 item.put(MemberLevel.MEMBER_LEVEL_NAME, "");
             } else {
-                MemberLevel memberLevel = memberLevelDao.find(item.getMember_level_id());
+                MemberLevel memberLevel = memberLevelCache.find(item.getMember_level_id());
                 item.put(MemberLevel.MEMBER_LEVEL_NAME, memberLevel.getMember_level_name());
             }
         }
@@ -133,16 +133,16 @@ public class MemberService extends Service {
     }
 
     public Member find(String member_id) {
-        Member member = memberDao.find(member_id);
+        Member member = memberCache.find(member_id);
 
-        User user = userDao.find(member.getUser_id());
+        User user = userCache.find(member.getUser_id());
         member.put(User.USER_AVATAR, user.getUser_avatar());
 
         return member;
     }
 
     public String qrcodeFind(String user_id) {
-        User user = userDao.find(user_id);
+        User user = userCache.find(user_id);
         Member member = find(user.getObject_id());
 
         if (!member.getMember_status()) {
@@ -158,9 +158,9 @@ public class MemberService extends Service {
             Boolean scene_is_expire = false;
             String scene_qrcode = QrcodeApi.getShowQrcodeUrl(apiResult.getStr("ticket"));
 
-            sceneDao.save(scene_id, member_id, SceneTypeEnum.MEMBER.getKey(), scene_is_expire, scene_qrcode, user_id);
+            sceneCache.save(scene_id, member_id, SceneTypeEnum.MEMBER.getKey(), scene_is_expire, scene_qrcode, user_id);
 
-            memberDao.updateByMember_idAndScene_idAndScene_qrcode(member_id, scene_id, scene_qrcode, user_id);
+            memberCache.updateByMember_idAndScene_idAndScene_qrcode(member_id, scene_id, scene_qrcode, user_id);
 
             return scene_qrcode;
         } else {
@@ -171,7 +171,7 @@ public class MemberService extends Service {
     public Map<String, Object> myFind(String request_user_id) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
-        User user = userDao.find(request_user_id);
+        User user = userCache.find(request_user_id);
         Member member = find(user.getObject_id());
 
         resultMap.putAll(getMemberLevel(member.getMember_level_id(), user.getUser_name(), user.getUser_avatar(), member.getMember_status()));
@@ -185,17 +185,17 @@ public class MemberService extends Service {
     }
 
     public Member teamFind(String member_id) {
-        return memberDao.find(member_id);
+        return memberCache.find(member_id);
     }
 
     public List<MemberLevel> teamMemberLevelFind(String member_id) {
-        Member member = memberDao.find(member_id);
+        Member member = memberCache.find(member_id);
 
-        Member parentMember = memberDao.find(member.getParent_id());
-        MemberLevel parentMemberLevel = memberLevelDao.find(parentMember.getMember_level_id());
+        Member parentMember = memberCache.find(member.getParent_id());
+        MemberLevel parentMemberLevel = memberLevelCache.find(parentMember.getMember_level_id());
 
         List<MemberLevel> resultList = new ArrayList<MemberLevel>();
-        List<MemberLevel> memberLevelList = memberLevelDao.listAll();
+        List<MemberLevel> memberLevelList = memberLevelCache.listAll();
         for(MemberLevel m : memberLevelList) {
             if (m.getMember_level_value() > parentMemberLevel.getMember_level_value()) {
                 resultList.add(m);
@@ -216,13 +216,13 @@ public class MemberService extends Service {
 //            return null;
 //        }
 //
-//        User user = userDao.find(user_id);
+//        User user = userCache.find(user_id);
 //
 //        if (user == null) {
 //            return null;
 //        }
 //
-//        return memberDao.find(user.getObject_id());
+//        return memberCache.find(user.getObject_id());
 //    }
 
 //    public Member save(Member member, User user, String request_user_id) {
@@ -234,7 +234,7 @@ public class MemberService extends Service {
 //        member.setMember_phone(member_phone);
 //        member.setMember_remark(member_remark);
 //
-//        memberDao.save(member, request_user_id);
+//        memberCache.save(member, request_user_id);
 //
 //        userService.saveByUser_idAndUser_phoneAndUser_passwordAndObject_idAndUser_type(user_id, user.getUser_phone(), user.getUser_password(), member.getMember_id(), UserType.MEMBER.getKey(), request_user_id);
 //
@@ -249,7 +249,7 @@ public class MemberService extends Service {
         //过滤Emoji表情
         user_name = Util.getEmoji(user_name);
 
-        User user = userDao.findByWechat_open_idAndWechat_union_idAndUser_type(wechat_open_id, wechat_union_id, UserType.MEMBER.getKey());
+        User user = userCache.findByWechat_open_idAndWechat_union_idAndUser_type(wechat_open_id, wechat_union_id, UserType.MEMBER.getKey());
         if (user == null) {
             String user_id = Util.getRandomUUID();
             String parent_id = "";
@@ -265,56 +265,56 @@ public class MemberService extends Service {
             String member_phone = "";
             String member_remark = "";
 
-            Member member = memberDao.save(parent_id, parent_path, user_id, from_scene_id, scene_id, scene_qrcode, member_total_amount, member_withdrawal_amount, member_month_order_amount, member_all_order_amount, member_level_id, user_name, member_phone, member_remark, member_status, request_user_id);
+            Member member = memberCache.save(parent_id, parent_path, user_id, from_scene_id, scene_id, scene_qrcode, member_total_amount, member_withdrawal_amount, member_month_order_amount, member_all_order_amount, member_level_id, user_name, member_phone, member_remark, member_status, request_user_id);
 
-            userDao.saveByUser_idAndUser_nameAndUser_avatarAndWechat_open_idAndWechat_union_idAndObject_idAndUser_type(user_id, user_name, user_avatar, wechat_open_id, wechat_union_id, member.getMember_id(), UserType.MEMBER.getKey(), request_user_id);
+            userCache.saveByUser_idAndUser_nameAndUser_avatarAndWechat_open_idAndWechat_union_idAndObject_idAndUser_type(user_id, user_name, user_avatar, wechat_open_id, wechat_union_id, member.getMember_id(), UserType.MEMBER.getKey(), request_user_id);
 
             return member;
         } else {
             String user_id = user.getUser_id();
             String member_id = user.getObject_id();
 
-            userDao.updateByUser_idAndUser_nameAndUser_avatar(user_id, user_name, user_avatar, user_id);
-            memberDao.updateByMember_idAndMember_name(member_id, user_name, user_id);
+            userCache.updateByUser_idAndUser_nameAndUser_avatar(user_id, user_name, user_avatar, user_id);
+            memberCache.updateByMember_idAndMember_name(member_id, user_name, user_id);
 
-            Member member = memberDao.find(user.getObject_id());
+            Member member = memberCache.find(user.getObject_id());
 
             return member;
         }
     }
 
     public boolean childrenUpdate(String member_id, String member_level_id, String request_user_id) {
-        Member member = memberDao.find(member_id);
-        User parentUser = userDao.find(request_user_id);
+        Member member = memberCache.find(member_id);
+        User parentUser = userCache.find(request_user_id);
         Member parentMember = find(parentUser.getObject_id());
 
         if (member.getParent_id().equals(parentMember.getMember_id())) {
-            return memberDao.childrenUpdate(member_id, member_level_id, request_user_id);
+            return memberCache.childrenUpdate(member_id, member_level_id, request_user_id);
         } else {
             throw new RuntimeException("您不是上一级");
         }
     }
 
     public boolean updateByMember_idAndParent_idAndParent_pathAndMember_level_id(String member_id, String parent_id, String parent_path, String member_level_id) {
-        return memberDao.updateByMember_idAndParent_idAndParent_pathAndMember_level_id(member_id, parent_id, parent_path, member_level_id);
+        return memberCache.updateByMember_idAndParent_idAndParent_pathAndMember_level_id(member_id, parent_id, parent_path, member_level_id);
     }
 
     public void updateAmount(List<Member> memberList) {
-        memberDao.updateAmount(memberList);
+        memberCache.updateAmount(memberList);
     }
 
     public boolean updateByMember_idAndMember_name(String member_id, String member_name, String request_user_id) {
-        return memberDao.updateByMember_idAndMember_name(member_id, member_name, request_user_id);
+        return memberCache.updateByMember_idAndMember_name(member_id, member_name, request_user_id);
     }
 
     public boolean updateByMember_idAndMember_level_id(String member_id, String member_level_id, String request_user_id) {
-        return memberDao.updateByMember_idAndMember_level_id(member_id, member_level_id, request_user_id);
+        return memberCache.updateByMember_idAndMember_level_id(member_id, member_level_id, request_user_id);
     }
 
     public boolean delete(Member member, String request_user_id) {
-        boolean result = memberDao.delete(member.getMember_id(), request_user_id);
+        boolean result = memberCache.delete(member.getMember_id(), request_user_id);
 
-        userDao.deleteByObject_idAndUser_type(member.getMember_id(), UserType.MEMBER.getKey(), request_user_id);
+        userCache.deleteByObject_idAndUser_type(member.getMember_id(), UserType.MEMBER.getKey(), request_user_id);
 
         return result;
     }
@@ -397,7 +397,7 @@ public class MemberService extends Service {
     private Map<String, Object> getMember(String wechat_open_id, String user_id, String user_name, String user_avatar, String member_level_id, Boolean member_status, String platform, String version, String ip_address, String request_user_id) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
-        Authorization authorization = authorizationDao.save(user_id, platform, version, ip_address, request_user_id);
+        Authorization authorization = authorizationCache.save(user_id, platform, version, ip_address, request_user_id);
 
         resultMap.put("open_id", wechat_open_id);
         resultMap.put(Constant.TOKEN.toLowerCase(), authorization.getAuthorization_token());
@@ -419,7 +419,7 @@ public class MemberService extends Service {
             resultMap.put(MemberLevel.MEMBER_LEVEL_NAME, "会员");
             resultMap.put(MemberLevel.MEMBER_LEVEL_VALUE, 999);
         } else {
-            MemberLevel memberLevel = memberLevelDao.find(member_level_id);
+            MemberLevel memberLevel = memberLevelCache.find(member_level_id);
 
             resultMap.put(MemberLevel.MEMBER_LEVEL_ID, memberLevel.getMember_level_id());
             resultMap.put(MemberLevel.MEMBER_LEVEL_NAME, memberLevel.getMember_level_name());

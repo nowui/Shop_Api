@@ -5,15 +5,12 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.model.Brand;
-import com.shanghaichuangshi.util.CacheUtil;
 import com.shanghaichuangshi.util.Util;
 
 import java.util.Date;
 import java.util.List;
 
 public class BrandDao extends Dao {
-
-    private final String BRAND_BY_BRAND_ID_CACHE = "brand_id_brand_id_cache";
 
     public int count(String brand_name) {
         Kv map = Kv.create();
@@ -35,24 +32,16 @@ public class BrandDao extends Dao {
     }
 
     public Brand find(String brand_id) {
-        Brand brand = CacheUtil.get(BRAND_BY_BRAND_ID_CACHE, brand_id);
+        Kv map = Kv.create();
+        map.put(Brand.BRAND_ID, brand_id);
+        SqlPara sqlPara = Db.getSqlPara("brand.find", map);
 
-        if (brand == null) {
-            Kv map = Kv.create();
-            map.put(Brand.BRAND_ID, brand_id);
-            SqlPara sqlPara = Db.getSqlPara("brand.find", map);
-
-            List<Brand> brandList = new Brand().find(sqlPara.getSql(), sqlPara.getPara());
-            if (brandList.size() == 0) {
-                brand = null;
-            } else {
-                brand = brandList.get(0);
-
-                CacheUtil.put(BRAND_BY_BRAND_ID_CACHE, brand_id, brand);
-            }
+        List<Brand> brandList = new Brand().find(sqlPara.getSql(), sqlPara.getPara());
+        if (brandList.size() == 0) {
+            return null;
+        } else {
+            return brandList.get(0);
         }
-
-        return brand;
     }
 
     public Brand save(Brand brand, String request_user_id) {
@@ -69,8 +58,6 @@ public class BrandDao extends Dao {
     }
 
     public boolean update(Brand brand, String request_user_id) {
-        CacheUtil.remove(BRAND_BY_BRAND_ID_CACHE, brand.getBrand_id());
-
         brand.remove(Brand.SYSTEM_CREATE_USER_ID);
         brand.remove(Brand.SYSTEM_CREATE_TIME);
         brand.setSystem_update_user_id(request_user_id);
@@ -81,8 +68,6 @@ public class BrandDao extends Dao {
     }
 
     public boolean delete(String brand_id, String request_user_id) {
-        CacheUtil.remove(BRAND_BY_BRAND_ID_CACHE, brand_id);
-
         Kv map = Kv.create();
         map.put(Brand.BRAND_ID, brand_id);
         map.put(Brand.SYSTEM_UPDATE_USER_ID, request_user_id);

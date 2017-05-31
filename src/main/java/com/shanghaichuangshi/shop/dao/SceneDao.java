@@ -12,8 +12,6 @@ import java.util.List;
 
 public class SceneDao extends Dao {
 
-    private final String SCENED_BY_SCENED_ID_CACHE = "scene_by_scene_id_cache";
-
     public int count(String scene_type) {
         Kv map = Kv.create();
         map.put(Scene.SCENE_TYPE, scene_type);
@@ -34,24 +32,16 @@ public class SceneDao extends Dao {
     }
 
     public Scene find(String scene_id) {
-        Scene scene = CacheUtil.get(SCENED_BY_SCENED_ID_CACHE, scene_id);
+        Kv map = Kv.create();
+        map.put(Scene.SCENE_ID, scene_id);
+        SqlPara sqlPara = Db.getSqlPara("scene.find", map);
 
-        if (scene == null) {
-            Kv map = Kv.create();
-            map.put(Scene.SCENE_ID, scene_id);
-            SqlPara sqlPara = Db.getSqlPara("scene.find", map);
-
-            List<Scene> sceneList = new Scene().find(sqlPara.getSql(), sqlPara.getPara());
-            if (sceneList.size() == 0) {
-                scene = null;
-            } else {
-                scene = sceneList.get(0);
-
-                CacheUtil.put(SCENED_BY_SCENED_ID_CACHE, scene_id, scene);
-            }
+        List<Scene> sceneList = new Scene().find(sqlPara.getSql(), sqlPara.getPara());
+        if (sceneList.size() == 0) {
+            return null;
+        } else {
+            return sceneList.get(0);
         }
-
-        return scene;
     }
 
     public Scene save(String scene_id, String object_id, String scene_type, boolean scene_is_expire, String scene_qrcode, String request_user_id) {
@@ -74,21 +64,7 @@ public class SceneDao extends Dao {
         return scene;
     }
 
-//    public boolean update(Scene scene, String request_user_id) {
-//        CacheUtil.remove(SCENED_BY_SCENED_ID_CACHE, scene.getScene_id());
-//
-//        scene.remove(Scene.SYSTEM_CREATE_USER_ID);
-//        scene.remove(Scene.SYSTEM_CREATE_TIME);
-//        scene.setSystem_update_user_id(request_user_id);
-//        scene.setSystem_update_time(new Date());
-//        scene.remove(Scene.SYSTEM_STATUS);
-//
-//        return scene.update();
-//    }
-
     public boolean updateScene_addByScene_id(String scene_id, String request_user_id) {
-        CacheUtil.remove(SCENED_BY_SCENED_ID_CACHE, scene_id);
-
         Kv map = Kv.create();
         map.put(Scene.SCENE_ID, scene_id);
         SqlPara sqlPara = Db.getSqlPara("scene.updateScene_addByScene_id", map);
@@ -97,8 +73,6 @@ public class SceneDao extends Dao {
     }
 
     public boolean updateScene_cancelByScene_id(String scene_id, String request_user_id) {
-        CacheUtil.remove(SCENED_BY_SCENED_ID_CACHE, scene_id);
-
         Kv map = Kv.create();
         map.put(Scene.SCENE_ID, scene_id);
         SqlPara sqlPara = Db.getSqlPara("scene.updateScene_cancelByScene_id", map);
@@ -107,8 +81,6 @@ public class SceneDao extends Dao {
     }
 
     public boolean updateScene_is_expireByScene_id(String scene_id, String request_user_id) {
-        CacheUtil.remove(SCENED_BY_SCENED_ID_CACHE, scene_id);
-
         Kv map = Kv.create();
         map.put(Scene.SCENE_ID, scene_id);
         SqlPara sqlPara = Db.getSqlPara("scene.updateScene_is_expireByScene_id", map);
@@ -117,8 +89,6 @@ public class SceneDao extends Dao {
     }
 
     public boolean delete(String scene_id, String request_user_id) {
-        CacheUtil.remove(SCENED_BY_SCENED_ID_CACHE, scene_id);
-
         Kv map = Kv.create();
         map.put(Scene.SCENE_ID, scene_id);
         map.put(Scene.SYSTEM_UPDATE_USER_ID, request_user_id);

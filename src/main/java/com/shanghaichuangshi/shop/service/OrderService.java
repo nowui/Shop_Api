@@ -6,13 +6,13 @@ import com.jfinal.kit.HttpKit;
 import com.jfinal.weixin.sdk.kit.PaymentKit;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.constant.WeChat;
-import com.shanghaichuangshi.dao.FileDao;
-import com.shanghaichuangshi.dao.UserDao;
+import com.shanghaichuangshi.cache.FileCache;
+import com.shanghaichuangshi.cache.UserCache;
 import com.shanghaichuangshi.model.Category;
 import com.shanghaichuangshi.model.File;
 import com.shanghaichuangshi.model.User;
 import com.shanghaichuangshi.service.CategoryService;
-import com.shanghaichuangshi.shop.dao.*;
+import com.shanghaichuangshi.shop.cache.*;
 import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.shop.type.OrderFlowEnum;
@@ -24,35 +24,34 @@ import java.util.*;
 
 public class OrderService extends Service {
 
-    private final OrderDao orderDao = new OrderDao();
-
-    private final SkuDao skuDao = new SkuDao();
-    private final ProductDao productDao = new ProductDao();
-    private final MemberDao memberDao = new MemberDao();
-    private final MemberLevelDao memberLevelDao = new MemberLevelDao();
+    private final OrderCache orderCache = new OrderCache();
+    private final SkuCache skuCache = new SkuCache();
+    private final ProductCache productCache = new ProductCache();
+    private final MemberCache memberCache = new MemberCache();
+    private final MemberLevelCache memberLevelCache = new MemberLevelCache();
     private final CategoryService categoryService = new CategoryService();
-    private final BrandDao brandDao = new BrandDao();
-    private final OrderProductDao orderProductDao = new OrderProductDao();
-    private final CommissionDao commissionDao = new CommissionDao();
-    private final DeliveryDao deliveryDao = new DeliveryDao();
-    private final FileDao fileDao = new FileDao();
-    private final UserDao userDao = new UserDao();
+    private final BrandCache brandCache = new BrandCache();
+    private final OrderProductCache orderProductCache = new OrderProductCache();
+    private final CommissionCache commissionCache = new CommissionCache();
+    private final DeliveryCache deliveryCache = new DeliveryCache();
+    private final FileCache fileCache = new FileCache();
+    private final UserCache userCache = new UserCache();
 
     public int count(String order_number) {
-        return orderDao.count(order_number);
+        return orderCache.count(order_number);
     }
 
     public List<Order> list(String order_number, int m, int n) {
-        return orderDao.list(order_number, m, n);
+        return orderCache.list(order_number, m, n);
     }
 
     public List<Order> listByUser_id(String user_id) {
-        List<Order> orderList = orderDao.listByUser_id(user_id);
+        List<Order> orderList = orderCache.listByUser_id(user_id);
 
         for (Order order : orderList) {
-            List<OrderProduct> orderProductList = orderProductDao.listByOder_id(order.getOrder_id());
+            List<OrderProduct> orderProductList = orderProductCache.listByOder_id(order.getOrder_id());
             for (OrderProduct orderProduct : orderProductList) {
-                File productImageFile = fileDao.find(orderProduct.getProduct_image());
+                File productImageFile = fileCache.find(orderProduct.getProduct_image());
                 orderProduct.put(Product.PRODUCT_IMAGE_FILE, productImageFile.getFile_thumbnail_path());
 
                 orderProduct.keep(OrderProduct.PRODUCT_ID, OrderProduct.PRODUCT_NAME, Product.PRODUCT_IMAGE_FILE, OrderProduct.ORDER_PRODUCT_PRICE, OrderProduct.ORDER_PRODUCT_QUANTITY);
@@ -64,11 +63,11 @@ public class OrderService extends Service {
     }
 
     public Order find(String order_id) {
-        Order order = orderDao.find(order_id);
+        Order order = orderCache.find(order_id);
 
-        List<OrderProduct> orderProductList = orderProductDao.listByOder_id(order_id);
+        List<OrderProduct> orderProductList = orderProductCache.listByOder_id(order_id);
         for (OrderProduct orderProduct : orderProductList) {
-            File productImageFile = fileDao.find(orderProduct.getProduct_image());
+            File productImageFile = fileCache.find(orderProduct.getProduct_image());
             orderProduct.put(Product.PRODUCT_IMAGE_FILE, productImageFile.getFile_thumbnail_path());
 
             orderProduct.keep(OrderProduct.PRODUCT_ID, OrderProduct.PRODUCT_NAME, Product.PRODUCT_IMAGE_FILE, OrderProduct.ORDER_PRODUCT_PRICE, OrderProduct.ORDER_PRODUCT_QUANTITY);
@@ -79,9 +78,9 @@ public class OrderService extends Service {
     }
 
     public Order adminFind(String order_id) {
-        Order order = orderDao.find(order_id);
+        Order order = orderCache.find(order_id);
 
-        List<OrderProduct> orderProductList = orderProductDao.listByOder_id(order_id);
+        List<OrderProduct> orderProductList = orderProductCache.listByOder_id(order_id);
         for (OrderProduct orderProduct : orderProductList) {
             orderProduct.keep(OrderProduct.PRODUCT_ID, OrderProduct.PRODUCT_NAME, OrderProduct.ORDER_PRODUCT_PRICE, OrderProduct.ORDER_PRODUCT_QUANTITY, OrderProduct.ORDER_PRODUCT_COMMISSION);
         }
@@ -105,8 +104,8 @@ public class OrderService extends Service {
         BigDecimal order_freight_amount = BigDecimal.valueOf(0);
         BigDecimal order_discount_amount = BigDecimal.valueOf(0);
 
-        User user = userDao.find(request_user_id);
-        Member member = memberDao.find(user.getObject_id());
+        User user = userCache.find(request_user_id);
+        Member member = memberCache.find(user.getObject_id());
         JSONArray fatherMemberJSONArray = new JSONArray();
 
         if (member == null) {
@@ -119,7 +118,7 @@ public class OrderService extends Service {
         String member_level_name = "";
         Integer member_level_value = 0;
         if (!Util.isNullOrEmpty(member_level_id)) {
-            MemberLevel memberLevel = memberLevelDao.find(member_level_id);
+            MemberLevel memberLevel = memberLevelCache.find(member_level_id);
             if (memberLevel != null) {
                 member_level_name = memberLevel.getMember_level_name();
                 member_level_value = memberLevel.getMember_level_value();
@@ -137,8 +136,8 @@ public class OrderService extends Service {
             String m_id = parentPathArray.getString(i);
 
             if (!m_id.equals(Constant.PARENT_ID)) {
-                Member m = memberDao.find(m_id);
-                MemberLevel mLevel = memberLevelDao.find(m.getMember_level_id());
+                Member m = memberCache.find(m_id);
+                MemberLevel mLevel = memberLevelCache.find(m.getMember_level_id());
 
                 JSONObject mObject = new JSONObject();
                 mObject.put(Member.MEMBER_ID, m_id);
@@ -169,13 +168,13 @@ public class OrderService extends Service {
             String sku_id = productJSONObject.getString(Sku.SKU_ID);
             Integer product_quantity = productJSONObject.getInteger(Product.PRODUCT_QUANTITY);
 
-            Sku sku = skuDao.find(sku_id);
+            Sku sku = skuCache.find(sku_id);
 
             if (sku == null) {
                 throw new RuntimeException("SKU不存在:" + sku_id);
             }
 
-            Product product = productDao.find(sku.getProduct_id());
+            Product product = productCache.find(sku.getProduct_id());
 
 //            if (product_quantity > sku.getProduct_stock()) {
 //                throw new RuntimeException("库存不足:" + product.getProduct_name());
@@ -185,18 +184,18 @@ public class OrderService extends Service {
             order_product_quantity += product_quantity;
 
             //更新商品应付价格
-            JSONObject productPriceJSONObject = skuDao.findProduct_price(sku, member_level_id);
+            JSONObject productPriceJSONObject = skuCache.findProduct_price(sku, member_level_id);
             BigDecimal product_price = productPriceJSONObject.getBigDecimal(Product.PRODUCT_PRICE);
             order_product_amount = order_product_amount.add(product_price.multiply(BigDecimal.valueOf(product_quantity)));
 
             //订单的商品
             Category category = categoryService.find(product.getCategory_id());
-            Brand brand = brandDao.find(product.getBrand_id());
+            Brand brand = brandCache.find(product.getBrand_id());
 
             //佣金
             String commission_id = "";
             Commission commission = null;
-            List<Commission> commissionList = commissionDao.list(product.getProduct_id());
+            List<Commission> commissionList = commissionCache.list(product.getProduct_id());
             for (Commission c : commissionList) {
                 if (c.getProduct_attribute().equals(sku.getProduct_attribute())) {
                     commission_id = c.getCommission_id();
@@ -270,12 +269,12 @@ public class OrderService extends Service {
         order.setOrder_flow(OrderFlowEnum.WAIT_PAY.getKey());
         order.setOrder_status(false);
 
-        Order o = orderDao.save(order, request_user_id);
+        Order o = orderCache.save(order, request_user_id);
 
         for (OrderProduct orderProduct : orderProductList) {
             orderProduct.setOrder_id(o.getOrder_id());
         }
-        orderProductDao.save(orderProductList, request_user_id);
+        orderProductCache.save(orderProductList, request_user_id);
 
         return unifiedorder(o, open_id, pay_type);
     }
@@ -284,7 +283,7 @@ public class OrderService extends Service {
         String open_id = jsonObject.getString("open_id");
         String pay_type = jsonObject.getString("pay_type");
 
-        Order order = orderDao.find(order_id);
+        Order order = orderCache.find(order_id);
 
         if (order.getOrder_is_pay() || !order.getUser_id().equals(request_user_id)) {
             return new HashMap<String, String>();
@@ -348,23 +347,23 @@ public class OrderService extends Service {
     }
 
     public Order findByOrder_number(String order_number) {
-        return orderDao.findByOrder_number(order_number);
+        return orderCache.findByOrder_number(order_number);
     }
 
     public boolean update(String order_id, BigDecimal order_amount, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result, String order_flow, Boolean order_status) {
-        return orderDao.update(order_id, order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result, order_flow, order_status);
+        return orderCache.update(order_id, order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result, order_flow, order_status);
     }
 
     public boolean delete(Order order, String request_user_id) {
-        return orderDao.delete(order.getOrder_id(), request_user_id);
+        return orderCache.delete(order.getOrder_id(), request_user_id);
     }
 
     public Map<String, Object> check(String request_user_id) {
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
-        Delivery delivery = deliveryDao.findDefaultByUser_id(request_user_id);
+        Delivery delivery = deliveryCache.findDefaultByUser_id(request_user_id);
         if (delivery == null) {
-            List<Delivery> deliveryList = deliveryDao.listByUser_id(request_user_id, 0, 0);
+            List<Delivery> deliveryList = deliveryCache.listByUser_id(request_user_id, 0, 0);
 
             if (deliveryList.size() == 0) {
                 resultMap.put(Delivery.DELIVERY_NAME, "");
@@ -386,10 +385,10 @@ public class OrderService extends Service {
     }
 
     public Order confirm(String order_id, String request_user_id) {
-        Order order = orderDao.find(order_id);
+        Order order = orderCache.find(order_id);
 
         if (!order.getOrder_is_pay()) {
-            orderDao.updateByOrder_idAndOrder_is_confirm(order_id);
+            orderCache.updateByOrder_idAndOrder_is_confirm(order_id);
         }
 
         return order;

@@ -6,7 +6,6 @@ import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.model.Bill;
-import com.shanghaichuangshi.util.CacheUtil;
 import com.shanghaichuangshi.util.Util;
 
 import java.util.ArrayList;
@@ -14,8 +13,6 @@ import java.util.Date;
 import java.util.List;
 
 public class BillDao extends Dao {
-
-    private final String BILL_BY_USER_ID_CACHE = "bill_by_user_id_cache";
 
     public int count(String bill_name) {
         Kv map = Kv.create();
@@ -36,24 +33,12 @@ public class BillDao extends Dao {
         return new Bill().find(sqlPara.getSql(), sqlPara.getPara());
     }
 
-    public List<Bill> listByUser_id(String user_id, Integer m, Integer n) {
-        List<Bill> billList = CacheUtil.get(BILL_BY_USER_ID_CACHE, user_id);
+    public List<Bill> listByUser_id(String user_id) {
+        Kv map = Kv.create();
+        map.put(Bill.USER_ID, user_id);
+        SqlPara sqlPara = Db.getSqlPara("bill.listByUser_id", map);
 
-        if (billList == null) {
-            Kv map = Kv.create();
-            map.put(Bill.USER_ID, user_id);
-            map.put(Bill.M, m);
-            map.put(Bill.N, n);
-            SqlPara sqlPara = Db.getSqlPara("bill.listByUser_id", map);
-
-            billList = new Bill().find(sqlPara.getSql(), sqlPara.getPara());
-
-            if (billList.size() > 0) {
-                CacheUtil.put(BILL_BY_USER_ID_CACHE, user_id, billList);
-            }
-        }
-
-        return billList;
+        return new Bill().find(sqlPara.getSql(), sqlPara.getPara());
     }
 
     public Bill find(String bill_id) {
@@ -79,8 +64,6 @@ public class BillDao extends Dao {
 
         List<Object[]> parameterList = new ArrayList<Object[]>();
         for(Bill bill : billList) {
-            CacheUtil.remove(BILL_BY_USER_ID_CACHE, bill.getUser_id());
-
             List<Object> objectList = new ArrayList<Object>();
             objectList.add(Util.getRandomUUID());
             objectList.add(bill.getUser_id());

@@ -14,11 +14,9 @@ public class CartController extends Controller {
 
     @ActionKey(Url.CART_LIST)
     public void list() {
-        Cart model = getParameter(Cart.class);
+        String request_user_id = getRequest_user_id();
 
-        model.validate(Cart.USER_ID);
-
-        List<Cart> cartListvice = cartService.list(model);
+        List<Cart> cartListvice = cartService.listByUser_id(request_user_id);
 
         renderSuccessJson(cartListvice);
     }
@@ -27,9 +25,9 @@ public class CartController extends Controller {
     public void adminList() {
         Cart model = getParameter(Cart.class);
 
-        int count = cartService.count(model);
+        int count = cartService.count();
 
-        List<Cart> cartListvice = cartService.list(model);
+        List<Cart> cartListvice = cartService.list();
 
         renderSuccessJson(count, cartListvice);
     }

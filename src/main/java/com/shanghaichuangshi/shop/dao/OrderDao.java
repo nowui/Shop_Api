@@ -5,9 +5,7 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.model.Order;
-import com.shanghaichuangshi.util.CacheUtil;
 import com.shanghaichuangshi.util.DateUtil;
-import com.shanghaichuangshi.util.Util;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -16,11 +14,6 @@ import java.util.Date;
 import java.util.List;
 
 public class OrderDao extends Dao {
-
-    private final String ORDER_NUMBER_LIST_BY_DAY_CACHE = "order_number_list_by_day_cache";
-    private final String ORDER_LIST_BY_USER_ID_CACHE = "order_list_by_user_id_cache";
-    private final String ORDER_BY_ORDER_NUMBER_CACHE = "order_by_order_number_cache";
-    private final String ORDER_BY_ORDER_ID_CACHE = "order_by_order_id_cache";
 
     public int count(String order_number) {
         Kv map = Kv.create();
@@ -42,127 +35,60 @@ public class OrderDao extends Dao {
     }
 
     public List<Order> listByUser_id(String user_id) {
-        List<Order> orderList = CacheUtil.get(ORDER_LIST_BY_USER_ID_CACHE, user_id);
+        Kv map = Kv.create();
+        map.put(Order.USER_ID, user_id);
+        SqlPara sqlPara = Db.getSqlPara("order.listByUser_id", map);
 
-        if (orderList == null) {
-            Kv map = Kv.create();
-            map.put(Order.USER_ID, user_id);
-            map.put(Order.M, 0);
-            map.put(Order.N, 0);
-            SqlPara sqlPara = Db.getSqlPara("order.listByUser_id", map);
-
-            orderList = new Order().find(sqlPara.getSql(), sqlPara.getPara());
-
-            if (orderList.size() > 0) {
-                CacheUtil.put(ORDER_LIST_BY_USER_ID_CACHE, user_id, orderList);
-            }
-        }
-
-        return orderList;
+        return new Order().find(sqlPara.getSql(), sqlPara.getPara());
     }
 
     public List<String> listOrderNumber(String day) {
-        List<String> resultList = CacheUtil.get(ORDER_NUMBER_LIST_BY_DAY_CACHE, day);
+        Kv map = Kv.create();
+        map.put(Order.ORDER_NUMBER, day);
+        SqlPara sqlPara = Db.getSqlPara("order.listOrderNumber", map);
 
-        if (resultList == null) {
-            Kv map = Kv.create();
-            map.put(Order.ORDER_NUMBER, day);
-            SqlPara sqlPara = Db.getSqlPara("order.listOrderNumber", map);
+        List<Order> orderList = new Order().find(sqlPara.getSql(), sqlPara.getPara());
 
-            List<Order> orderList = new Order().find(sqlPara.getSql(), sqlPara.getPara());
+        List<String> resultList = new ArrayList<String>();
 
-            resultList = new ArrayList<>();
-
-            if (orderList.size() > 0) {
-                for(Order order : orderList) {
-                    resultList.add(order.getOrder_number());
-                }
-
-                CacheUtil.put(ORDER_NUMBER_LIST_BY_DAY_CACHE, day, resultList);
+        if (orderList.size() > 0) {
+            for (Order order : orderList) {
+                resultList.add(order.getOrder_number());
             }
         }
 
         return resultList;
     }
 
-    public void addOrderNumber(String order_number, String day) {
-        List<String> resultList = listOrderNumber(day);
-
-        resultList.add(order_number);
-
-        CacheUtil.put(ORDER_NUMBER_LIST_BY_DAY_CACHE, day, resultList);
-    }
-
     public Order find(String order_id) {
-        Order order = CacheUtil.get(ORDER_BY_ORDER_ID_CACHE, order_id);
+        Kv map = Kv.create();
+        map.put(Order.ORDER_ID, order_id);
+        SqlPara sqlPara = Db.getSqlPara("order.find", map);
 
-        if (order == null) {
-            Kv map = Kv.create();
-            map.put(Order.ORDER_ID, order_id);
-            SqlPara sqlPara = Db.getSqlPara("order.find", map);
-
-            List<Order> orderList = new Order().find(sqlPara.getSql(), sqlPara.getPara());
-            if (orderList.size() == 0) {
-                order = null;
-            } else {
-                order = orderList.get(0);
-
-                CacheUtil.put(ORDER_BY_ORDER_ID_CACHE, order_id, order);
-            }
+        List<Order> orderList = new Order().find(sqlPara.getSql(), sqlPara.getPara());
+        if (orderList.size() == 0) {
+            return null;
+        } else {
+            return orderList.get(0);
         }
-
-        return order;
-    }
-
-    private String getOrder_number(String day) {
-        return "E" + day + Util.getFixLenthString(6);
     }
 
     public Order findByOrder_number(String order_number) {
-        Order order = CacheUtil.get(ORDER_BY_ORDER_NUMBER_CACHE, order_number);
+        Kv map = Kv.create();
+        map.put(Order.ORDER_NUMBER, order_number);
+        SqlPara sqlPara = Db.getSqlPara("order.findByOrder_number", map);
 
-        if (order == null) {
-            Kv map = Kv.create();
-            map.put(Order.ORDER_NUMBER, order_number);
-            SqlPara sqlPara = Db.getSqlPara("order.findByOrder_number", map);
-
-            List<Order> orderList = new Order().find(sqlPara.getSql(), sqlPara.getPara());
-            if (orderList.size() == 0) {
-                order = null;
-            } else {
-                order = orderList.get(0);
-
-                CacheUtil.put(ORDER_BY_ORDER_NUMBER_CACHE, order_number, order);
-            }
+        List<Order> orderList = new Order().find(sqlPara.getSql(), sqlPara.getPara());
+        if (orderList.size() == 0) {
+            return null;
+        } else {
+            return orderList.get(0);
         }
-
-        return order;
     }
 
     public Order save(Order order, String request_user_id) {
-        String today = DateUtil.getDateString(new Date()).replaceAll("-", "");
-
-        String order_number = getOrder_number(today);
-
-        List orderNumberList = listOrderNumber(today);
-
-        boolean isExit = true;
-
-        while (isExit) {
-            if (orderNumberList.contains(order_number)) {
-                order_number = getOrder_number(today);
-
-                addOrderNumber(order_number, today);
-            } else {
-                isExit = false;
-            }
-        }
-
-        CacheUtil.remove(ORDER_BY_ORDER_ID_CACHE, order.getUser_id());
-
-        order.setOrder_id(Util.getRandomUUID());
         order.setUser_id(request_user_id);
-        order.setOrder_number(order_number);
+        order.setOrder_number(order.getOrder_number());
         order.setOrder_discount_amount(BigDecimal.valueOf(0));
         order.setOrder_is_confirm(false);
         order.setOrder_is_pay(false);
@@ -179,10 +105,6 @@ public class OrderDao extends Dao {
 
         order.save();
 
-        CacheUtil.remove(ORDER_LIST_BY_USER_ID_CACHE, order.getUser_id());
-
-        CacheUtil.put(ORDER_BY_ORDER_NUMBER_CACHE, order_number, order);
-
         return order;
     }
 
@@ -192,13 +114,6 @@ public class OrderDao extends Dao {
         } catch (ParseException e) {
 
         }
-
-        Order order = find(order_id);
-        if (order != null) {
-            CacheUtil.remove(ORDER_LIST_BY_USER_ID_CACHE, order.getUser_id());
-        }
-
-        CacheUtil.remove(ORDER_BY_ORDER_ID_CACHE, order_id);
 
         Kv map = Kv.create();
         map.put(Order.ORDER_ID, order_id);
@@ -217,13 +132,6 @@ public class OrderDao extends Dao {
     }
 
     public boolean delete(String order_id, String request_user_id) {
-        Order order = find(order_id);
-        if (order != null) {
-            CacheUtil.remove(ORDER_LIST_BY_USER_ID_CACHE, order.getUser_id());
-        }
-
-        CacheUtil.remove(ORDER_BY_ORDER_ID_CACHE, order_id);
-
         Kv map = Kv.create();
         map.put(Order.ORDER_ID, order_id);
         map.put(Order.SYSTEM_UPDATE_USER_ID, request_user_id);
@@ -234,13 +142,6 @@ public class OrderDao extends Dao {
     }
 
     public boolean updateByOrder_idAndOrder_is_confirm(String order_id) {
-        Order order = find(order_id);
-        if (order != null) {
-            CacheUtil.remove(ORDER_LIST_BY_USER_ID_CACHE, order.getUser_id());
-        }
-
-        CacheUtil.remove(ORDER_BY_ORDER_ID_CACHE, order_id);
-
         Kv map = Kv.create();
         map.put(Order.ORDER_ID, order_id);
         SqlPara sqlPara = Db.getSqlPara("order.updateByOrder_idAndOrder_is_confirm", map);

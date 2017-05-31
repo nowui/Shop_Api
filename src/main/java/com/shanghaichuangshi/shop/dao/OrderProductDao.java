@@ -6,7 +6,6 @@ import com.jfinal.plugin.activerecord.SqlPara;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.model.OrderProduct;
-import com.shanghaichuangshi.util.CacheUtil;
 import com.shanghaichuangshi.util.Util;
 
 import java.util.ArrayList;
@@ -15,43 +14,20 @@ import java.util.List;
 
 public class OrderProductDao extends Dao {
 
-    private final String ORDER_PRODUCT_LIST_BY_ORDER_ID_CACHE = "order_product_list_by_order_id_cache";
-    private final String ORDER_PRODUCT_LIST_BY_USER_ID_CACHE = "order_product_list_by_user_id_cache";
-
     public List<OrderProduct> listByOder_id(String order_id) {
-        List<OrderProduct> orderProductList = CacheUtil.get(ORDER_PRODUCT_LIST_BY_ORDER_ID_CACHE, order_id);
+        Kv map = Kv.create();
+        map.put(OrderProduct.ORDER_ID, order_id);
+        SqlPara sqlPara = Db.getSqlPara("order_product.listByOder_id", map);
 
-        if (orderProductList == null) {
-            Kv map = Kv.create();
-            map.put(OrderProduct.ORDER_ID, order_id);
-            SqlPara sqlPara = Db.getSqlPara("order_product.listByOder_id", map);
-
-            orderProductList = new OrderProduct().find(sqlPara.getSql(), sqlPara.getPara());
-
-            if (orderProductList.size() > 0) {
-                CacheUtil.put(ORDER_PRODUCT_LIST_BY_ORDER_ID_CACHE, order_id, orderProductList);
-            }
-        }
-
-        return orderProductList;
+        return new OrderProduct().find(sqlPara.getSql(), sqlPara.getPara());
     }
 
     public List<OrderProduct> listByUser_id(String user_id) {
-        List<OrderProduct> orderProductList = CacheUtil.get(ORDER_PRODUCT_LIST_BY_USER_ID_CACHE, user_id);
+        Kv map = Kv.create();
+        map.put(OrderProduct.USER_ID, user_id);
+        SqlPara sqlPara = Db.getSqlPara("order_product.listByUser_id", map);
 
-        if (orderProductList == null) {
-            Kv map = Kv.create();
-            map.put(OrderProduct.USER_ID, user_id);
-            SqlPara sqlPara = Db.getSqlPara("order_product.listByUser_id", map);
-
-            orderProductList = new OrderProduct().find(sqlPara.getSql(), sqlPara.getPara());
-
-            if (orderProductList.size() > 0) {
-                CacheUtil.put(ORDER_PRODUCT_LIST_BY_USER_ID_CACHE, user_id, orderProductList);
-            }
-        }
-
-        return orderProductList;
+        return new OrderProduct().find(sqlPara.getSql(), sqlPara.getPara());
     }
 
     public OrderProduct find(String order_product_id) {
@@ -68,6 +44,10 @@ public class OrderProductDao extends Dao {
     }
 
     public void save(List<OrderProduct> orderProductList, String request_user_id) {
+        if (orderProductList.size() == 0) {
+            return;
+        }
+
         Kv map = Kv.create();
         SqlPara sqlPara = Db.getSqlPara("order_product.save", map);
 
@@ -117,24 +97,9 @@ public class OrderProductDao extends Dao {
                 throw new RuntimeException("订单商品保存不成功");
             }
         }
-
-        CacheUtil.remove(ORDER_PRODUCT_LIST_BY_USER_ID_CACHE, request_user_id);
     }
 
-//    public boolean update(OrderProduct order_product, String request_user_id) {
-//        order_product.remove(OrderProduct.SYSTEM_CREATE_USER_ID);
-//        order_product.remove(OrderProduct.SYSTEM_CREATE_TIME);
-//        order_product.setSystem_update_user_id(request_user_id);
-//        order_product.setSystem_update_time(new Date());
-//        order_product.remove(OrderProduct.SYSTEM_STATUS);
-//
-//        return order_product.update();
-//    }
-
     public boolean updateByOrder_idAndOrder_statusAndUser_id(String order_id, Boolean order_status, String user_id) {
-        CacheUtil.remove(ORDER_PRODUCT_LIST_BY_ORDER_ID_CACHE, order_id);
-        CacheUtil.remove(ORDER_PRODUCT_LIST_BY_USER_ID_CACHE, user_id);
-
         Kv map = Kv.create();
         map.put(OrderProduct.ORDER_ID, order_id);
         map.put(OrderProduct.ORDER_STATUS, order_status);
@@ -143,15 +108,5 @@ public class OrderProductDao extends Dao {
 
         return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }
-
-//    public boolean delete(String order_product_id, String request_user_id) {
-//        Kv map = Kv.create();
-//        map.put(OrderProduct.ORDER_PRODUCT_ID, order_product_id);
-//        map.put(OrderProduct.SYSTEM_UPDATE_USER_ID, request_user_id);
-//        map.put(OrderProduct.SYSTEM_UPDATE_TIME, new Date());
-//        SqlPara sqlPara = Db.getSqlPara("order_product.delete", map);
-//
-//        return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
-//    }
 
 }

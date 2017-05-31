@@ -12,19 +12,25 @@ import java.util.List;
 
 public class CartDao extends Dao {
 
-    public int count(String user_id) {
+    public int count() {
         Kv map = Kv.create();
-        map.put(Cart.USER_ID, user_id);
         SqlPara sqlPara = Db.getSqlPara("cart.count", map);
 
         Number count = Db.queryFirst(sqlPara.getSql(), sqlPara.getPara());
         return count.intValue();
     }
 
-    public List<Cart> list(String user_id) {
+    public List<Cart> list() {
+        Kv map = Kv.create();
+        SqlPara sqlPara = Db.getSqlPara("cart.list", map);
+
+        return new Cart().find(sqlPara.getSql(), sqlPara.getPara());
+    }
+
+    public List<Cart> listByUser_id(String user_id) {
         Kv map = Kv.create();
         map.put(Cart.USER_ID, user_id);
-        SqlPara sqlPara = Db.getSqlPara("cart.list", map);
+        SqlPara sqlPara = Db.getSqlPara("cart.listByUser_id", map);
 
         return new Cart().find(sqlPara.getSql(), sqlPara.getPara());
     }

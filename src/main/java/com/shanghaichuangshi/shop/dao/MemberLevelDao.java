@@ -13,9 +13,6 @@ import java.util.List;
 
 public class MemberLevelDao extends Dao {
 
-    private final String MEMBER_LEVEL_LIST_CACHE = "member_level_list_cache";
-    private final String MEMBER_LEVEL_BY_MEMBER_LEVEL_ID_CACHE = "member_level_by_member_level_id_cache";
-
     public int count(String member_level_name) {
         Kv map = Kv.create();
         map.put(MemberLevel.MEMBER_LEVEL_NAME, member_level_name);
@@ -36,82 +33,42 @@ public class MemberLevelDao extends Dao {
     }
 
     public List<MemberLevel> listAll() {
-        List<MemberLevel> memberLevelList = CacheUtil.get(MEMBER_LEVEL_LIST_CACHE, MEMBER_LEVEL_LIST_CACHE);
+        Kv map = Kv.create();
+        map.put(MemberLevel.MEMBER_LEVEL_NAME, "");
+        map.put(MemberLevel.M, 0);
+        map.put(MemberLevel.N, 0);
+        SqlPara sqlPara = Db.getSqlPara("member_level.list", map);
 
-        if (memberLevelList == null) {
-            Kv map = Kv.create();
-            map.put(MemberLevel.MEMBER_LEVEL_NAME, "");
-            map.put(MemberLevel.M, 0);
-            map.put(MemberLevel.N, 0);
-            SqlPara sqlPara = Db.getSqlPara("member_level.list", map);
-
-            memberLevelList = new MemberLevel().find(sqlPara.getSql(), sqlPara.getPara());
-
-            if (memberLevelList.size() > 0) {
-                CacheUtil.put(MEMBER_LEVEL_LIST_CACHE, MEMBER_LEVEL_LIST_CACHE, memberLevelList);
-            }
-        }
-
-        return memberLevelList;
+        return new MemberLevel().find(sqlPara.getSql(), sqlPara.getPara());
     }
 
     public MemberLevel find(String member_level_id) {
-        MemberLevel memberLevel = CacheUtil.get(MEMBER_LEVEL_BY_MEMBER_LEVEL_ID_CACHE, member_level_id);
+        Kv map = Kv.create();
+        map.put(MemberLevel.MEMBER_LEVEL_ID, member_level_id);
+        SqlPara sqlPara = Db.getSqlPara("member_level.find", map);
 
-        if (memberLevel == null) {
-            Kv map = Kv.create();
-            map.put(MemberLevel.MEMBER_LEVEL_ID, member_level_id);
-            SqlPara sqlPara = Db.getSqlPara("member_level.find", map);
-
-            List<MemberLevel> member_levelList = new MemberLevel().find(sqlPara.getSql(), sqlPara.getPara());
-            if (member_levelList.size() == 0) {
-                memberLevel = null;
-            } else {
-                memberLevel = member_levelList.get(0);
-
-                CacheUtil.put(MEMBER_LEVEL_BY_MEMBER_LEVEL_ID_CACHE, member_level_id, memberLevel);
-            }
+        List<MemberLevel> member_levelList = new MemberLevel().find(sqlPara.getSql(), sqlPara.getPara());
+        if (member_levelList.size() == 0) {
+            return null;
+        } else {
+            return member_levelList.get(0);
         }
-
-        return memberLevel;
     }
 
     public MemberLevel findByMember_level_value(Integer member_level_value) {
-        MemberLevel memberLevel = null;
+        Kv map = Kv.create();
+        map.put(MemberLevel.MEMBER_LEVEL_VALUE, member_level_value);
+        SqlPara sqlPara = Db.getSqlPara("member_level.findByMember_level_value", map);
 
-        List<MemberLevel> memberLevelList = CacheUtil.get(MEMBER_LEVEL_LIST_CACHE, MEMBER_LEVEL_LIST_CACHE);
-
-        if (memberLevelList != null) {
-            for (MemberLevel m : memberLevelList) {
-                if (m.getMember_level_value().equals(member_level_value)) {
-                    memberLevel = m;
-
-                    break;
-                }
-            }
+        List<MemberLevel> member_levelList = new MemberLevel().find(sqlPara.getSql(), sqlPara.getPara());
+        if (member_levelList.size() == 0) {
+            return null;
+        } else {
+            return member_levelList.get(0);
         }
-
-        if (memberLevel == null) {
-            Kv map = Kv.create();
-            map.put(MemberLevel.MEMBER_LEVEL_VALUE, member_level_value);
-            SqlPara sqlPara = Db.getSqlPara("member_level.findByMember_level_value", map);
-
-            List<MemberLevel> member_levelList = new MemberLevel().find(sqlPara.getSql(), sqlPara.getPara());
-            if (member_levelList.size() == 0) {
-                memberLevel = null;
-            } else {
-                memberLevel = member_levelList.get(0);
-
-                CacheUtil.put(MEMBER_LEVEL_BY_MEMBER_LEVEL_ID_CACHE, memberLevel.getMember_level_id(), memberLevel);
-            }
-        }
-
-        return memberLevel;
     }
 
     public MemberLevel save(MemberLevel member_level, String request_user_id) {
-        CacheUtil.remove(MEMBER_LEVEL_LIST_CACHE, MEMBER_LEVEL_LIST_CACHE);
-
         member_level.setMember_level_id(Util.getRandomUUID());
         member_level.setSystem_create_user_id(request_user_id);
         member_level.setSystem_create_time(new Date());
@@ -125,9 +82,6 @@ public class MemberLevelDao extends Dao {
     }
 
     public boolean update(MemberLevel member_level, String request_user_id) {
-        CacheUtil.remove(MEMBER_LEVEL_LIST_CACHE, MEMBER_LEVEL_LIST_CACHE);
-        CacheUtil.remove(MEMBER_LEVEL_BY_MEMBER_LEVEL_ID_CACHE, member_level.getMember_level_id());
-
         member_level.remove(MemberLevel.SYSTEM_CREATE_USER_ID);
         member_level.remove(MemberLevel.SYSTEM_CREATE_TIME);
         member_level.setSystem_update_user_id(request_user_id);
@@ -138,9 +92,6 @@ public class MemberLevelDao extends Dao {
     }
 
     public boolean delete(String member_level_id, String request_user_id) {
-        CacheUtil.remove(MEMBER_LEVEL_LIST_CACHE, MEMBER_LEVEL_LIST_CACHE);
-        CacheUtil.remove(MEMBER_LEVEL_BY_MEMBER_LEVEL_ID_CACHE, member_level_id);
-
         Kv map = Kv.create();
         map.put(MemberLevel.MEMBER_LEVEL_ID, member_level_id);
         map.put(MemberLevel.SYSTEM_UPDATE_USER_ID, request_user_id);

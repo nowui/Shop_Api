@@ -3,10 +3,18 @@
   #sql("count")
     SELECT COUNT(*) FROM table_cart
     WHERE system_status = 1
-    AND user_id = #p(user_id)
   #end
 
   #sql("list")
+    SELECT
+    cart_id,
+    cart_name
+    FROM table_cart
+    WHERE system_status = 1
+    ORDER BY system_create_time DESC
+  #end
+
+  #sql("listByUser_id")
     SELECT
     cart_id,
     cart_name

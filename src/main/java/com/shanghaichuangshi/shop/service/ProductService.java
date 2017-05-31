@@ -2,15 +2,15 @@ package com.shanghaichuangshi.shop.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.shanghaichuangshi.dao.CategoryDao;
-import com.shanghaichuangshi.dao.FileDao;
-import com.shanghaichuangshi.dao.UserDao;
+import com.shanghaichuangshi.cache.CategoryCache;
+import com.shanghaichuangshi.cache.FileCache;
+import com.shanghaichuangshi.cache.UserCache;
 import com.shanghaichuangshi.model.File;
 import com.shanghaichuangshi.model.User;
-import com.shanghaichuangshi.shop.dao.CommissionDao;
-import com.shanghaichuangshi.shop.dao.OrderProductDao;
-import com.shanghaichuangshi.shop.dao.ProductDao;
-import com.shanghaichuangshi.shop.dao.SkuDao;
+import com.shanghaichuangshi.shop.cache.CommissionCache;
+import com.shanghaichuangshi.shop.cache.OrderProductCache;
+import com.shanghaichuangshi.shop.cache.ProductCache;
+import com.shanghaichuangshi.shop.cache.SkuCache;
 import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.type.CategoryType;
@@ -21,29 +21,28 @@ import java.util.Map;
 
 public class ProductService extends Service {
 
-    private final ProductDao productDao = new ProductDao();
-
-    private final UserDao userDao = new UserDao();
-    private final CategoryDao categoryDao = new CategoryDao();
-    private final SkuDao skuDao = new SkuDao();
-    private final CommissionDao commissionDao = new CommissionDao();
+    private final ProductCache productCache = new ProductCache();
+    private final UserCache userCache = new UserCache();
+    private final CategoryCache categoryCache = new CategoryCache();
+    private final SkuCache skuCache = new SkuCache();
+    private final CommissionCache commissionCache = new CommissionCache();
     private final MemberService memberService = new MemberService();
-    private final FileDao fileDao = new FileDao();
-    private final OrderProductDao orderProductDao = new OrderProductDao();
+    private final FileCache fileCache = new FileCache();
+    private final OrderProductCache orderProductCache = new OrderProductCache();
 
     public int count(Product product) {
-        return productDao.count(product.getProduct_name());
+        return productCache.count(product.getProduct_name());
     }
 
     public List<Product> list(Product product, int m, int n) {
-        return productDao.list(product.getProduct_name(), m, n);
+        return productCache.list(product.getProduct_name(), m, n);
     }
 
     public List<Product> hotList() {
-        List<Product> productList = productDao.listAllHot();
+        List<Product> productList = productCache.listAllHot();
 
         for (Product product : productList) {
-            File file = fileDao.find(product.getProduct_image());
+            File file = fileCache.find(product.getProduct_image());
             product.put(Product.PRODUCT_IMAGE_FILE, file.getFile_original_path());
             product.remove(Product.PRODUCT_IMAGE);
         }
@@ -52,14 +51,14 @@ public class ProductService extends Service {
     }
 
     public List<Map<String, Object>> categoryList() {
-        return categoryDao.treeListByCategory_key(CategoryType.PRODUCT.getKey());
+        return categoryCache.treeListByCategory_key(CategoryType.PRODUCT.getKey());
     }
 
     public List<Product> allList() {
-        List<Product> productList = productDao.listAll();
+        List<Product> productList = productCache.listAll();
 
         for (Product product : productList) {
-            File file = fileDao.find(product.getProduct_image());
+            File file = fileCache.find(product.getProduct_image());
             product.put(Product.PRODUCT_IMAGE_FILE, file.getFile_original_path());
             product.remove(Product.PRODUCT_IMAGE);
         }
@@ -68,14 +67,14 @@ public class ProductService extends Service {
     }
 
     public List<Product> myList(String request_user_id) {
-        List<OrderProduct> orderProductList = orderProductDao.listByUser_id(request_user_id);
+        List<OrderProduct> orderProductList = orderProductCache.listByUser_id(request_user_id);
 
         List<Product> productList = new ArrayList<Product>();
 
         for (OrderProduct orderProduct : orderProductList) {
-            Product product = productDao.find(orderProduct.getProduct_id());
+            Product product = productCache.find(orderProduct.getProduct_id());
 
-            File file = fileDao.find(product.getProduct_image());
+            File file = fileCache.find(product.getProduct_image());
             product.put(Product.PRODUCT_IMAGE_FILE, file.getFile_original_path());
             product.remove(Product.PRODUCT_IMAGE);
 
@@ -88,24 +87,24 @@ public class ProductService extends Service {
     }
 
     public Product find(String product_id) {
-        return productDao.find(product_id);
+        return productCache.find(product_id);
     }
 
     public Product findByUser_id(String product_id, String user_id) {
-        Product product = productDao.find(product_id);
+        Product product = productCache.find(product_id);
 
-        File productImageFile = fileDao.find(product.getProduct_image());
+        File productImageFile = fileCache.find(product.getProduct_image());
         product.put(Product.PRODUCT_IMAGE_FILE, productImageFile.getFile_original_path());
 
         List<String> productImageFileList = new ArrayList<String>();
         JSONArray productImageList = JSONArray.parseArray(product.getProduct_image_list().toString());
         for (int i = 0; i < productImageList.size(); i++) {
-            File file = fileDao.find(productImageList.getString(i));
+            File file = fileCache.find(productImageList.getString(i));
             productImageFileList.add(file.getFile_original_path());
         }
         product.put(Product.PRODUCT_IMAGE_FILE_LIST, productImageFileList);
 
-        User user = userDao.find(user_id);
+        User user = userCache.find(user_id);
         Member member = memberService.find(user.getObject_id());
 
         String member_level_id = "";
@@ -113,7 +112,7 @@ public class ProductService extends Service {
             member_level_id = member.getMember_level_id();
         }
 
-        List<Sku> skuList = skuDao.listByProduct_idAndMember_level_id(product.getProduct_id(), member_level_id);
+        List<Sku> skuList = skuCache.listByProduct_idAndMember_level_id(product.getProduct_id(), member_level_id);
 
         product.put(Sku.SKU_LIST, skuList);
 
@@ -121,24 +120,24 @@ public class ProductService extends Service {
     }
 
     public Product adminFind(String product_id) {
-        Product product = productDao.find(product_id);
+        Product product = productCache.find(product_id);
 
-        File productImageFile = fileDao.find(product.getProduct_image());
+        File productImageFile = fileCache.find(product.getProduct_image());
         product.put(Product.PRODUCT_IMAGE_FILE, productImageFile.keep(File.FILE_ID, File.FILE_NAME, File.FILE_PATH));
 
         List<File> productImageFileList = new ArrayList<File>();
         JSONArray productImageList = JSONArray.parseArray(product.getProduct_image_list().toString());
         for (int i = 0; i < productImageList.size(); i++) {
-            File file = fileDao.find(productImageList.getString(i));
+            File file = fileCache.find(productImageList.getString(i));
             file.keep(File.FILE_ID, File.FILE_NAME, File.FILE_PATH);
             productImageFileList.add(file);
         }
         product.put(Product.PRODUCT_IMAGE_FILE_LIST, productImageFileList);
 
-        List<Sku> skuList = skuDao.list(product_id);
+        List<Sku> skuList = skuCache.list(product_id);
         product.put(Sku.SKU_LIST, skuList);
 
-        List<Commission> commissionList = commissionDao.list(product.getProduct_id());
+        List<Commission> commissionList = commissionCache.list(product.getProduct_id());
         product.put(Commission.COMMISSION_LIST, commissionList);
 
         return product;
@@ -182,19 +181,19 @@ public class ProductService extends Service {
     }
 
     public Product save(Product product, JSONObject jsonObject, String request_user_id) {
-        Product p = productDao.save(product, request_user_id);
+        Product p = productCache.save(product, request_user_id);
 
         List<Sku> skuSaveList = getSkuList(p.getProduct_id(), jsonObject);
-        skuDao.save(skuSaveList, request_user_id);
+        skuCache.save(skuSaveList, request_user_id);
 
         List<Commission> commissionLis = getCommissionList(p.getProduct_id(), jsonObject);
-        commissionDao.save(commissionLis, request_user_id);
+        commissionCache.save(commissionLis, p.getProduct_id(), request_user_id);
 
         return p;
     }
 
     public boolean update(Product product, JSONObject jsonObject, String request_user_id) {
-        List<Sku> skuAllList = skuDao.list(product.getProduct_id());
+        List<Sku> skuAllList = skuCache.list(product.getProduct_id());
         List<Sku> skuList = getSkuList(product.getProduct_id(), jsonObject);
         List<Sku> skuSaveList = new ArrayList<Sku>();
         List<Sku> skuUpdateList = new ArrayList<Sku>();
@@ -240,12 +239,12 @@ public class ProductService extends Service {
             }
         }
 
-        skuDao.delete(skuDeleteList, product.getProduct_id(), request_user_id);
-        skuDao.save(skuSaveList, request_user_id);
-        skuDao.updateProduct_stock(skuUpdateList, product.getProduct_id(), request_user_id);
+        skuCache.delete(skuDeleteList, product.getProduct_id(), request_user_id);
+        skuCache.save(skuSaveList, request_user_id);
+        skuCache.updateProduct_stock(skuUpdateList, product.getProduct_id(), request_user_id);
 
 
-        List<Commission> commissionAllList = commissionDao.list(product.getProduct_id());
+        List<Commission> commissionAllList = commissionCache.list(product.getProduct_id());
         List<Commission> commissionList = getCommissionList(product.getProduct_id(), jsonObject);
         List<Commission> commissionSaveList = new ArrayList<Commission>();
         List<Commission> commissionDeleteList = new ArrayList<Commission>();
@@ -284,18 +283,18 @@ public class ProductService extends Service {
             }
         }
 
-        commissionDao.delete(commissionDeleteList, product.getProduct_id(), request_user_id);
-        commissionDao.save(commissionSaveList, request_user_id);
+        commissionCache.delete(commissionDeleteList, product.getProduct_id(), request_user_id);
+        commissionCache.save(commissionSaveList, product.getProduct_id(), request_user_id);
 
-        return productDao.update(product, request_user_id);
+        return productCache.update(product, request_user_id);
     }
 
     public boolean delete(Product product, String request_user_id) {
-        skuDao.deleteByProduct_id(product.getProduct_id(), request_user_id);
+        skuCache.deleteByProduct_id(product.getProduct_id(), request_user_id);
 
-        commissionDao.deleteByProduct_id(product.getProduct_id(), request_user_id);
+        commissionCache.deleteByProduct_id(product.getProduct_id(), request_user_id);
 
-        return productDao.delete(product.getProduct_id(), request_user_id);
+        return productCache.delete(product.getProduct_id(), request_user_id);
     }
 
 }
