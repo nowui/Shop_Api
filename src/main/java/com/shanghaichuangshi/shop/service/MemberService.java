@@ -153,7 +153,7 @@ public class MemberService extends Service {
             String member_id = member.getMember_id();
             String scene_id = Util.getRandomUUID();
 
-            ApiConfigKit.setThreadLocalApiConfig(WeChat.getApiConfig());
+//            ApiConfigKit.setThreadLocalApiConfig(WeChat.getApiConfig());
             ApiResult apiResult = QrcodeApi.createPermanent(scene_id);
             Boolean scene_is_expire = false;
             String scene_qrcode = QrcodeApi.getShowQrcodeUrl(apiResult.getStr("ticket"));

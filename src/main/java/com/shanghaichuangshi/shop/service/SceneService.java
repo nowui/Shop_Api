@@ -38,7 +38,7 @@ public class SceneService extends Service {
         String scene_type = SceneTypeEnum.PLATFORM.getKey();
         Boolean scene_is_expire = false;
 
-        ApiConfigKit.setThreadLocalApiConfig(WeChat.getApiConfig());
+//        ApiConfigKit.setThreadLocalApiConfig(WeChat.getApiConfig());
         ApiResult apiResult = QrcodeApi.createPermanent(scene_id);
         String scene_qrcode = QrcodeApi.getShowQrcodeUrl(apiResult.getStr("ticket"));
 
