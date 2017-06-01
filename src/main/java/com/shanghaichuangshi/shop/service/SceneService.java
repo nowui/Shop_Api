@@ -32,7 +32,7 @@ public class SceneService extends Service {
         return sceneCache.save(scene_id, object_id, scene_type, scene_is_expire, scene_qrcode, request_user_id);
     }
 
-    public Scene platformSave(String request_user_id) {
+    public Scene adminSave(String request_user_id) {
         String scene_id = Util.getRandomUUID();
         String object_id = "";
         String scene_type = SceneTypeEnum.PLATFORM.getKey();

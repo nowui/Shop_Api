@@ -56,7 +56,7 @@ public class MemberService extends Service {
         return memberList;
     }
 
-    public List<Member> treeList() {
+    public List<Member> adminTreeList() {
         List<Member> memberList = memberCache.treeList();
 
         Iterator<Member> iterator = memberList.iterator();
@@ -283,7 +283,7 @@ public class MemberService extends Service {
         }
     }
 
-    public boolean childrenUpdate(String member_id, String member_level_id, String request_user_id) {
+    public boolean teamUpdate(String member_id, String member_level_id, String request_user_id) {
         Member member = memberCache.find(member_id);
         User parentUser = userCache.find(request_user_id);
         Member parentMember = find(parentUser.getObject_id());

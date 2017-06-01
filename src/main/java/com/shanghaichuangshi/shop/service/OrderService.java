@@ -17,6 +17,7 @@ import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.util.Util;
+import net.sf.ehcache.search.expression.Or;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -355,7 +356,20 @@ public class OrderService extends Service {
     }
 
     public boolean delete(Order order, String request_user_id) {
-        return orderCache.delete(order.getOrder_id(), request_user_id);
+        List<Order> orderList = listByUser_id(request_user_id);
+
+        Boolean isExit = false;
+        for (Order item : orderList) {
+            if (item.getOrder_id().equals(order.getOrder_id())) {
+                isExit = true;
+            }
+        }
+
+        if (isExit) {
+            return orderCache.delete(order.getOrder_id(), request_user_id);
+        } else {
+            throw new RuntimeException("您没有该订单");
+        }
     }
 
     public Map<String, Object> check(String request_user_id) {

@@ -9,42 +9,35 @@ public class Url {
     public static final String WECHAT_MESSAGE = "/wechat/message";
     public static final String WECHAT_SHARE = "/wechat/share";
 
-    public static final String MEMBER_LIST = "/member/list";
     public static final String MEMBER_ADMIN_LIST = "/member/admin/list";
-    public static final String MEMBER_TREE_LIST = "/member/tree/list";
+    public static final String MEMBER_ADMIN_TREE_LIST = "/member/admin/tree/list";
     public static final String MEMBER_TEAM_LIST = "/member/team/list";
-    public static final String MEMBER_FIND = "/member/find";
+    public static final String MEMBER_TEAM_MEMBER_LEVEL_LIST = "/member/team/member/level/list";
     public static final String MEMBER_ADMIN_FIND = "/member/admin/find";
     public static final String MEMBER_QRCODE_FIND = "/member/qrcode/find";
     public static final String MEMBER_MY_FIND = "/member/my/find";
     public static final String MEMBER_TEAM_FIND = "/member/team/find";
-    public static final String MEMBER_TEAM_MEMBER_LEVEL_FIND = "/member/team/member/level/find";
-    public static final String MEMBER_SAVE = "/member/save";
-    public static final String MEMBER_WECHAT_SAVE = "/member/wechat/save";
-    public static final String MEMBERL_UPDATE = "/member/update";
+    public static final String MEMBERL_MEMBER_LEVELL_UPDATE = "/member/member/level/update";
     public static final String MEMBER_ADMIN_MEMBER_LEVELL_UPDATE = "/member/admin/member/level/update";
-    public static final String MEMBERL_CHILDREN_UPDATE = "/member/children/update";
     public static final String MEMBER_DELETE = "/member/delete";
     public static final String MEMBER_LOGIN = "/member/login";
-    public static final String MEMBER_WECHAT_H5_LOGIN = "/member/wechat/h5/login";
     public static final String MEMBER_WECHAT_WX_LOGIN = "/member/wechat/wx/login";
 
     public static final String MEMBER_LEVEL_LIST = "/member/level/list";
     public static final String MEMBER_LEVEL_ADMIN_LIST = "/member/level/admin/list";
-    public static final String MEMBER_LEVEL_CATEGORY_LIST = "/member/level/category/list";
     public static final String MEMBER_LEVEL_ADMIN_FIND = "/member/level/admin/find";
-    public static final String MEMBER_LEVEL_SAVE = "/member/level/save";
-    public static final String MEMBER_LEVELL_UPDATE = "/member/level/update";
-    public static final String MEMBER_LEVEL_DELETE = "/member/level/delete";
+    public static final String MEMBER_LEVEL_ADMIN_SAVE = "/member/level/admin/save";
+    public static final String MEMBER_LEVELL_ADMIN_UPDATE = "/member/level/admin/update";
+    public static final String MEMBER_LEVEL_ADMIN_DELETE = "/member/level/admin/delete";
 
     public static final String BRAND_LIST = "/brand/list";
     public static final String BRAND_ADMIN_LIST = "/brand/admin/list";
     public static final String BRAND_CATEGORY_LIST = "/brand/category/list";
     public static final String BRAND_FIND = "/brand/find";
     public static final String BRAND_ADMIN_FIND = "/brand/admin/find";
-    public static final String BRAND_SAVE = "/brand/save";
-    public static final String BRANDL_UPDATE = "/brand/update";
-    public static final String BRAND_DELETE = "/brand/delete";
+    public static final String BRAND_ADMIN_SAVE = "/brand/admin/save";
+    public static final String BRANDL_ADMIN_UPDATE = "/brand/admin/update";
+    public static final String BRAND_ADMIN_DELETE = "/brand/admin/delete";
 
     public static final String PRODUCT_LIST = "/product/list";
     public static final String PRODUCT_ADMIN_LIST = "/product/admin/list";
@@ -54,9 +47,9 @@ public class Url {
     public static final String PRODUCT_MY_LIST = "/product/my/list";
     public static final String PRODUCT_FIND = "/product/find";
     public static final String PRODUCT_ADMIN_FIND = "/product/admin/find";
-    public static final String PRODUCT_SAVE = "/product/save";
-    public static final String PRODUCTL_UPDATE = "/product/update";
-    public static final String PRODUCT_DELETE = "/product/delete";
+    public static final String PRODUCT_ADMIN_SAVE = "/product/admin/save";
+    public static final String PRODUCTL_ADMIN_UPDATE = "/product/admin/update";
+    public static final String PRODUCT_ADMIN_DELETE = "/product/admin/delete";
 
     public static final String DELIVERY_LIST = "/delivery/list";
     public static final String DELIVERY_ADMIN_LIST = "/delivery/admin/list";
@@ -71,19 +64,10 @@ public class Url {
     public static final String ORDER_FIND = "/order/find";
     public static final String ORDER_ADMIN_FIND = "/order/admin/find";
     public static final String ORDER_SAVE = "/order/save";
-    public static final String ORDERL_UPDATE = "/order/update";
     public static final String ORDER_DELETE = "/order/delete";
     public static final String ORDER_CHECK = "/order/check";
     public static final String ORDER_CONFIRM = "/order/confirm";
     public static final String ORDER_PAY = "/order/pay";
-
-    public static final String DISTRIBUTOR_LIST = "/distributor/list";
-    public static final String DISTRIBUTOR_ADMIN_LIST = "/distributor/admin/list";
-    public static final String DISTRIBUTOR_FIND = "/distributor/find";
-    public static final String DISTRIBUTOR_ADMIN_FIND = "/distributor/admin/find";
-    public static final String DISTRIBUTOR_SAVE = "/distributor/save";
-    public static final String DISTRIBUTORL_UPDATE = "/distributor/update";
-    public static final String DISTRIBUTOR_DELETE = "/distributor/delete";
 
     public static final String SUPPLIER_LIST = "/supplier/list";
     public static final String SUPPLIER_ADMIN_LIST = "/supplier/admin/list";
@@ -93,21 +77,10 @@ public class Url {
     public static final String SUPPLIERL_UPDATE = "/supplier/update";
     public static final String SUPPLIER_DELETE = "/supplier/delete";
 
-    public static final String SCENE_LIST = "/scene/list";
     public static final String SCENE_ADMIN_LIST = "/scene/admin/list";
-    public static final String SCENE_FIND = "/scene/find";
     public static final String SCENE_ADMIN_FIND = "/scene/admin/find";
-    public static final String SCENE_SAVE = "/scene/save";
-    public static final String SCENEL_UPDATE = "/scene/update";
-    public static final String SCENE_DELETE = "/scene/delete";
-
-    public static final String COMMISSION_LIST = "/commission/list";
-    public static final String COMMISSION_ADMIN_LIST = "/commission/admin/list";
-    public static final String COMMISSION_FIND = "/commission/find";
-    public static final String COMMISSION_ADMIN_FIND = "/commission/admin/find";
-    public static final String COMMISSION_SAVE = "/commission/save";
-    public static final String COMMISSIONL_UPDATE = "/commission/update";
-    public static final String COMMISSION_DELETE = "/commission/delete";
+    public static final String SCENE_ADMIN_SAVE = "/scene/admin/save";
+    public static final String SCENE_ADMIN_DELETE = "/scene/admin/delete";
 
     public static final String BILL_LIST = "/bill/list";
     public static final String BILL_MEMBER_LIST = "/bill/member/list";

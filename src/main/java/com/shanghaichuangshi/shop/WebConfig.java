@@ -14,6 +14,7 @@ public class WebConfig {
         routes = com.shanghaichuangshi.WebConfig.configRoute(routes);
 
         routes.add("/member", MemberController.class);
+        routes.add("/member/level", MemberLevelController.class);
         routes.add("/brand", BrandController.class);
         routes.add("/product", ProductController.class);
         routes.add("/delivery", DeliveryController.class);

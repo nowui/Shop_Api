@@ -70,8 +70,8 @@ public class BrandController extends Controller {
         renderSuccessJson(brand.removeSystemInfo());
     }
 
-    @ActionKey(Url.BRAND_SAVE)
-    public void save() {
+    @ActionKey(Url.BRAND_ADMIN_SAVE)
+    public void adminSave() {
         Brand model = getParameter(Brand.class);
         String request_user_id = getRequest_user_id();
 
@@ -82,8 +82,8 @@ public class BrandController extends Controller {
         renderSuccessJson();
     }
 
-    @ActionKey(Url.BRANDL_UPDATE)
-    public void update() {
+    @ActionKey(Url.BRANDL_ADMIN_UPDATE)
+    public void adminUpdate() {
         Brand model = getParameter(Brand.class);
         String request_user_id = getRequest_user_id();
 
@@ -94,8 +94,8 @@ public class BrandController extends Controller {
         renderSuccessJson();
     }
 
-    @ActionKey(Url.BRAND_DELETE)
-    public void delete() {
+    @ActionKey(Url.BRAND_ADMIN_DELETE)
+    public void adminDelete() {
         Brand model = getParameter(Brand.class);
         String request_user_id = getRequest_user_id();
 

@@ -95,8 +95,8 @@ public class ProductController extends Controller {
         renderSuccessJson(product.removeSystemInfo());
     }
 
-    @ActionKey(Url.PRODUCT_SAVE)
-    public void save() {
+    @ActionKey(Url.PRODUCT_ADMIN_SAVE)
+    public void adminSave() {
         Product model = getParameter(Product.class);
         String request_user_id = getRequest_user_id();
 
@@ -109,8 +109,8 @@ public class ProductController extends Controller {
         renderSuccessJson();
     }
 
-    @ActionKey(Url.PRODUCTL_UPDATE)
-    public void update() {
+    @ActionKey(Url.PRODUCTL_ADMIN_UPDATE)
+    public void adminUpdate() {
         Product model = getParameter(Product.class);
         String request_user_id = getRequest_user_id();
 
@@ -123,8 +123,8 @@ public class ProductController extends Controller {
         renderSuccessJson();
     }
 
-    @ActionKey(Url.PRODUCT_DELETE)
-    public void delete() {
+    @ActionKey(Url.PRODUCT_ADMIN_DELETE)
+    public void adminDelete() {
         Product model = getParameter(Product.class);
         String request_user_id = getRequest_user_id();
 

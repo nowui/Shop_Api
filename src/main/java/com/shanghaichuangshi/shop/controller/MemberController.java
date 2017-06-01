@@ -26,19 +26,6 @@ public class MemberController extends Controller {
     private final MemberLevelService memberLevelService = new MemberLevelService();
     private final OrderService orderService = new OrderService();
 
-    @ActionKey(Url.MEMBER_LIST)
-    public void list() {
-        validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);
-
-        Member model = getParameter(Member.class);
-
-        model.validate(Member.MEMBER_NAME);
-
-        List<Member> memberList = memberService.list(model.getMember_name(), getM(), getN());
-
-        renderSuccessJson(memberList);
-    }
-
     @ActionKey(Url.MEMBER_ADMIN_LIST)
     public void adminList() {
         validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);
@@ -54,9 +41,9 @@ public class MemberController extends Controller {
         renderSuccessJson(count, memberList);
     }
 
-    @ActionKey(Url.MEMBER_TREE_LIST)
-    public void treeList() {
-        List<Member> memberList = memberService.treeList();
+    @ActionKey(Url.MEMBER_ADMIN_TREE_LIST)
+    public void adminTreeList() {
+        List<Member> memberList = memberService.adminTreeList();
 
         renderSuccessJson( memberList);
     }
@@ -68,17 +55,6 @@ public class MemberController extends Controller {
         List<Member> memberList = memberService.teamList(request_user_id);
 
         renderSuccessJson(memberList);
-    }
-
-    @ActionKey(Url.MEMBER_FIND)
-    public void find() {
-        Member model = getParameter(Member.class);
-
-        model.validate(Member.MEMBER_ID);
-
-        Member member = memberService.find(model.getMember_id());
-
-        renderSuccessJson(member.removeUnfindable());
     }
 
     @ActionKey(Url.MEMBER_ADMIN_FIND)
@@ -161,7 +137,7 @@ public class MemberController extends Controller {
         renderSuccessJson(member.removeUnfindable());
     }
 
-    @ActionKey(Url.MEMBER_TEAM_MEMBER_LEVEL_FIND)
+    @ActionKey(Url.MEMBER_TEAM_MEMBER_LEVEL_LIST)
     public void teamMemberLevelFind() {
         Member model = getParameter(Member.class);
 
@@ -185,6 +161,18 @@ public class MemberController extends Controller {
 //        renderSuccessJson();
 //    }
 
+    @ActionKey(Url.MEMBERL_MEMBER_LEVELL_UPDATE)
+    public void memberLevelUpdate() {
+        Member model = getParameter(Member.class);
+        String request_user_id = getRequest_user_id();
+
+        model.validate(Member.MEMBER_ID, Member.MEMBER_LEVEL_ID);
+
+        memberService.teamUpdate(model.getMember_id(), model.getMember_level_id(), request_user_id);
+
+        renderSuccessJson();
+    }
+
     @ActionKey(Url.MEMBER_ADMIN_MEMBER_LEVELL_UPDATE)
     public void adminMemberLevelUpdate() {
         Member model = getParameter(Member.class);
@@ -193,18 +181,6 @@ public class MemberController extends Controller {
         model.validate(Member.MEMBER_ID, Member.MEMBER_LEVEL_ID);
 
         memberService.updateByMember_idAndMember_level_id(model.getMember_id(), model.getMember_level_id(), request_user_id);
-
-        renderSuccessJson();
-    }
-
-    @ActionKey(Url.MEMBERL_CHILDREN_UPDATE)
-    public void childrenUpdate() {
-        Member model = getParameter(Member.class);
-        String request_user_id = getRequest_user_id();
-
-        model.validate(Member.MEMBER_ID, Member.MEMBER_LEVEL_ID);
-
-        memberService.childrenUpdate(model.getMember_id(), model.getMember_level_id(), request_user_id);
 
         renderSuccessJson();
     }
@@ -246,76 +222,6 @@ public class MemberController extends Controller {
         Map<String, Object> resultMap = memberService.weChatWXLogin(getAttr(Constant.REQUEST_PARAMETER), getPlatform(), getVersion(), getIp_address());
 
         renderSuccessJson(resultMap);
-    }
-
-    @ActionKey(Url.MEMBER_LEVEL_ADMIN_LIST)
-    public void levelAdminList() {
-        validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);
-
-        MemberLevel model = getParameter(MemberLevel.class);
-
-        model.validate(MemberLevel.MEMBER_LEVEL_NAME);
-
-        int count = memberLevelService.count(model.getMember_level_name());
-
-        List<MemberLevel> memberLevelListvice = memberLevelService.list(model.getMember_level_name(), getM(), getN());
-
-        renderSuccessJson(count, memberLevelListvice);
-    }
-
-    @ActionKey(Url.MEMBER_LEVEL_CATEGORY_LIST)
-    public void levelCategoryList() {
-
-        List<MemberLevel> memberLevelListvice = memberLevelService.list("", 0, 0);
-
-        renderSuccessJson(memberLevelListvice);
-    }
-
-    @ActionKey(Url.MEMBER_LEVEL_ADMIN_FIND)
-    public void levelAdminFind() {
-        MemberLevel model = getParameter(MemberLevel.class);
-
-        model.validate(MemberLevel.MEMBER_LEVEL_ID);
-
-        MemberLevel member_level = memberLevelService.find(model.getMember_level_id());
-
-        renderSuccessJson(member_level);
-    }
-
-    @ActionKey(Url.MEMBER_LEVEL_SAVE)
-    public void levelSave() {
-        MemberLevel model = getParameter(MemberLevel.class);
-        String request_user_id = getRequest_user_id();
-
-        model.validate(MemberLevel.MEMBER_LEVEL_NAME);
-
-        memberLevelService.save(model, request_user_id);
-
-        renderSuccessJson();
-    }
-
-    @ActionKey(Url.MEMBER_LEVELL_UPDATE)
-    public void levelUpdate() {
-        MemberLevel model = getParameter(MemberLevel.class);
-        String request_user_id = getRequest_user_id();
-
-        model.validate(MemberLevel.MEMBER_LEVEL_ID, MemberLevel.MEMBER_LEVEL_NAME);
-
-        memberLevelService.update(model, request_user_id);
-
-        renderSuccessJson();
-    }
-
-    @ActionKey(Url.MEMBER_LEVEL_DELETE)
-    public void levelDelete() {
-        MemberLevel model = getParameter(MemberLevel.class);
-        String request_user_id = getRequest_user_id();
-
-        model.validate(MemberLevel.MEMBER_LEVEL_ID);
-
-        memberLevelService.delete(model, request_user_id);
-
-        renderSuccessJson();
     }
 
 }
