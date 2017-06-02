@@ -60,9 +60,10 @@ public class CommissionCache extends Cache {
 
     public boolean deleteByProduct_id(String product_id, String request_user_id) {
         List<Commission> commissionList = CacheUtil.get(COMMISSION_LIST_BY_PRODUCT_ID_CACHE, product_id);
-
-        for(Commission commission : commissionList) {
-            CacheUtil.remove(COMMISSION_CACHE, commission.getCommission_id());
+        if (commissionList != null) {
+            for(Commission commission : commissionList) {
+                CacheUtil.remove(COMMISSION_CACHE, commission.getCommission_id());
+            }
         }
 
         CacheUtil.remove(COMMISSION_LIST_BY_PRODUCT_ID_CACHE, product_id);

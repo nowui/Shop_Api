@@ -41,8 +41,8 @@ public class BrandController extends Controller {
         renderSuccessJson(count, brandList);
     }
 
-    @ActionKey(Url.BRAND_CATEGORY_LIST)
-    public void categoryList() {
+    @ActionKey(Url.BRAND_ADMIN_CATEGORY_LIST)
+    public void adminCategoryList() {
         List<Brand> brandList = brandService.list("", 0, 0);
 
         renderSuccessJson(brandList);

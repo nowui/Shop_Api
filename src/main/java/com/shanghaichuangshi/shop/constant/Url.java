@@ -32,7 +32,7 @@ public class Url {
 
     public static final String BRAND_LIST = "/brand/list";
     public static final String BRAND_ADMIN_LIST = "/brand/admin/list";
-    public static final String BRAND_CATEGORY_LIST = "/brand/category/list";
+    public static final String BRAND_ADMIN_CATEGORY_LIST = "/brand/admin/category/list";
     public static final String BRAND_FIND = "/brand/find";
     public static final String BRAND_ADMIN_FIND = "/brand/admin/find";
     public static final String BRAND_ADMIN_SAVE = "/brand/admin/save";
@@ -41,7 +41,7 @@ public class Url {
 
     public static final String PRODUCT_LIST = "/product/list";
     public static final String PRODUCT_ADMIN_LIST = "/product/admin/list";
-    public static final String PRODUCT_CATEGORY_LIST = "/product/category/list";
+    public static final String PRODUCT_ADMIN_CATEGORY_LIST = "/product/admin/category/list";
     public static final String PRODUCT_ALL_LIST = "/product/all/list";
     public static final String PRODUCT_HOT_LIST = "/product/hot/list";
     public static final String PRODUCT_MY_LIST = "/product/my/list";
@@ -87,9 +87,6 @@ public class Url {
     public static final String BILL_ADMIN_LIST = "/bill/admin/list";
     public static final String BILL_FIND = "/bill/find";
     public static final String BILL_ADMIN_FIND = "/bill/admin/find";
-    public static final String BILL_SAVE = "/bill/save";
-    public static final String BILLL_UPDATE = "/bill/update";
-    public static final String BILL_DELETE = "/bill/delete";
 
     public static final String CART_LIST = "/cart/list";
     public static final String CART_ADMIN_LIST = "/cart/admin/list";

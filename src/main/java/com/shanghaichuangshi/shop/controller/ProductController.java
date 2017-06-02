@@ -2,7 +2,6 @@ package com.shanghaichuangshi.shop.controller;
 
 import com.jfinal.core.ActionKey;
 import com.shanghaichuangshi.constant.Constant;
-import com.shanghaichuangshi.model.Category;
 import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.controller.Controller;
 import com.shanghaichuangshi.shop.model.Commission;
@@ -45,8 +44,8 @@ public class ProductController extends Controller {
         renderSuccessJson(productList);
     }
 
-    @ActionKey(Url.PRODUCT_CATEGORY_LIST)
-    public void categoryList() {
+    @ActionKey(Url.PRODUCT_ADMIN_CATEGORY_LIST)
+    public void adminCategoryList() {
         List<Map<String, Object>> resultList = productService.categoryList();
 
         renderSuccessJson(resultList);

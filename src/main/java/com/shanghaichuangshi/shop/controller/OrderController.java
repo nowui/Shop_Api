@@ -4,8 +4,6 @@ import com.jfinal.core.ActionKey;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.controller.Controller;
-import com.shanghaichuangshi.shop.model.Member;
-import com.shanghaichuangshi.shop.model.MemberLevel;
 import com.shanghaichuangshi.shop.model.Order;
 import com.shanghaichuangshi.shop.model.Product;
 import com.shanghaichuangshi.shop.service.OrderService;

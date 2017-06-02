@@ -9,7 +9,7 @@ import java.util.List;
 
 public class BillCache extends Cache {
 
-    private final String BILL_BY_USER_ID_CACHE = "bill_by_user_id_cache";
+    public static final String BILL_BY_USER_ID_CACHE = "bill_by_user_id_cache";
 
     private BillDao billDao = new BillDao();
 

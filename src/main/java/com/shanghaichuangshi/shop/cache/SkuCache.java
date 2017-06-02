@@ -50,9 +50,11 @@ public class SkuCache extends Cache {
     }
 
     public void updateProduct_stock(List<Sku> skuList, String product_id, String request_user_id) {
-        List<Sku> skuListCache = CacheUtil.get(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
-        for(Sku sku : skuListCache) {
-            CacheUtil.remove(SKU_BY_SKU_ID_CACHE, sku.getSku_id());
+        List<Sku> cacheList = CacheUtil.get(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
+        if (cacheList != null) {
+            for(Sku sku : cacheList) {
+                CacheUtil.remove(SKU_BY_SKU_ID_CACHE, sku.getSku_id());
+            }
         }
 
         CacheUtil.remove(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
@@ -61,9 +63,11 @@ public class SkuCache extends Cache {
     }
 
     public void delete(List<Sku> skuList, String product_id, String request_user_id) {
-        List<Sku> skuListCache = CacheUtil.get(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
-        for(Sku sku : skuListCache) {
-            CacheUtil.remove(SKU_BY_SKU_ID_CACHE, sku.getSku_id());
+        List<Sku> cacheList = CacheUtil.get(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
+        if (cacheList != null) {
+            for(Sku sku : cacheList) {
+                CacheUtil.remove(SKU_BY_SKU_ID_CACHE, sku.getSku_id());
+            }
         }
 
         CacheUtil.remove(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
@@ -72,10 +76,10 @@ public class SkuCache extends Cache {
     }
 
     public boolean deleteByProduct_id(String product_id, String request_user_id) {
-        List<Sku> skuListCache = CacheUtil.get(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
+        List<Sku> cacheList = CacheUtil.get(SKU_LIST_BY_PRODUCT_ID_CACHE, product_id);
 
-        if (skuListCache != null) {
-            for(Sku sku : skuListCache) {
+        if (cacheList != null) {
+            for(Sku sku : cacheList) {
                 CacheUtil.remove(SKU_BY_SKU_ID_CACHE, sku.getSku_id());
             }
         }
