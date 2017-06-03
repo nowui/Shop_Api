@@ -46,6 +46,10 @@ public class ExpressDao extends Dao {
 
     public Express save(Express express, String request_user_id) {
         express.setExpress_id(Util.getRandomUUID());
+        express.setExpress_result("");
+        express.setExpress_flow("");
+        express.setExpress_status(true);
+        express.setExpress_trace("");
         express.setSystem_create_user_id(request_user_id);
         express.setSystem_create_time(new Date());
         express.setSystem_update_user_id(request_user_id);
@@ -58,6 +62,7 @@ public class ExpressDao extends Dao {
     }
 
     public boolean update(Express express, String request_user_id) {
+        express.remove(Express.ORDER_ID);
         express.remove(Express.SYSTEM_CREATE_USER_ID);
         express.remove(Express.SYSTEM_CREATE_TIME);
         express.setSystem_update_user_id(request_user_id);

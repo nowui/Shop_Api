@@ -66,7 +66,7 @@ public class CartController extends Controller {
         renderSuccessJson();
     }
 
-    @ActionKey(Url.CARTL_UPDATE)
+    @ActionKey(Url.CART_UPDATE)
     public void update() {
         Cart model = getParameter(Cart.class);
         String request_user_id = getRequest_user_id();

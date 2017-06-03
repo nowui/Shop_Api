@@ -161,7 +161,7 @@ public class MemberController extends Controller {
 //        renderSuccessJson();
 //    }
 
-    @ActionKey(Url.MEMBERL_MEMBER_LEVELL_UPDATE)
+    @ActionKey(Url.MEMBERL_MEMBER_LEVEL_UPDATE)
     public void memberLevelUpdate() {
         Member model = getParameter(Member.class);
         String request_user_id = getRequest_user_id();
@@ -173,7 +173,7 @@ public class MemberController extends Controller {
         renderSuccessJson();
     }
 
-    @ActionKey(Url.MEMBER_ADMIN_MEMBER_LEVELL_UPDATE)
+    @ActionKey(Url.MEMBER_ADMIN_MEMBER_LEVEL_UPDATE)
     public void adminMemberLevelUpdate() {
         Member model = getParameter(Member.class);
         String request_user_id = getRequest_user_id();

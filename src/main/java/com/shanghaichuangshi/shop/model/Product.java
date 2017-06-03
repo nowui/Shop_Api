@@ -59,6 +59,7 @@ public class Product extends Model<Product> {
     public static final String PRODUCT_IMAGE_FILE = "product_image_file";
     public static final String PRODUCT_IMAGE_FILE_LIST = "product_image_file_list";
     public static final String PRODUCT_QUANTITY_MIN = "product_quantity_min";
+    public static final String EXPRESS_LIST = "express_list";
 
     
     public String getProduct_id() {

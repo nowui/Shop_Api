@@ -78,7 +78,7 @@ public class SupplierController extends Controller {
         renderSuccessJson();
     }
 
-    @ActionKey(Url.SUPPLIERL_UPDATE)
+    @ActionKey(Url.SUPPLIER_UPDATE)
     public void update() {
         Supplier model = getParameter(Supplier.class);
         User userModel = getParameter(User.class);

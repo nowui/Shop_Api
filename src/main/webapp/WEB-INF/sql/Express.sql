@@ -11,7 +11,9 @@
   #sql("list")
     SELECT
     express_id,
-    express_name
+    express_type,
+    express_number,
+    express_flow
     FROM table_express
     WHERE system_status = 1
     #if(order_id)

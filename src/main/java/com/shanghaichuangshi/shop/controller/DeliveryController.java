@@ -73,7 +73,7 @@ public class DeliveryController extends Controller {
         renderSuccessJson(delivery.keep(Delivery.DELIVERY_ID, Delivery.DELIVERY_NAME, Delivery.DELIVERY_PHONE, Delivery.DELIVERY_ADDRESS, Delivery.DELIVERY_IS_DEFAULT));
     }
 
-    @ActionKey(Url.DELIVERYL_UPDATE)
+    @ActionKey(Url.DELIVERY_UPDATE)
     public void update() {
         Delivery model = getParameter(Delivery.class);
         String request_user_id = getRequest_user_id();

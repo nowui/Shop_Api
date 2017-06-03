@@ -17,8 +17,8 @@ public class Url {
     public static final String MEMBER_QRCODE_FIND = "/member/qrcode/find";
     public static final String MEMBER_MY_FIND = "/member/my/find";
     public static final String MEMBER_TEAM_FIND = "/member/team/find";
-    public static final String MEMBERL_MEMBER_LEVELL_UPDATE = "/member/member/level/update";
-    public static final String MEMBER_ADMIN_MEMBER_LEVELL_UPDATE = "/member/admin/member/level/update";
+    public static final String MEMBERL_MEMBER_LEVEL_UPDATE = "/member/member/level/update";
+    public static final String MEMBER_ADMIN_MEMBER_LEVEL_UPDATE = "/member/admin/member/level/update";
     public static final String MEMBER_DELETE = "/member/delete";
     public static final String MEMBER_LOGIN = "/member/login";
     public static final String MEMBER_WECHAT_WX_LOGIN = "/member/wechat/wx/login";
@@ -56,11 +56,12 @@ public class Url {
     public static final String DELIVERY_FIND = "/delivery/find";
     public static final String DELIVERY_ADMIN_FIND = "/delivery/admin/find";
     public static final String DELIVERY_SAVE = "/delivery/save";
-    public static final String DELIVERYL_UPDATE = "/delivery/update";
+    public static final String DELIVERY_UPDATE = "/delivery/update";
     public static final String DELIVERY_DELETE = "/delivery/delete";
 
     public static final String ORDER_LIST = "/order/list";
     public static final String ORDER_ADMIN_LIST = "/order/admin/list";
+    public static final String ORDER_ADMIN_EXPRESS_LIST = "/order/admin/express/list";
     public static final String ORDER_FIND = "/order/find";
     public static final String ORDER_ADMIN_FIND = "/order/admin/find";
     public static final String ORDER_SAVE = "/order/save";
@@ -74,7 +75,7 @@ public class Url {
     public static final String SUPPLIER_FIND = "/supplier/find";
     public static final String SUPPLIER_ADMIN_FIND = "/supplier/admin/find";
     public static final String SUPPLIER_SAVE = "/supplier/save";
-    public static final String SUPPLIERL_UPDATE = "/supplier/update";
+    public static final String SUPPLIER_UPDATE = "/supplier/update";
     public static final String SUPPLIER_DELETE = "/supplier/delete";
 
     public static final String SCENE_ADMIN_LIST = "/scene/admin/list";
@@ -93,14 +94,12 @@ public class Url {
     public static final String CART_FIND = "/cart/find";
     public static final String CART_ADMIN_FIND = "/cart/admin/find";
     public static final String CART_SAVE = "/cart/save";
-    public static final String CARTL_UPDATE = "/cart/update";
+    public static final String CART_UPDATE = "/cart/update";
     public static final String CART_DELETE = "/cart/delete";
 
-    public static final String EXPRESS_LIST = "/express/list";
     public static final String EXPRESS_ADMIN_LIST = "/express/admin/list";
-    public static final String EXPRESS_FIND = "/express/find";
     public static final String EXPRESS_ADMIN_FIND = "/express/admin/find";
-    public static final String EXPRESS_SAVE = "/express/save";
-    public static final String EXPRESSL_UPDATE = "/express/update";
-    public static final String EXPRESS_DELETE = "/express/delete";
+    public static final String EXPRESS_ADMIN_SAVE = "/express/admin/save";
+    public static final String EXPRESSL_ADMIN_UPDATE = "/express/admin/update";
+    public static final String EXPRESS_ADMIN_DELETE = "/express/admin/delete";
 }

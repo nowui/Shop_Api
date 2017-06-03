@@ -18,6 +18,10 @@ public class ExpressCache extends Cache {
         return expressDao.list(order_id, m, n);
     }
 
+    public List<Express> listByOrder_id(String order_id) {
+        return expressDao.list(order_id, 0, 0);
+    }
+
     public Express find(String express_id) {
         return expressDao.find(express_id);
     }

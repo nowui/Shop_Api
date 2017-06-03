@@ -79,7 +79,7 @@ public class MemberCache extends Cache {
 
         CacheUtil.remove(MEMBER_BY_MEMBER_ID_CACHE, member_id);
 
-        return updateByMember_idAndScene_idAndScene_qrcode(member_id, scene_id, scene_qrcode, request_user_id);
+        return memberDao.updateByMember_idAndScene_idAndScene_qrcode(member_id, scene_id, scene_qrcode, request_user_id);
     }
 
     public boolean updateByMember_idAndParent_idAndParent_pathAndMember_level_id(String member_id, String parent_id, String parent_path, String member_level_id) {

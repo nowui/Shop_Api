@@ -72,11 +72,11 @@ public class Express extends Model<Express> {
     public void setExpress_flow(String express_flow) {
         set(EXPRESS_FLOW, express_flow);
     }
-    public String getExpress_status() {
-        return getStr(EXPRESS_STATUS);
+    public Boolean getExpress_status() {
+        return getBoolean(EXPRESS_STATUS);
     }
 
-    public void setExpress_status(String express_status) {
+    public void setExpress_status(Boolean express_status) {
         set(EXPRESS_STATUS, express_status);
     }
     public String getExpress_trace() {

@@ -4,6 +4,7 @@ import com.jfinal.core.ActionKey;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.controller.Controller;
+import com.shanghaichuangshi.shop.model.Express;
 import com.shanghaichuangshi.shop.model.Order;
 import com.shanghaichuangshi.shop.model.Product;
 import com.shanghaichuangshi.shop.service.OrderService;
@@ -39,6 +40,17 @@ public class OrderController extends Controller {
         List<Order> orderListvice = orderService.list(model.getOrder_number(), getM(), getN());
 
         renderSuccessJson(count, orderListvice);
+    }
+
+    @ActionKey(Url.ORDER_ADMIN_EXPRESS_LIST)
+    public void adminExpressList() {
+        Order model = getParameter(Order.class);
+
+        model.validate(Order.ORDER_ID);
+
+        List<Express> expressList = orderService.adminExpressList(model.getOrder_id());
+
+        renderSuccessJson(expressList);
     }
 
     @ActionKey(Url.ORDER_FIND)

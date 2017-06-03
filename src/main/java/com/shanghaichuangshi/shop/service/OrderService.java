@@ -37,6 +37,7 @@ public class OrderService extends Service {
     private final DeliveryCache deliveryCache = new DeliveryCache();
     private final FileCache fileCache = new FileCache();
     private final UserCache userCache = new UserCache();
+    private final ExpressCache expressCache = new ExpressCache();
 
     public int count(String order_number) {
         return orderCache.count(order_number);
@@ -63,6 +64,10 @@ public class OrderService extends Service {
         return orderList;
     }
 
+    public List<Express> adminExpressList(String order_id) {
+        return expressCache.listByOrder_id(order_id);
+    }
+
     public Order find(String order_id) {
         Order order = orderCache.find(order_id);
 
@@ -86,6 +91,9 @@ public class OrderService extends Service {
             orderProduct.keep(OrderProduct.PRODUCT_ID, OrderProduct.PRODUCT_NAME, OrderProduct.ORDER_PRODUCT_PRICE, OrderProduct.ORDER_PRODUCT_QUANTITY, OrderProduct.ORDER_PRODUCT_COMMISSION);
         }
         order.put(Product.PRODUCT_LIST, orderProductList);
+
+        List<Express> expressList = expressCache.listByOrder_id(order_id);
+        order.put(Product.EXPRESS_LIST, expressList);
 
         return order;
     }
