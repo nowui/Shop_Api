@@ -13,7 +13,8 @@
     express_id,
     express_type,
     express_number,
-    express_flow
+    express_flow,
+    express_status
     FROM table_express
     WHERE system_status = 1
     #if(order_id)
@@ -31,6 +32,15 @@
     FROM table_express
     WHERE system_status = 1
     AND express_id = #p(express_id)
+  #end
+
+  #sql("updateProduct_stock")
+    UPDATE table_express SET
+    express_flow = ?,
+    express_status = ?,
+    express_trace = ?,
+    system_update_time = ?
+    WHERE express_id = ?
   #end
 
   #sql("delete")

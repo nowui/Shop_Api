@@ -3,12 +3,12 @@ package com.shanghaichuangshi.shop.dao;
 import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
+import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.model.Express;
 import com.shanghaichuangshi.util.Util;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class ExpressDao extends Dao {
 
@@ -44,8 +44,8 @@ public class ExpressDao extends Dao {
         }
     }
 
-    public Express save(Express express, String request_user_id) {
-        express.setExpress_id(Util.getRandomUUID());
+    public Express save(String express_id, Express express, String request_user_id) {
+        express.setExpress_id(express_id);
         express.setExpress_result("");
         express.setExpress_flow("");
         express.setExpress_status(true);
@@ -70,6 +70,36 @@ public class ExpressDao extends Dao {
         express.remove(Express.SYSTEM_STATUS);
 
         return express.update();
+    }
+
+    public Boolean updateBusiness(List<Express> expressList) {
+        if (expressList.size() == 0) {
+            return true;
+        }
+
+        Kv map = Kv.create();
+        SqlPara sqlPara = Db.getSqlPara("express.updateBusiness", map);
+
+        List<Object[]> parameterList = new ArrayList<Object[]>();
+        for(Express express : expressList) {
+            List<Object> objectList = new ArrayList<Object>();
+            objectList.add(express.getExpress_flow());
+            objectList.add(express.getExpress_status());
+            objectList.add(express.getExpress_trace());
+            objectList.add(new Date());
+            objectList.add(express.getExpress_id());
+            parameterList.add(objectList.toArray());
+        }
+
+        int[] result = Db.batch(sqlPara.getSql(), Util.getObjectArray(parameterList), Constant.BATCH_SIZE);
+
+        for (int i : result) {
+            if (i == 0) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public boolean delete(String express_id, String request_user_id) {
