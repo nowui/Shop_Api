@@ -102,4 +102,5 @@ public class Url {
     public static final String EXPRESS_ADMIN_SAVE = "/express/admin/save";
     public static final String EXPRESSL_ADMIN_UPDATE = "/express/admin/update";
     public static final String EXPRESS_ADMIN_DELETE = "/express/admin/delete";
+    public static final String EXPRESS_PUSH = "/express/push";
 }

@@ -15,7 +15,7 @@ public class Brand extends Model<Brand> {
     @Column(type = ColumnType.VARCHAR, length = 20, comment = "品牌名称")
     public static final String BRAND_NAME = "brand_name";
 
-    @Column(type = ColumnType.VARCHAR, length = 100, comment = "品牌图片")
+    @Column(type = ColumnType.VARCHAR, length = 32, comment = "品牌图片")
     public static final String BRAND_IMAGE = "brand_image";
 
     @Column(type = ColumnType.LONGTEXT, length = 0, comment = "品牌内容")

@@ -3,8 +3,8 @@
   #sql("count")
     SELECT COUNT(*) FROM table_express
     WHERE system_status = 1
-    #if(order_id)
-      AND order_id = #p(order_id)
+    #if(express_number)
+      AND express_number = #p(express_number)
     #end
   #end
 
@@ -17,13 +17,26 @@
     express_status
     FROM table_express
     WHERE system_status = 1
-    #if(order_id)
-      AND order_id = #p(order_id)
+    #if(express_number)
+      AND express_number = #p(express_number)
     #end
     ORDER BY system_create_time DESC
     #if(n > 0)
       LIMIT #p(m), #p(n)
     #end
+  #end
+
+  #sql("listByOrder_id")
+    SELECT
+    express_id,
+    express_type,
+    express_number,
+    express_flow,
+    express_status
+    FROM table_express
+    WHERE system_status = 1
+    AND order_id = #p(order_id)
+    ORDER BY system_create_time DESC
   #end
 
   #sql("find")
@@ -34,7 +47,7 @@
     AND express_id = #p(express_id)
   #end
 
-  #sql("updateProduct_stock")
+  #sql("updateBusiness")
     UPDATE table_express SET
     express_flow = ?,
     express_status = ?,

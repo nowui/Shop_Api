@@ -58,6 +58,7 @@ public class WebConfig {
         uncheckUrlList.add(Url.WECHAT_API_NOTIFY);
         uncheckUrlList.add(Url.WECHAT_SHARE);
         uncheckUrlList.add(Url.WECHAT_MESSAGE);
+        uncheckUrlList.add(Url.EXPRESS_PUSH);
 
         return uncheckUrlList;
     }

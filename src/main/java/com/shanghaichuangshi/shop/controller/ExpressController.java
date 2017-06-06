@@ -73,4 +73,11 @@ public class ExpressController extends Controller {
         renderSuccessJson();
     }
 
+    @ActionKey(Url.EXPRESS_PUSH)
+    public void push() {
+        expressService.push(getPara("RequestData"));
+
+        renderSuccessJson();
+    }
+
 }

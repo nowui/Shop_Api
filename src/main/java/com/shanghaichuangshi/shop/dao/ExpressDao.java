@@ -1,5 +1,6 @@
 package com.shanghaichuangshi.shop.dao;
 
+import com.alibaba.fastjson.JSONArray;
 import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
@@ -12,21 +13,29 @@ import java.util.*;
 
 public class ExpressDao extends Dao {
 
-    public int count(String order_id) {
+    public int count(String express_number) {
         Kv map = Kv.create();
-        map.put(Express.ORDER_ID, order_id);
+        map.put(Express.EXPRESS_NUMBER, express_number);
         SqlPara sqlPara = Db.getSqlPara("express.count", map);
 
         Number count = Db.queryFirst(sqlPara.getSql(), sqlPara.getPara());
         return count.intValue();
     }
 
-    public List<Express> list(String order_id, Integer m, Integer n) {
+    public List<Express> list(String express_number, Integer m, Integer n) {
         Kv map = Kv.create();
-        map.put(Express.ORDER_ID, order_id);
+        map.put(Express.EXPRESS_NUMBER, express_number);
         map.put(Express.M, m);
         map.put(Express.N, n);
         SqlPara sqlPara = Db.getSqlPara("express.list", map);
+
+        return new Express().find(sqlPara.getSql(), sqlPara.getPara());
+    }
+
+    public List<Express> listByOrder_id(String order_id) {
+        Kv map = Kv.create();
+        map.put(Express.ORDER_ID, order_id);
+        SqlPara sqlPara = Db.getSqlPara("express.listByOrder_id", map);
 
         return new Express().find(sqlPara.getSql(), sqlPara.getPara());
     }
@@ -46,10 +55,9 @@ public class ExpressDao extends Dao {
 
     public Express save(String express_id, Express express, String request_user_id) {
         express.setExpress_id(express_id);
-        express.setExpress_result("");
         express.setExpress_flow("");
         express.setExpress_status(true);
-        express.setExpress_trace("");
+        express.setExpress_trace(new JSONArray().toJSONString());
         express.setSystem_create_user_id(request_user_id);
         express.setSystem_create_time(new Date());
         express.setSystem_update_user_id(request_user_id);
