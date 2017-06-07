@@ -129,17 +129,6 @@ public class OrderCache extends Cache {
         return orderDao.update(order_id, order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result, order_flow, order_status);
     }
 
-    public boolean delete(String order_id, String request_user_id) {
-        Order order = find(order_id);
-        if (order != null) {
-            CacheUtil.remove(ORDER_LIST_BY_USER_ID_CACHE, order.getUser_id());
-        }
-
-        CacheUtil.remove(ORDER_BY_ORDER_ID_CACHE, order_id);
-
-        return orderDao.delete(order_id, request_user_id);
-    }
-
     public boolean updateByOrder_idAndOrder_is_confirm(String order_id) {
         Order order = find(order_id);
         if (order != null) {
@@ -149,6 +138,25 @@ public class OrderCache extends Cache {
         CacheUtil.remove(ORDER_BY_ORDER_ID_CACHE, order_id);
 
         return orderDao.updateByOrder_idAndOrder_is_confirm(order_id);
+    }
+
+    public boolean updateReceive(String order_id, String request_user_id) {
+        return orderDao.updateReceive(order_id, request_user_id);
+    }
+
+    public void updateFinish(List<String> orderIdList) {
+        orderDao.updateFinish(orderIdList);
+    }
+
+    public boolean delete(String order_id, String request_user_id) {
+        Order order = find(order_id);
+        if (order != null) {
+            CacheUtil.remove(ORDER_LIST_BY_USER_ID_CACHE, order.getUser_id());
+        }
+
+        CacheUtil.remove(ORDER_BY_ORDER_ID_CACHE, order_id);
+
+        return orderDao.delete(order_id, request_user_id);
     }
 
 }

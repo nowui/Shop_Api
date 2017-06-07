@@ -94,6 +94,25 @@
     WHERE order_id = #p(order_id)
   #end
 
+  #sql("updateReceive")
+    UPDATE table_order SET
+    order_flow = ?,
+    system_update_user_id = #p(system_update_user_id),
+    system_update_time = #p(system_update_time)
+    WHERE order_id = #p(order_id)
+  #end
+
+  #sql("updateFinish")
+    UPDATE table_order SET
+    order_flow = ?
+  #end
+
+  #sql("updateFinish")
+    UPDATE table_order SET
+    order_flow = ?
+    WHERE order_id = ?
+  #end
+
   #sql("delete")
     UPDATE table_order SET
     system_update_user_id = #p(system_update_user_id),

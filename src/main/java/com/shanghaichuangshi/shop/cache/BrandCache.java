@@ -9,7 +9,7 @@ import java.util.List;
 
 public class BrandCache extends Cache {
 
-    private final String BRAND_BY_BRAND_ID_CACHE = "brand_id_brand_id_cache";
+    private final String BRAND_BY_BRAND_ID_CACHE = "brand_by_brand_id_cache";
 
     private BrandDao brandDao = new BrandDao();
 

@@ -3,9 +3,12 @@ package com.shanghaichuangshi.shop.dao;
 import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.SqlPara;
+import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.model.Order;
+import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.util.DateUtil;
+import com.shanghaichuangshi.util.Util;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -131,20 +134,56 @@ public class OrderDao extends Dao {
         return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }
 
+    public boolean updateByOrder_idAndOrder_is_confirm(String order_id) {
+        Kv map = Kv.create();
+        map.put(Order.ORDER_ID, order_id);
+        SqlPara sqlPara = Db.getSqlPara("order.updateByOrder_idAndOrder_is_confirm", map);
+
+        return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
+    }
+
+    public boolean updateReceive(String order_id, String request_user_id) {
+        Kv map = Kv.create();
+        map.put(Order.ORDER_ID, order_id);
+        map.put(Order.ORDER_FLOW, OrderFlowEnum.WAIT_RECEIVE.getKey());
+        map.put(Order.SYSTEM_UPDATE_USER_ID, request_user_id);
+        map.put(Order.SYSTEM_UPDATE_TIME, new Date());
+        SqlPara sqlPara = Db.getSqlPara("order.updateReceive", map);
+
+        return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
+    }
+
+    public void updateFinish(List<String> orderIdList) {
+        if (orderIdList.size() == 0) {
+            return;
+        }
+
+        Kv map = Kv.create();
+        SqlPara sqlPara = Db.getSqlPara("order.updateFinish", map);
+
+        List<Object[]> parameterList = new ArrayList<Object[]>();
+        for(String order_id : orderIdList) {
+            List<Object> objectList = new ArrayList<Object>();
+            objectList.add(OrderFlowEnum.FINISH.getKey());
+            objectList.add(order_id);
+            parameterList.add(objectList.toArray());
+        }
+
+        int[] result = Db.batch(sqlPara.getSql(), Util.getObjectArray(parameterList), Constant.BATCH_SIZE);
+
+        for (int i : result) {
+            if (i == 0) {
+                throw new RuntimeException("订单更新不成功");
+            }
+        }
+    }
+
     public boolean delete(String order_id, String request_user_id) {
         Kv map = Kv.create();
         map.put(Order.ORDER_ID, order_id);
         map.put(Order.SYSTEM_UPDATE_USER_ID, request_user_id);
         map.put(Order.SYSTEM_UPDATE_TIME, new Date());
         SqlPara sqlPara = Db.getSqlPara("order.delete", map);
-
-        return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
-    }
-
-    public boolean updateByOrder_idAndOrder_is_confirm(String order_id) {
-        Kv map = Kv.create();
-        map.put(Order.ORDER_ID, order_id);
-        SqlPara sqlPara = Db.getSqlPara("order.updateByOrder_idAndOrder_is_confirm", map);
 
         return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
     }

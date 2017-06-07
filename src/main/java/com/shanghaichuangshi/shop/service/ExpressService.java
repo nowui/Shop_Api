@@ -5,8 +5,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.shanghaichuangshi.constant.Kdniao;
 import com.shanghaichuangshi.shop.cache.ExpressCache;
+import com.shanghaichuangshi.shop.cache.OrderCache;
 import com.shanghaichuangshi.shop.model.Express;
 import com.shanghaichuangshi.service.Service;
+import com.shanghaichuangshi.shop.model.Order;
+import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.util.DateUtil;
 import com.shanghaichuangshi.util.Util;
 
@@ -24,20 +27,14 @@ import java.util.*;
 public class ExpressService extends Service {
 
     private final ExpressCache expressCache = new ExpressCache();
+    private final OrderCache orderCache = new OrderCache();
 
-    public int count(String order_id) {
-        return expressCache.count(order_id);
+    public int count(String express_number) {
+        return expressCache.count(express_number);
     }
 
-    public List<Express> list(String order_id, int m, int n) {
-        List<Express> expressList = expressCache.list(order_id, m, n);
-
-        List<Express> resultList = new ArrayList<Express>();
-        for (Express express : expressList) {
-            resultList.add(find(express.getExpress_id()));
-        }
-
-        return resultList;
+    public List<Express> list(String express_number, int m, int n) {
+        return expressCache.list(express_number, m, n);
     }
 
     public Express find(String express_id) {
@@ -48,6 +45,11 @@ public class ExpressService extends Service {
         String express_id = Util.getRandomUUID();
 
         subscription(express_id, express.getExpress_type(), express.getExpress_number());
+
+        Order order = orderCache.find(express.getOrder_id());
+        if (order.getOrder_flow().equals(OrderFlowEnum.WAIT_SEND.getKey())) {
+            orderCache.updateReceive(express.getOrder_id(), request_user_id);
+        }
 
         return expressCache.save(express_id, express, request_user_id);
     }
@@ -152,19 +154,38 @@ public class ExpressService extends Service {
 
             Express express = expressCache.find(express_id);
 
-            orderIdList.add(express.getOrder_id());
+            if (!orderIdList.contains(express.getOrder_id())) {
+                orderIdList.add(express.getOrder_id());
+            }
 
-            if (express.getExpress_type().equals(express_type) && express.getExpress_number().equals(express_number) && express.getSystem_status()) {
+//            if (express.getExpress_type().equals(express_type) && express.getExpress_number().equals(express_number) && express.getSystem_status()) {
                 express.setExpress_flow(express_flow);
                 express.setExpress_status(express_status);
                 express.setExpress_trace(express_trace);
                 express.setExpress_id(express_id);
 
                 expressList.add(express);
-            }
+//            }
         }
 
         expressCache.updateBusiness(expressList);
+
+        List<String> updateOrderIdList = new ArrayList<String>();
+        for (String order_id : orderIdList) {
+            List<Express> expressByOrderIdList = expressCache.listByOrder_id(order_id);
+
+            Boolean isStatus = true;
+            for (Express express : expressByOrderIdList) {
+                if (!express.getExpress_status()) {
+                    isStatus = false;
+                }
+            }
+
+            if (isStatus) {
+                updateOrderIdList.add(order_id);
+            }
+        }
+        orderCache.updateFinish(updateOrderIdList);
 
         return resultMap;
     }
