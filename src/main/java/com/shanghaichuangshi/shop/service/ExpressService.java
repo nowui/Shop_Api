@@ -50,6 +50,7 @@ public class ExpressService extends Service {
         if (order.getOrder_flow().equals(OrderFlowEnum.WAIT_SEND.getKey())) {
             orderCache.updateReceive(express.getOrder_id(), request_user_id);
         }
+        orderCache.updateReceive(express.getOrder_id(), request_user_id);
 
         return expressCache.save(express_id, express, request_user_id);
     }

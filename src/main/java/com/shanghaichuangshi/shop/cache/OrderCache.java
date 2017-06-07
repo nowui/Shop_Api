@@ -3,6 +3,7 @@ package com.shanghaichuangshi.shop.cache;
 import com.shanghaichuangshi.cache.Cache;
 import com.shanghaichuangshi.shop.dao.OrderDao;
 import com.shanghaichuangshi.shop.model.Order;
+import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.util.CacheUtil;
 import com.shanghaichuangshi.util.DateUtil;
 import com.shanghaichuangshi.util.Util;
@@ -141,10 +142,22 @@ public class OrderCache extends Cache {
     }
 
     public boolean updateReceive(String order_id, String request_user_id) {
-        return orderDao.updateReceive(order_id, request_user_id);
+        Order order = find(order_id);
+
+        if (order.getOrder_flow().equals(OrderFlowEnum.WAIT_SEND.getKey())) {
+            CacheUtil.remove(ORDER_BY_ORDER_ID_CACHE, order_id);
+
+            return orderDao.updateReceive(order_id, request_user_id);
+        }
+
+        return false;
     }
 
     public void updateFinish(List<String> orderIdList) {
+        for (String order_id : orderIdList) {
+            CacheUtil.remove(ORDER_BY_ORDER_ID_CACHE, order_id);
+        }
+
         orderDao.updateFinish(orderIdList);
     }
 
