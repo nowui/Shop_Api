@@ -13,12 +13,12 @@ public class ProductCache extends Cache {
 
     private ProductDao productDao = new ProductDao();
 
-    public int count(String product_name) {
-        return productDao.count(product_name);
+    public int count(String product_name, String category_id, String brand_id) {
+        return productDao.count(product_name, category_id, brand_id);
     }
 
-    public List<Product> list(String product_name, Integer m, Integer n) {
-        return productDao.list(product_name, m, n);
+    public List<Product> list(String product_name, String category_id, String brand_id, Integer m, Integer n) {
+        return productDao.list(product_name, category_id, brand_id, m, n);
     }
 
     public List<Product> listAll() {

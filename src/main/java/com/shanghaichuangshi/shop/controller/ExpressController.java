@@ -19,9 +19,9 @@ public class ExpressController extends Controller {
 
         Express model = getParameter(Express.class);
 
-        int count = expressService.count(model.getOrder_id());
+        int count = expressService.count(model.getExpress_number());
 
-        List<Express> expressListvice = expressService.list(model.getOrder_id(), getM(), getN());
+        List<Express> expressListvice = expressService.list(model.getExpress_number(), getM(), getN());
 
         renderSuccessJson(count, expressListvice);
     }

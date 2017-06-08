@@ -7,6 +7,9 @@
       #set(order_number = "%" + order_number + "%")
       AND order_number LIKE #p(order_number)
     #end
+    #if(order_flow)
+      AND order_flow = #p(order_flow)
+    #end
   #end
 
   #sql("list")
@@ -25,6 +28,9 @@
     #if(order_number)
       #set(order_number = "%" + order_number + "%")
       AND order_number LIKE #p(order_number)
+    #end
+    #if(order_flow)
+      AND order_flow = #p(order_flow)
     #end
     ORDER BY system_create_time DESC
     #if(n > 0)
@@ -96,15 +102,10 @@
 
   #sql("updateReceive")
     UPDATE table_order SET
-    order_flow = ?,
+    order_flow = #p(order_flow),
     system_update_user_id = #p(system_update_user_id),
     system_update_time = #p(system_update_time)
     WHERE order_id = #p(order_id)
-  #end
-
-  #sql("updateFinish")
-    UPDATE table_order SET
-    order_flow = ?
   #end
 
   #sql("updateFinish")

@@ -18,18 +18,20 @@ import java.util.List;
 
 public class OrderDao extends Dao {
 
-    public int count(String order_number) {
+    public int count(String order_number, String order_flow) {
         Kv map = Kv.create();
         map.put(Order.ORDER_NUMBER, order_number);
+        map.put(Order.ORDER_FLOW, order_flow);
         SqlPara sqlPara = Db.getSqlPara("order.count", map);
 
         Number count = Db.queryFirst(sqlPara.getSql(), sqlPara.getPara());
         return count.intValue();
     }
 
-    public List<Order> list(String order_number, Integer m, Integer n) {
+    public List<Order> list(String order_number, String order_flow, Integer m, Integer n) {
         Kv map = Kv.create();
         map.put(Order.ORDER_NUMBER, order_number);
+        map.put(Order.ORDER_FLOW, order_flow);
         map.put(Order.M, m);
         map.put(Order.N, n);
         SqlPara sqlPara = Db.getSqlPara("order.list", map);

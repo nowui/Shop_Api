@@ -30,9 +30,9 @@ public class ProductController extends Controller {
 
         model.validate(Product.PRODUCT_NAME);
 
-        int count = productService.count(model);
+        int count = productService.count(model.getProduct_name(), model.getCategory_id(), model.getBrand_id());
 
-        List<Product> productList = productService.list(model, getM(), getN());
+        List<Product> productList = productService.list(model.getProduct_name(), model.getCategory_id(), model.getBrand_id(), getM(), getN());
 
         renderSuccessJson(count, productList);
     }

@@ -12,18 +12,22 @@ import java.util.List;
 
 public class ProductDao extends Dao {
 
-    public int count(String product_name) {
+    public int count(String product_name, String category_id, String brand_id) {
         Kv map = Kv.create();
         map.put(Product.PRODUCT_NAME, product_name);
+        map.put(Product.CATEGORY_ID, category_id);
+        map.put(Product.BRAND_ID, brand_id);
         SqlPara sqlPara = Db.getSqlPara("product.count", map);
 
         Number count = Db.queryFirst(sqlPara.getSql(), sqlPara.getPara());
         return count.intValue();
     }
 
-    public List<Product> list(String product_name, Integer m, Integer n) {
+    public List<Product> list(String product_name, String category_id, String brand_id, Integer m, Integer n) {
         Kv map = Kv.create();
         map.put(Product.PRODUCT_NAME, product_name);
+        map.put(Product.CATEGORY_ID, category_id);
+        map.put(Product.BRAND_ID, brand_id);
         map.put(Product.M, m);
         map.put(Product.N, n);
         SqlPara sqlPara = Db.getSqlPara("product.list", map);

@@ -12,7 +12,8 @@
   #sql("list")
     SELECT
     member_id,
-    member_name
+    member_name,
+    system_create_time
     FROM table_member
     WHERE system_status = 1
     #if(member_name)

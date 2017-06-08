@@ -39,12 +39,12 @@ public class OrderService extends Service {
     private final UserCache userCache = new UserCache();
     private final ExpressCache expressCache = new ExpressCache();
 
-    public int count(String order_number) {
-        return orderCache.count(order_number);
+    public int count(String order_number, String order_flow) {
+        return orderCache.count(order_number, order_flow);
     }
 
-    public List<Order> list(String order_number, int m, int n) {
-        return orderCache.list(order_number, m, n);
+    public List<Order> list(String order_number, String order_flow, int m, int n) {
+        return orderCache.list(order_number, order_flow, m, n);
     }
 
     public List<Order> listByUser_id(String user_id) {

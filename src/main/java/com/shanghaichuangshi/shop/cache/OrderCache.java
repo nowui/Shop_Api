@@ -21,12 +21,12 @@ public class OrderCache extends Cache {
 
     private OrderDao orderDao = new OrderDao();
 
-    public int count(String order_number) {
-        return orderDao.count(order_number);
+    public int count(String order_number, String order_flow) {
+        return orderDao.count(order_number, order_flow);
     }
 
-    public List<Order> list(String order_number, Integer m, Integer n) {
-        return orderDao.list(order_number, m, n);
+    public List<Order> list(String order_number, String order_flow, Integer m, Integer n) {
+        return orderDao.list(order_number, order_flow, m, n);
     }
 
     public List<Order> listByUser_id(String user_id) {

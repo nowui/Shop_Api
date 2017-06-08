@@ -31,12 +31,12 @@ public class ProductService extends Service {
     private final FileCache fileCache = new FileCache();
     private final OrderProductCache orderProductCache = new OrderProductCache();
 
-    public int count(Product product) {
-        return productCache.count(product.getProduct_name());
+    public int count(String product_name, String category_id, String brand_id) {
+        return productCache.count(product_name, category_id, brand_id);
     }
 
-    public List<Product> list(Product product, int m, int n) {
-        return productCache.list(product.getProduct_name(), m, n);
+    public List<Product> list(String product_name, String category_id, String brand_id, int m, int n) {
+        return productCache.list(product_name, category_id, brand_id, m, n);
     }
 
     public List<Product> hotList() {

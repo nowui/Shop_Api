@@ -35,9 +35,9 @@ public class OrderController extends Controller {
 
         model.validate(Order.ORDER_NUMBER);
 
-        int count = orderService.count(model.getOrder_number());
+        int count = orderService.count(model.getOrder_number(), model.getOrder_flow());
 
-        List<Order> orderListvice = orderService.list(model.getOrder_number(), getM(), getN());
+        List<Order> orderListvice = orderService.list(model.getOrder_number(), model.getOrder_flow(), getM(), getN());
 
         renderSuccessJson(count, orderListvice);
     }

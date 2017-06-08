@@ -7,6 +7,12 @@
       #set(product_name = "%" + product_name + "%")
       AND product_name LIKE #p(product_name)
     #end
+    #if(category_id)
+      AND category_id = #p(product_name)
+    #end
+    #if(brand_id)
+      AND brand_id = #p(brand_id)
+    #end
   #end
 
   #sql("list")
@@ -20,6 +26,12 @@
     #if(product_name)
       #set(product_name = "%" + product_name + "%")
       AND product_name LIKE #p(product_name)
+    #end
+    #if(category_id)
+      AND category_id = #p(product_name)
+    #end
+    #if(brand_id)
+      AND brand_id = #p(brand_id)
     #end
     ORDER BY system_create_time DESC
     #if(n > 0)
