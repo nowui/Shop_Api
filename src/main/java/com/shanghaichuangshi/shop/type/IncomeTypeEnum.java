@@ -1,6 +1,6 @@
 package com.shanghaichuangshi.shop.type;
 
-public enum IncomeType {
+public enum IncomeTypeEnum {
 
     COMMISSION("COMMISSION", "佣金"),
     SALE("SALE", "卖货");
@@ -8,7 +8,7 @@ public enum IncomeType {
     private String key;
     private String value;
 
-    private IncomeType(String key, String value) {
+    private IncomeTypeEnum(String key, String value) {
         this.key = key;
         this.value = value;
     }

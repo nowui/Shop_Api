@@ -2,58 +2,58 @@ package com.shanghaichuangshi.shop.model;
 
 import com.shanghaichuangshi.annotation.Column;
 import com.shanghaichuangshi.model.Model;
-import com.shanghaichuangshi.type.ColumnType;
+import com.shanghaichuangshi.type.ColumnTypeEnum;
 
 import java.math.BigDecimal;
 
 public class Member extends Model<Member> {
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "会员编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "会员编号")
     public static final String MEMBER_ID = "member_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "上一级会员编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "上一级会员编号")
     public static final String PARENT_ID = "parent_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "上一级会员编号路径", findable = false)
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 1000, comment = "上一级会员编号路径", findable = false)
     public static final String PARENT_PATH = "parent_path";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "用户编号", findable = false)
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "用户编号", findable = false)
     public static final String USER_ID = "user_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "来源场景编号", findable = false)
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "来源场景编号", findable = false)
     public static final String FROM_SCENE_ID = "from_scene_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "场景编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "场景编号")
     public static final String SCENE_ID = "scene_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 250, comment = "二维码")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 250, comment = "二维码")
     public static final String SCENE_QRCODE = "scene_qrcode";
 
-    @Column(type = ColumnType.DECIMAL, length = 0, comment = "总金额")
+    @Column(type = ColumnTypeEnum.DECIMAL, length = 0, comment = "总金额")
     public static final String MEMBER_TOTAL_AMOUNT = "member_total_amount";
 
-    @Column(type = ColumnType.DECIMAL, length = 0, comment = "可提现金额")
+    @Column(type = ColumnTypeEnum.DECIMAL, length = 0, comment = "可提现金额")
     public static final String MEMBER_WITHDRAWAL_AMOUNT = "member_withdrawal_amount";
 
-    @Column(type = ColumnType.DECIMAL, length = 0, comment = "当月进货金额")
+    @Column(type = ColumnTypeEnum.DECIMAL, length = 0, comment = "当月进货金额")
     public static final String MEMBER_MONTH_ORDER_AMOUNT = "member_month_order_amount";
 
-    @Column(type = ColumnType.DECIMAL, length = 0, comment = "全部进货金额")
+    @Column(type = ColumnTypeEnum.DECIMAL, length = 0, comment = "全部进货金额")
     public static final String MEMBER_ALL_ORDER_AMOUNT = "member_all_order_amount";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "会员等级")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "会员等级")
     public static final String MEMBER_LEVEL_ID = "member_level_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 20, comment = "会员名称")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 20, comment = "会员名称")
     public static final String MEMBER_NAME = "member_name";
 
-    @Column(type = ColumnType.VARCHAR, length = 20, comment = "会员电话")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 20, comment = "会员电话")
     public static final String MEMBER_PHONE = "member_phone";
 
-    @Column(type = ColumnType.VARCHAR, length = 250, comment = "会员备注")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 250, comment = "会员备注")
     public static final String MEMBER_REMARK = "member_remark";
 
-    @Column(type = ColumnType.BOOLEAN, length = 1, comment = "会员状态")
+    @Column(type = ColumnTypeEnum.BOOLEAN, length = 1, comment = "会员状态")
     public static final String MEMBER_STATUS = "member_status";
 
     public String getMember_id() {

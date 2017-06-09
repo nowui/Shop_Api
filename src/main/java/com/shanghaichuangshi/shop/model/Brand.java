@@ -2,23 +2,23 @@ package com.shanghaichuangshi.shop.model;
 
 import com.shanghaichuangshi.annotation.Column;
 import com.shanghaichuangshi.model.Model;
-import com.shanghaichuangshi.type.ColumnType;
+import com.shanghaichuangshi.type.ColumnTypeEnum;
 
 public class Brand extends Model<Brand> {
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "品牌编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "品牌编号")
     public static final String BRAND_ID = "brand_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "分类编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "分类编号")
     public static final String CATEGORY_ID = "category_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 20, comment = "品牌名称")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 20, comment = "品牌名称")
     public static final String BRAND_NAME = "brand_name";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "品牌图片")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "品牌图片")
     public static final String BRAND_IMAGE = "brand_image";
 
-    @Column(type = ColumnType.LONGTEXT, length = 0, comment = "品牌内容")
+    @Column(type = ColumnTypeEnum.LONGTEXT, length = 0, comment = "品牌内容")
     public static final String BRAND_CONTENT = "brand_content";
 
     public static final String BRAND_IMAGE_FILE = "brand_image_file";

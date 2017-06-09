@@ -14,7 +14,7 @@ import com.shanghaichuangshi.shop.cache.ProductCache;
 import com.shanghaichuangshi.shop.cache.SkuCache;
 import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.service.Service;
-import com.shanghaichuangshi.type.CategoryType;
+import com.shanghaichuangshi.type.CategoryTypeEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ public class ProductService extends Service {
     }
 
     public List<Map<String, Object>> categoryList() {
-        return categoryCache.treeListByCategory_key(CategoryType.PRODUCT.getKey());
+        return categoryCache.treeListByCategory_key(CategoryTypeEnum.PRODUCT.getKey());
     }
 
     public List<Product> allList() {

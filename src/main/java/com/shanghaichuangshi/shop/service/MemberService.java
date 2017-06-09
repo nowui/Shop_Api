@@ -3,14 +3,15 @@ package com.shanghaichuangshi.shop.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
-import com.jfinal.weixin.sdk.api.ApiConfigKit;
 import com.jfinal.weixin.sdk.api.ApiResult;
 import com.jfinal.weixin.sdk.api.QrcodeApi;
+import com.shanghaichuangshi.cache.CountCache;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.constant.WeChat;
 import com.shanghaichuangshi.cache.AuthorizationCache;
 import com.shanghaichuangshi.cache.UserCache;
 import com.shanghaichuangshi.model.Authorization;
+import com.shanghaichuangshi.model.Count;
 import com.shanghaichuangshi.model.User;
 import com.shanghaichuangshi.shop.cache.MemberCache;
 import com.shanghaichuangshi.shop.cache.MemberLevelCache;
@@ -22,7 +23,8 @@ import com.shanghaichuangshi.shop.model.MemberLevel;
 import com.shanghaichuangshi.shop.model.Order;
 import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.shop.type.SceneTypeEnum;
-import com.shanghaichuangshi.type.UserType;
+import com.shanghaichuangshi.type.CountTypeEnum;
+import com.shanghaichuangshi.type.UserTypeEnum;
 import com.shanghaichuangshi.util.Util;
 
 import java.math.BigDecimal;
@@ -39,6 +41,7 @@ public class MemberService extends Service {
     private final MemberLevelCache memberLevelCache = new MemberLevelCache();
     private final SceneCache sceneCache = new SceneCache();
     private final OrderCache orderCache = new OrderCache();
+    private CountCache countCache = new CountCache();
 
     public int count(String member_name) {
         return memberCache.count(member_name);
@@ -141,6 +144,12 @@ public class MemberService extends Service {
         return member;
     }
 
+    public Member findByUser_id(String user_id) {
+        User user = userCache.find(user_id);
+
+        return find(user.getObject_id());
+    }
+
     public String qrcodeFind(String user_id) {
         User user = userCache.find(user_id);
         Member member = find(user.getObject_id());
@@ -177,9 +186,9 @@ public class MemberService extends Service {
         resultMap.putAll(getMemberLevel(member.getMember_level_id(), user.getUser_name(), user.getUser_avatar(), member.getMember_status()));
 
         resultMap.put(Member.MEMBER_TOTAL_AMOUNT, member.getMember_total_amount());
-        resultMap.put(OrderFlowEnum.WAIT_PAY.getKey(), 0);
-        resultMap.put(OrderFlowEnum.WAIT_SEND.getKey(), 0);
-        resultMap.put(OrderFlowEnum.WAIT_RECEIVE.getKey(), 0);
+        resultMap.put(OrderFlowEnum.WAIT_PAY.getKey(), orderFlowFind(member.getMember_id(), OrderFlowEnum.WAIT_PAY.getKey()));
+        resultMap.put(OrderFlowEnum.WAIT_SEND.getKey(), orderFlowFind(member.getMember_id(), OrderFlowEnum.WAIT_SEND.getKey()));
+        resultMap.put(OrderFlowEnum.WAIT_RECEIVE.getKey(), orderFlowFind(member.getMember_id(), OrderFlowEnum.WAIT_RECEIVE.getKey()));
 
         return resultMap;
     }
@@ -211,6 +220,22 @@ public class MemberService extends Service {
         return resultList;
     }
 
+    public String orderFlowFind(String member_id, String order_flow) {
+        Count count = countCache.find(CountTypeEnum.MEMBER.getKey(), member_id, order_flow);
+
+        if (count == null) {
+            count = orderFlowUpdate(member_id, order_flow);
+        }
+
+        return count.getCount_value();
+    }
+
+    public Count orderFlowUpdate(String member_id, String order_flow) {
+        int total = orderCache.countByMember_idAndOrder_flow(member_id, order_flow);
+
+        return countCache.saveOrUpdate(CountTypeEnum.MEMBER.getKey(), member_id, order_flow, String.valueOf(total));
+    }
+
 //    public Member findByUser_id(String user_id) {
 //        if (Util.isNullOrEmpty(user_id)) {
 //            return null;
@@ -236,7 +261,7 @@ public class MemberService extends Service {
 //
 //        memberCache.save(member, request_user_id);
 //
-//        userService.saveByUser_idAndUser_phoneAndUser_passwordAndObject_idAndUser_type(user_id, user.getUser_phone(), user.getUser_password(), member.getMember_id(), UserType.MEMBER.getKey(), request_user_id);
+//        userService.saveByUser_idAndUser_phoneAndUser_passwordAndObject_idAndUser_type(user_id, user.getUser_phone(), user.getUser_password(), member.getMember_id(), UserTypeEnum.MEMBER.getKey(), request_user_id);
 //
 //        return member;
 //    }
@@ -249,7 +274,7 @@ public class MemberService extends Service {
         //过滤Emoji表情
         user_name = Util.getEmoji(user_name);
 
-        User user = userCache.findByWechat_open_idAndWechat_union_idAndUser_type(wechat_open_id, wechat_union_id, UserType.MEMBER.getKey());
+        User user = userCache.findByWechat_open_idAndWechat_union_idAndUser_type(wechat_open_id, wechat_union_id, UserTypeEnum.MEMBER.getKey());
         if (user == null) {
             String user_id = Util.getRandomUUID();
             String parent_id = "";
@@ -267,7 +292,7 @@ public class MemberService extends Service {
 
             Member member = memberCache.save(parent_id, parent_path, user_id, from_scene_id, scene_id, scene_qrcode, member_total_amount, member_withdrawal_amount, member_month_order_amount, member_all_order_amount, member_level_id, user_name, member_phone, member_remark, member_status, request_user_id);
 
-            userCache.saveByUser_idAndUser_nameAndUser_avatarAndWechat_open_idAndWechat_union_idAndObject_idAndUser_type(user_id, user_name, user_avatar, wechat_open_id, wechat_union_id, member.getMember_id(), UserType.MEMBER.getKey(), request_user_id);
+            userCache.saveByUser_idAndUser_nameAndUser_avatarAndWechat_open_idAndWechat_union_idAndObject_idAndUser_type(user_id, user_name, user_avatar, wechat_open_id, wechat_union_id, member.getMember_id(), UserTypeEnum.MEMBER.getKey(), request_user_id);
 
             return member;
         } else {
@@ -314,19 +339,19 @@ public class MemberService extends Service {
     public boolean delete(Member member, String request_user_id) {
         boolean result = memberCache.delete(member.getMember_id(), request_user_id);
 
-        userCache.deleteByObject_idAndUser_type(member.getMember_id(), UserType.MEMBER.getKey(), request_user_id);
+        userCache.deleteByObject_idAndUser_type(member.getMember_id(), UserTypeEnum.MEMBER.getKey(), request_user_id);
 
         return result;
     }
 
 //    public Map<String, Object> login(String user_phone, String user_password, String platform, String version, String ip_address, String request_user_id) {
-//        User user = userService.findByUser_phoneAndUser_passwordAndUser_type(user_phone, user_password, UserType.MEMBER.getKey());
+//        User user = userService.findByUser_phoneAndUser_passwordAndUser_type(user_phone, user_password, UserTypeEnum.MEMBER.getKey());
 //
 //        return getMember(user, platform, version, ip_address, request_user_id);
 //    }
 
     public Map<String, Object> weChatH5Login(String wechat_open_id, String wechat_union_id, String user_name, String user_avatar, String scene_id, Boolean member_status, String platform, String version, String ip_address, String request_user_id) {
-//        User user = userService.findByWechat_open_idAndWechat_union_idAndUser_type(wechat_open_id, wechat_union_id, UserType.MEMBER.getKey());
+//        User user = userService.findByWechat_open_idAndWechat_union_idAndUser_type(wechat_open_id, wechat_union_id, UserTypeEnum.MEMBER.getKey());
 //
 //        Member member = find(user.getObject_id());
 

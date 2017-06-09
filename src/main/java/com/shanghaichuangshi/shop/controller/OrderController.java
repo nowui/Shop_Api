@@ -5,9 +5,12 @@ import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.controller.Controller;
 import com.shanghaichuangshi.shop.model.Express;
+import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.shop.model.Order;
 import com.shanghaichuangshi.shop.model.Product;
+import com.shanghaichuangshi.shop.service.MemberService;
 import com.shanghaichuangshi.shop.service.OrderService;
+import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 
 import java.util.List;
 import java.util.Map;
@@ -15,6 +18,7 @@ import java.util.Map;
 public class OrderController extends Controller {
 
     private final OrderService orderService = new OrderService();
+    private final MemberService memberService = new MemberService();
 
     @ActionKey(Url.ORDER_LIST)
     public void list() {
@@ -84,7 +88,11 @@ public class OrderController extends Controller {
 
         validate("open_id", "pay_type");
 
-        Map<String, String> result = orderService.save(model, getAttr(Constant.REQUEST_PARAMETER), request_user_id);
+        Member member = memberService.findByUser_id(request_user_id);
+
+        Map<String, String> result = orderService.save(member, model, getAttr(Constant.REQUEST_PARAMETER), request_user_id);
+
+        memberService.orderFlowUpdate(member.getMember_id(), OrderFlowEnum.WAIT_SEND.getKey());
 
         renderSuccessJson(result);
     }

@@ -1,7 +1,6 @@
 package com.shanghaichuangshi.shop.service;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.shanghaichuangshi.constant.Kdniao;
 import com.shanghaichuangshi.shop.cache.ExpressCache;
@@ -10,7 +9,6 @@ import com.shanghaichuangshi.shop.model.Express;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.shop.model.Order;
 import com.shanghaichuangshi.shop.type.OrderFlowEnum;
-import com.shanghaichuangshi.util.DateUtil;
 import com.shanghaichuangshi.util.Util;
 
 import java.io.BufferedReader;
@@ -27,7 +25,6 @@ import java.util.*;
 public class ExpressService extends Service {
 
     private final ExpressCache expressCache = new ExpressCache();
-    private final OrderCache orderCache = new OrderCache();
 
     public int count(String express_number) {
         return expressCache.count(express_number);
@@ -35,6 +32,10 @@ public class ExpressService extends Service {
 
     public List<Express> list(String express_number, int m, int n) {
         return expressCache.list(express_number, m, n);
+    }
+
+    public List<Express> listByOrder_id(String order_id) {
+        return expressCache.listByOrder_id(order_id);
     }
 
     public Express find(String express_id) {
@@ -45,12 +46,6 @@ public class ExpressService extends Service {
         String express_id = Util.getRandomUUID();
 
         subscription(express_id, express.getExpress_type(), express.getExpress_number());
-
-        Order order = orderCache.find(express.getOrder_id());
-        if (order.getOrder_flow().equals(OrderFlowEnum.WAIT_SEND.getKey())) {
-            orderCache.updateReceive(express.getOrder_id(), request_user_id);
-        }
-        orderCache.updateReceive(express.getOrder_id(), request_user_id);
 
         return expressCache.save(express_id, express, request_user_id);
     }
@@ -64,6 +59,10 @@ public class ExpressService extends Service {
         }
 
         return expressCache.update(express, request_user_id);
+    }
+
+    public Boolean updateBusiness(List<Express> expressList) {
+        return expressCache.updateBusiness(expressList);
     }
 
     public boolean delete(Express express, String request_user_id) {
@@ -100,96 +99,96 @@ public class ExpressService extends Service {
         }
     }
 
-    public Map<String, Object> push(String requestData) {
-        Map<String, Object> resultMap = new HashMap<String, Object>();
-        resultMap.put("EBusinessID", Kdniao.EBusinessID);
-        resultMap.put("UpdateTime", DateUtil.getDateTimeString(new Date()));
-        resultMap.put("Success", true);
-        resultMap.put("Reason", "");
-
-        JSONObject requestDataObject = JSONObject.parseObject(requestData);
-        String eBusinessID = requestDataObject.getString("EBusinessID");
-        if (!eBusinessID.equals(Kdniao.EBusinessID)) {
-            resultMap.put("Success", false);
-            resultMap.put("Reason", "EBusinessID is error");
-
-            return resultMap;
-        }
-
-        JSONArray jsonArray = JSONArray.parseArray(requestDataObject.getString("Data"));
-
-        List<Express> expressList = new ArrayList<Express>();
-
-        List<String> orderIdList = new ArrayList<String>();
-
-        for (int i = 0; i < jsonArray.size(); i++) {
-            JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-            String express_id = jsonObject.getString("CallBack");
-            String express_type = jsonObject.getString("ShipperCode");
-            String express_number = jsonObject.getString("LogisticCode");
-
-            Boolean success = jsonObject.getBoolean("Success");
-
-            String express_flow = "无轨迹";
-            Boolean express_status = false;
-            String express_trace = jsonObject.getString("Traces");
-            if (success) {
-                String state = jsonObject.getString("State");
-                if (state.equals("1")) {
-                    express_flow = "已揽收";
-                } else if (state.equals("2")) {
-                    express_flow = "在途中";
-                } else if (state.equals("201")) {
-                    express_flow = "到达派件城市";
-                } else if (state.equals("3")) {
-                    express_flow = "签收";
-
-                    express_status = true;
-                } else if (state.equals("4")) {
-                    express_flow = "问题件";
-                }
-
-                express_trace = jsonObject.getString("Traces");
-            }
-
-            Express express = expressCache.find(express_id);
-
-            if (!orderIdList.contains(express.getOrder_id())) {
-                orderIdList.add(express.getOrder_id());
-            }
-
-//            if (express.getExpress_type().equals(express_type) && express.getExpress_number().equals(express_number) && express.getSystem_status()) {
-                express.setExpress_flow(express_flow);
-                express.setExpress_status(express_status);
-                express.setExpress_trace(express_trace);
-                express.setExpress_id(express_id);
-
-                expressList.add(express);
+//    public Map<String, Object> push(String requestData) {
+//        Map<String, Object> resultMap = new HashMap<String, Object>();
+//        resultMap.put("EBusinessID", Kdniao.EBusinessID);
+//        resultMap.put("UpdateTime", DateUtil.getDateTimeString(new Date()));
+//        resultMap.put("Success", true);
+//        resultMap.put("Reason", "");
+//
+//        JSONObject requestDataObject = JSONObject.parseObject(requestData);
+//        String eBusinessID = requestDataObject.getString("EBusinessID");
+//        if (!eBusinessID.equals(Kdniao.EBusinessID)) {
+//            resultMap.put("Success", false);
+//            resultMap.put("Reason", "EBusinessID is error");
+//
+//            return resultMap;
+//        }
+//
+//        JSONArray jsonArray = JSONArray.parseArray(requestDataObject.getString("Data"));
+//
+//        List<Express> expressList = new ArrayList<Express>();
+//
+//        List<String> orderIdList = new ArrayList<String>();
+//
+//        for (int i = 0; i < jsonArray.size(); i++) {
+//            JSONObject jsonObject = jsonArray.getJSONObject(i);
+//
+//            String express_id = jsonObject.getString("CallBack");
+//            String express_type = jsonObject.getString("ShipperCode");
+//            String express_number = jsonObject.getString("LogisticCode");
+//
+//            Boolean success = jsonObject.getBoolean("Success");
+//
+//            String express_flow = "无轨迹";
+//            Boolean express_status = false;
+//            String express_trace = jsonObject.getString("Traces");
+//            if (success) {
+//                String state = jsonObject.getString("State");
+//                if (state.equals("1")) {
+//                    express_flow = "已揽收";
+//                } else if (state.equals("2")) {
+//                    express_flow = "在途中";
+//                } else if (state.equals("201")) {
+//                    express_flow = "到达派件城市";
+//                } else if (state.equals("3")) {
+//                    express_flow = "签收";
+//
+//                    express_status = true;
+//                } else if (state.equals("4")) {
+//                    express_flow = "问题件";
+//                }
+//
+//                express_trace = jsonObject.getString("Traces");
 //            }
-        }
-
-        expressCache.updateBusiness(expressList);
-
-        List<String> updateOrderIdList = new ArrayList<String>();
-        for (String order_id : orderIdList) {
-            List<Express> expressByOrderIdList = expressCache.listByOrder_id(order_id);
-
-            Boolean isStatus = true;
-            for (Express express : expressByOrderIdList) {
-                if (!express.getExpress_status()) {
-                    isStatus = false;
-                }
-            }
-
-            if (isStatus) {
-                updateOrderIdList.add(order_id);
-            }
-        }
-        orderCache.updateFinish(updateOrderIdList);
-
-        return resultMap;
-    }
+//
+//            Express express = expressCache.find(express_id);
+//
+//            if (!orderIdList.contains(express.getOrder_id())) {
+//                orderIdList.add(express.getOrder_id());
+//            }
+//
+////            if (express.getExpress_type().equals(express_type) && express.getExpress_number().equals(express_number) && express.getSystem_status()) {
+//                express.setExpress_flow(express_flow);
+//                express.setExpress_status(express_status);
+//                express.setExpress_trace(express_trace);
+//                express.setExpress_id(express_id);
+//
+//                expressList.add(express);
+////            }
+//        }
+//
+//        expressCache.updateBusiness(expressList);
+//
+//        List<String> updateOrderIdList = new ArrayList<String>();
+//        for (String order_id : orderIdList) {
+//            List<Express> expressByOrderIdList = expressCache.listByOrder_id(order_id);
+//
+//            Boolean isStatus = true;
+//            for (Express express : expressByOrderIdList) {
+//                if (!express.getExpress_status()) {
+//                    isStatus = false;
+//                }
+//            }
+//
+//            if (isStatus) {
+//                updateOrderIdList.add(order_id);
+//            }
+//        }
+//        orderCache.updateFinish(updateOrderIdList);
+//
+//        return resultMap;
+//    }
 
     /**
      * MD5加密

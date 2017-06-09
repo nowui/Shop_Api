@@ -2,85 +2,85 @@ package com.shanghaichuangshi.shop.model;
 
 import com.shanghaichuangshi.annotation.Column;
 import com.shanghaichuangshi.model.Model;
-import com.shanghaichuangshi.type.ColumnType;
+import com.shanghaichuangshi.type.ColumnTypeEnum;
 
 import java.math.BigDecimal;
 
 public class Order extends Model<Order> {
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "订单编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "订单编号")
     public static final String ORDER_ID = "order_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "用户编号", findable = false)
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "用户编号", findable = false)
     public static final String USER_ID = "user_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "会员编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "会员编号")
     public static final String MEMBER_ID = "member_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "会员等级编号", findable = false)
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "会员等级编号", findable = false)
     public static final String MEMBER_LEVEL_ID = "member_level_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 20, comment = "会员等级名称", findable = false)
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 20, comment = "会员等级名称", findable = false)
     public static final String MEMBER_LEVEL_NAME = "member_level_name";
 
-    @Column(type = ColumnType.INT, length = 11, comment = "会员等级数值", findable = false)
+    @Column(type = ColumnTypeEnum.INT, length = 11, comment = "会员等级数值", findable = false)
     public static final String MEMBER_LEVEL_VALUE = "member_level_value";
 
-    @Column(type = ColumnType.VARCHAR, length = 15, comment = "订单号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 15, comment = "订单号")
     public static final String ORDER_NUMBER = "order_number";
 
-    @Column(type = ColumnType.VARCHAR, length = 20, comment = "收货人姓名")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 20, comment = "收货人姓名")
     public static final String ORDER_DELIVERY_NAME = "order_delivery_name";
 
-    @Column(type = ColumnType.VARCHAR, length = 20, comment = "收货人电话")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 20, comment = "收货人电话")
     public static final String ORDER_DELIVERY_PHONE = "order_delivery_phone";
 
-    @Column(type = ColumnType.VARCHAR, length = 200, comment = "收货地址")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 200, comment = "收货地址")
     public static final String ORDER_DELIVERY_ADDRESS = "order_delivery_address";
 
-    @Column(type = ColumnType.VARCHAR, length = 100, comment = "买家留言")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 100, comment = "买家留言")
     public static final String ORDER_MESSAGE = "order_message";
 
-    @Column(type = ColumnType.INT, length = 11, comment = "商品数量")
+    @Column(type = ColumnTypeEnum.INT, length = 11, comment = "商品数量")
     public static final String ORDER_PRODUCT_QUANTITY = "order_product_quantity";
 
-    @Column(type = ColumnType.DECIMAL, length = 0, comment = "商品金额")
+    @Column(type = ColumnTypeEnum.DECIMAL, length = 0, comment = "商品金额")
     public static final String ORDER_PRODUCT_AMOUNT = "order_product_amount";
 
-    @Column(type = ColumnType.DECIMAL, length = 0, comment = "运费金额")
+    @Column(type = ColumnTypeEnum.DECIMAL, length = 0, comment = "运费金额")
     public static final String ORDER_FREIGHT_AMOUNT = "order_freight_amount";
 
-    @Column(type = ColumnType.DECIMAL, length = 0, comment = "折扣金额", findable = false)
+    @Column(type = ColumnTypeEnum.DECIMAL, length = 0, comment = "折扣金额", findable = false)
     public static final String ORDER_DISCOUNT_AMOUNT = "order_discount_amount";
 
-    @Column(type = ColumnType.DECIMAL, length = 0, comment = "订单金额")
+    @Column(type = ColumnTypeEnum.DECIMAL, length = 0, comment = "订单金额")
     public static final String ORDER_AMOUNT = "order_amount";
 
-    @Column(type = ColumnType.TINYINT, length = 1, comment = "是否支付", findable = false)
+    @Column(type = ColumnTypeEnum.TINYINT, length = 1, comment = "是否支付", findable = false)
     public static final String ORDER_IS_CONFIRM = "order_is_confirm";
 
-    @Column(type = ColumnType.TINYINT, length = 1, comment = "是否确认", findable = false)
+    @Column(type = ColumnTypeEnum.TINYINT, length = 1, comment = "是否确认", findable = false)
     public static final String ORDER_IS_PAY = "order_is_pay";
 
-    @Column(type = ColumnType.VARCHAR, length = 10, comment = "支付类型", findable = false)
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 10, comment = "支付类型", findable = false)
     public static final String ORDER_PAY_TYPE = "order_pay_type";
 
-    @Column(type = ColumnType.VARCHAR, length = 100, comment = "支付号", findable = false)
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 100, comment = "支付号", findable = false)
     public static final String ORDER_PAY_NUMBER = "order_pay_number";
 
-    @Column(type = ColumnType.VARCHAR, length = 100, comment = "支付帐号", findable = false)
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 100, comment = "支付帐号", findable = false)
     public static final String ORDER_PAY_ACCOUNT = "order_pay_account";
 
-    @Column(type = ColumnType.VARCHAR, length = 19, comment = "支付时间", findable = false)
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 19, comment = "支付时间", findable = false)
     public static final String ORDER_PAY_TIME = "order_pay_time";
 
-    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "支付结果", findable = false)
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 1000, comment = "支付结果", findable = false)
     public static final String ORDER_PAY_RESULT = "order_pay_result";
 
-    @Column(type = ColumnType.VARCHAR, length = 10, comment = "订单流程")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 10, comment = "订单流程")
     public static final String ORDER_FLOW = "order_flow";
 
-    @Column(type = ColumnType.TINYINT, length = 1, comment = "订单状态")
+    @Column(type = ColumnTypeEnum.TINYINT, length = 1, comment = "订单状态")
     public static final String ORDER_STATUS = "order_status";
 
     public static final String ORDER_LIST = "order_list";

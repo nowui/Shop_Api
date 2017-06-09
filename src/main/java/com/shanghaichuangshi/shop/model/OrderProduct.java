@@ -2,94 +2,94 @@ package com.shanghaichuangshi.shop.model;
 
 import com.shanghaichuangshi.annotation.Column;
 import com.shanghaichuangshi.model.Model;
-import com.shanghaichuangshi.type.ColumnType;
+import com.shanghaichuangshi.type.ColumnTypeEnum;
 
 import java.math.BigDecimal;
 
 public class OrderProduct extends Model<OrderProduct> {
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "订单商品编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "订单商品编号")
     public static final String ORDER_PRODUCT_ID = "order_product_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "订单编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "订单编号")
     public static final String ORDER_ID = "order_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 10, comment = "订单状态")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 10, comment = "订单状态")
     public static final String ORDER_STATUS = "order_status";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "商品编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "商品编号")
     public static final String PRODUCT_ID = "product_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "分类编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "分类编号")
     public static final String CATEGORY_ID = "category_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 20, comment = "分类名称")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 20, comment = "分类名称")
     public static final String CATEGORY_NAME = "category_name";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "品牌编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "品牌编号")
     public static final String BRAND_ID = "brand_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 20, comment = "品牌名称")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 20, comment = "品牌名称")
     public static final String BRAND_NAME = "brand_name";
 
-    @Column(type = ColumnType.VARCHAR, length = 100, comment = "商品名称")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 100, comment = "商品名称")
     public static final String PRODUCT_NAME = "product_name";
 
-    @Column(type = ColumnType.VARCHAR, length = 100, comment = "商品图片")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 100, comment = "商品图片")
     public static final String PRODUCT_IMAGE = "product_image";
 
-    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品图片")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 1000, comment = "商品图片")
     public static final String PRODUCT_IMAGE_LIST = "product_image_list";
 
-    @Column(type = ColumnType.TINYINT, length = 1, comment = "是否新品")
+    @Column(type = ColumnTypeEnum.TINYINT, length = 1, comment = "是否新品")
     public static final String PRODUCT_IS_NEW = "product_is_new";
 
-    @Column(type = ColumnType.TINYINT, length = 1, comment = "是否推荐")
+    @Column(type = ColumnTypeEnum.TINYINT, length = 1, comment = "是否推荐")
     public static final String PRODUCT_IS_RECOMMEND = "product_is_recommend";
 
-    @Column(type = ColumnType.TINYINT, length = 1, comment = "是否特价")
+    @Column(type = ColumnTypeEnum.TINYINT, length = 1, comment = "是否特价")
     public static final String PRODUCT_IS_BARGAIN = "product_is_bargain";
 
-    @Column(type = ColumnType.TINYINT, length = 1, comment = "是否热销")
+    @Column(type = ColumnTypeEnum.TINYINT, length = 1, comment = "是否热销")
     public static final String PRODUCT_IS_HOT = "product_is_hot";
 
-    @Column(type = ColumnType.TINYINT, length = 1, comment = "是否上架")
+    @Column(type = ColumnTypeEnum.TINYINT, length = 1, comment = "是否上架")
     public static final String PRODUCT_IS_SALE = "product_is_sale";
 
-    @Column(type = ColumnType.LONGTEXT, length = 0, comment = "商品介绍")
+    @Column(type = ColumnTypeEnum.LONGTEXT, length = 0, comment = "商品介绍")
     public static final String PRODUCT_CONTENT = "product_content";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "SKU编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "SKU编号")
     public static final String SKU_ID = "sku_id";
 
-    @Column(type = ColumnType.INT, length = 11, comment = "佣金编号")
+    @Column(type = ColumnTypeEnum.INT, length = 11, comment = "佣金编号")
     public static final String COMMISSION_ID = "commission_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "用户编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "用户编号")
     public static final String USER_ID = "user_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "会员编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "会员编号")
     public static final String MEMBER_ID = "member_id";
 
-    @Column(type = ColumnType.INT, length = 1000, comment = "订单商品分成")
+    @Column(type = ColumnTypeEnum.INT, length = 1000, comment = "订单商品分成")
     public static final String ORDER_PRODUCT_COMMISSION = "order_product_commission";
 
-    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品属性")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 1000, comment = "商品属性")
     public static final String PRODUCT_ATTRIBUTE = "product_attribute";
 
-    @Column(type = ColumnType.DECIMAL, length = 0, comment = "市场价格")
+    @Column(type = ColumnTypeEnum.DECIMAL, length = 0, comment = "市场价格")
     public static final String PRODUCT_MARKET_PRICE = "product_market_price";
 
-    @Column(type = ColumnType.DECIMAL, length = 0, comment = "商品价格")
+    @Column(type = ColumnTypeEnum.DECIMAL, length = 0, comment = "商品价格")
     public static final String PRODUCT_PRICE = "product_price";
 
-    @Column(type = ColumnType.INT, length = 11, comment = "商品库存")
+    @Column(type = ColumnTypeEnum.INT, length = 11, comment = "商品库存")
     public static final String PRODUCT_STOCK = "product_stock";
 
-    @Column(type = ColumnType.DECIMAL, length = 0, comment = "订单商品价格")
+    @Column(type = ColumnTypeEnum.DECIMAL, length = 0, comment = "订单商品价格")
     public static final String ORDER_PRODUCT_PRICE = "order_product_price";
 
-    @Column(type = ColumnType.INT, length = 11, comment = "订单商品数量")
+    @Column(type = ColumnTypeEnum.INT, length = 11, comment = "订单商品数量")
     public static final String ORDER_PRODUCT_QUANTITY = "order_product_quantity";
     
     public String getOrder_product_id() {

@@ -2,29 +2,29 @@ package com.shanghaichuangshi.shop.model;
 
 import com.shanghaichuangshi.annotation.Column;
 import com.shanghaichuangshi.model.Model;
-import com.shanghaichuangshi.type.ColumnType;
+import com.shanghaichuangshi.type.ColumnTypeEnum;
 
 public class Scene extends Model<Scene> {
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "场景编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "场景编号")
     public static final String SCENE_ID = "scene_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "外键编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "外键编号")
     public static final String OBJECT_ID = "object_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 20, comment = "场景类型")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 20, comment = "场景类型")
     public static final String SCENE_TYPE = "scene_type";
 
-    @Column(type = ColumnType.TINYINT, length = 1, comment = "是否过期")
+    @Column(type = ColumnTypeEnum.TINYINT, length = 1, comment = "是否过期")
     public static final String SCENE_IS_EXPIRE = "scene_is_expire";
 
-    @Column(type = ColumnType.INT, length = 11, comment = "新增关注")
+    @Column(type = ColumnTypeEnum.INT, length = 11, comment = "新增关注")
     public static final String SCENE_ADD = "scene_add";
 
-    @Column(type = ColumnType.INT, length = 11, comment = "取消关注")
+    @Column(type = ColumnTypeEnum.INT, length = 11, comment = "取消关注")
     public static final String SCENE_CANCEL = "scene_cancel";
 
-    @Column(type = ColumnType.VARCHAR, length = 250, comment = "二维码")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 250, comment = "二维码")
     public static final String SCENE_QRCODE = "scene_qrcode";
     
     public String getScene_id() {

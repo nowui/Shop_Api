@@ -2,29 +2,29 @@ package com.shanghaichuangshi.shop.model;
 
 import com.shanghaichuangshi.annotation.Column;
 import com.shanghaichuangshi.model.Model;
-import com.shanghaichuangshi.type.ColumnType;
+import com.shanghaichuangshi.type.ColumnTypeEnum;
 
 public class Express extends Model<Express> {
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "快递编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "快递编号")
     public static final String EXPRESS_ID = "express_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "订单编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "订单编号")
     public static final String ORDER_ID = "order_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 10, comment = "快递类型")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 10, comment = "快递类型")
     public static final String EXPRESS_TYPE = "express_type";
 
-    @Column(type = ColumnType.VARCHAR, length = 30, comment = "快递单号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 30, comment = "快递单号")
     public static final String EXPRESS_NUMBER = "express_number";
 
-    @Column(type = ColumnType.VARCHAR, length = 10, comment = "快递流程")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 10, comment = "快递流程")
     public static final String EXPRESS_FLOW = "express_flow";
 
-    @Column(type = ColumnType.TINYINT, length = 1, comment = "快递状态")
+    @Column(type = ColumnTypeEnum.TINYINT, length = 1, comment = "快递状态")
     public static final String EXPRESS_STATUS = "express_status";
 
-    @Column(type = ColumnType.VARCHAR, length = 65535, comment = "快递跟踪")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 65535, comment = "快递跟踪")
     public static final String EXPRESS_TRACE = "express_trace";
 
     public String getExpress_id() {

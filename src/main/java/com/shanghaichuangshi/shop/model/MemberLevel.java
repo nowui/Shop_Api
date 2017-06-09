@@ -2,20 +2,20 @@ package com.shanghaichuangshi.shop.model;
 
 import com.shanghaichuangshi.annotation.Column;
 import com.shanghaichuangshi.model.Model;
-import com.shanghaichuangshi.type.ColumnType;
+import com.shanghaichuangshi.type.ColumnTypeEnum;
 
 public class MemberLevel extends Model<MemberLevel> {
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "会员等级编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "会员等级编号")
     public static final String MEMBER_LEVEL_ID = "member_level_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 10, comment = "会员等级名称")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 10, comment = "会员等级名称")
     public static final String MEMBER_LEVEL_NAME = "member_level_name";
 
-    @Column(type = ColumnType.INT, length = 3, comment = "会员等级数值")
+    @Column(type = ColumnTypeEnum.INT, length = 3, comment = "会员等级数值")
     public static final String MEMBER_LEVEL_VALUE = "member_level_value";
 
-    @Column(type = ColumnType.INT, length = 3, comment = "会员等级排序", findable = false)
+    @Column(type = ColumnTypeEnum.INT, length = 3, comment = "会员等级排序", findable = false)
     public static final String MEMBER_LEVEL_SORT = "member_level_sort";
 
     public static final String MEMBER_LEVEL_LIST = "member_level_list";

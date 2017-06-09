@@ -2,55 +2,55 @@ package com.shanghaichuangshi.shop.model;
 
 import com.shanghaichuangshi.annotation.Column;
 import com.shanghaichuangshi.model.Model;
-import com.shanghaichuangshi.type.ColumnType;
+import com.shanghaichuangshi.type.ColumnTypeEnum;
 
 import java.math.BigDecimal;
 
 public class Product extends Model<Product> {
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "商品编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "商品编号")
     public static final String PRODUCT_ID = "product_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "分类编号", findable = false)
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "分类编号", findable = false)
     public static final String CATEGORY_ID = "category_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "品牌编号", findable = false)
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "品牌编号", findable = false)
     public static final String BRAND_ID = "brand_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 100, comment = "商品名称")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 100, comment = "商品名称")
     public static final String PRODUCT_NAME = "product_name";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "商品图片", findable = false)
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "商品图片", findable = false)
     public static final String PRODUCT_IMAGE = "product_image";
 
-    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品图片", findable = false)
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 1000, comment = "商品图片", findable = false)
     public static final String PRODUCT_IMAGE_LIST = "product_image_list";
 
-    @Column(type = ColumnType.DECIMAL, length = 0, comment = "市场价格")
+    @Column(type = ColumnTypeEnum.DECIMAL, length = 0, comment = "市场价格")
     public static final String PRODUCT_MARKET_PRICE = "product_market_price";
 
-    @Column(type = ColumnType.DECIMAL, length = 0, comment = "商品价格", findable = false)
+    @Column(type = ColumnTypeEnum.DECIMAL, length = 0, comment = "商品价格", findable = false)
     public static final String PRODUCT_PRICE = "product_price";
 
-    @Column(type = ColumnType.INT, length = 11, comment = "商品库存", findable = false)
+    @Column(type = ColumnTypeEnum.INT, length = 11, comment = "商品库存", findable = false)
     public static final String PRODUCT_STOCK = "product_stock";
 
-    @Column(type = ColumnType.TINYINT, length = 1, comment = "是否新品", findable = false)
+    @Column(type = ColumnTypeEnum.TINYINT, length = 1, comment = "是否新品", findable = false)
     public static final String PRODUCT_IS_NEW = "product_is_new";
 
-    @Column(type = ColumnType.TINYINT, length = 1, comment = "是否推荐", findable = false)
+    @Column(type = ColumnTypeEnum.TINYINT, length = 1, comment = "是否推荐", findable = false)
     public static final String PRODUCT_IS_RECOMMEND = "product_is_recommend";
 
-    @Column(type = ColumnType.TINYINT, length = 1, comment = "是否特价", findable = false)
+    @Column(type = ColumnTypeEnum.TINYINT, length = 1, comment = "是否特价", findable = false)
     public static final String PRODUCT_IS_BARGAIN = "product_is_bargain";
 
-    @Column(type = ColumnType.TINYINT, length = 1, comment = "是否热销", findable = false)
+    @Column(type = ColumnTypeEnum.TINYINT, length = 1, comment = "是否热销", findable = false)
     public static final String PRODUCT_IS_HOT = "product_is_hot";
 
-    @Column(type = ColumnType.TINYINT, length = 1, comment = "是否上架", findable = false)
+    @Column(type = ColumnTypeEnum.TINYINT, length = 1, comment = "是否上架", findable = false)
     public static final String PRODUCT_IS_SALE = "product_is_sale";
 
-    @Column(type = ColumnType.LONGTEXT, length = 0, comment = "商品介绍")
+    @Column(type = ColumnTypeEnum.LONGTEXT, length = 0, comment = "商品介绍")
     public static final String PRODUCT_CONTENT = "product_content";
 
     public static final String PRODUCT_QUANTITY = "product_quantity";

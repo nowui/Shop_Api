@@ -25,6 +25,10 @@ public class OrderCache extends Cache {
         return orderDao.count(order_number, order_flow);
     }
 
+    public int countByMember_idAndOrder_flow(String member_id, String order_flow) {
+        return orderDao.countByMember_idAndOrder_flow(member_id, order_flow);
+    }
+
     public List<Order> list(String order_number, String order_flow, Integer m, Integer n) {
         return orderDao.list(order_number, order_flow, m, n);
     }

@@ -2,20 +2,20 @@ package com.shanghaichuangshi.shop.model;
 
 import com.shanghaichuangshi.annotation.Column;
 import com.shanghaichuangshi.model.Model;
-import com.shanghaichuangshi.type.ColumnType;
+import com.shanghaichuangshi.type.ColumnTypeEnum;
 
 public class Supplier extends Model<Supplier> {
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "供应商编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "供应商编号")
     public static final String SUPPLIER_ID = "supplier_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "品牌编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "品牌编号")
     public static final String BRAND_ID = "brand_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 20, comment = "供应商名称")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 20, comment = "供应商名称")
     public static final String SUPPLIER_NAME = "supplier_name";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "用户编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "用户编号")
     public static final String USER_ID = "user_id";
 
     

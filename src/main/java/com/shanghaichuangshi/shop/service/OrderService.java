@@ -15,7 +15,7 @@ import com.shanghaichuangshi.service.CategoryService;
 import com.shanghaichuangshi.shop.cache.*;
 import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.service.Service;
-import com.shanghaichuangshi.shop.type.IncomeType;
+import com.shanghaichuangshi.shop.type.IncomeTypeEnum;
 import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.util.Util;
 
@@ -98,7 +98,7 @@ public class OrderService extends Service {
         return order;
     }
 
-    public Map<String, String> save(Order order, JSONObject jsonObject, String request_user_id) {
+    public Map<String, String> save(Member member, Order order, JSONObject jsonObject, String request_user_id) {
         JSONArray productListJSONArray = jsonObject.getJSONArray(Product.PRODUCT_LIST);
 
         String open_id = jsonObject.getString("open_id");
@@ -113,13 +113,7 @@ public class OrderService extends Service {
         BigDecimal order_freight_amount = BigDecimal.valueOf(0);
         BigDecimal order_discount_amount = BigDecimal.valueOf(0);
 
-        User user = userCache.find(request_user_id);
-        Member member = memberCache.find(user.getObject_id());
         JSONArray fatherMemberJSONArray = new JSONArray();
-
-        if (member == null) {
-            throw new RuntimeException("您不是我们的会员");
-        }
 
         //会员信息
         String member_id = member.getMember_id();
@@ -154,7 +148,7 @@ public class OrderService extends Service {
                 mObject.put(MemberLevel.MEMBER_LEVEL_ID, mLevel.getMember_level_id());
                 mObject.put(MemberLevel.MEMBER_LEVEL_NAME, mLevel.getMember_level_name());
 
-                if (WeChat.income == IncomeType.COMMISSION.getKey() || (WeChat.income == IncomeType.SALE.getKey() && i == parentPathArray.size() - 1)) {
+                if (WeChat.income == IncomeTypeEnum.COMMISSION.getKey() || (WeChat.income == IncomeTypeEnum.SALE.getKey() && i == parentPathArray.size() - 1)) {
                     fatherMemberJSONArray.add(mObject);
                 }
             }
@@ -205,7 +199,7 @@ public class OrderService extends Service {
 
             //佣金
             String commission_id = "";
-            if (WeChat.income == IncomeType.COMMISSION.getKey()) {
+            if (WeChat.income == IncomeTypeEnum.COMMISSION.getKey()) {
                 Commission commission = null;
                 List<Commission> commissionList = commissionCache.list(product.getProduct_id());
                 for (Commission c : commissionList) {
@@ -374,6 +368,17 @@ public class OrderService extends Service {
 
     public boolean update(String order_id, BigDecimal order_amount, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result, String order_flow, Boolean order_status) {
         return orderCache.update(order_id, order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result, order_flow, order_status);
+    }
+
+    public void updateReceive(String order_id, String request_user_id) {
+        Order order = orderCache.find(order_id);
+        if (order.getOrder_flow().equals(OrderFlowEnum.WAIT_SEND.getKey())) {
+            orderCache.updateReceive(order_id, request_user_id);
+        }
+    }
+
+    public void updateFinish(List<String> orderIdList) {
+        orderCache.updateFinish(orderIdList);
     }
 
     public boolean delete(Order order, String request_user_id) {

@@ -2,20 +2,20 @@ package com.shanghaichuangshi.shop.model;
 
 import com.shanghaichuangshi.annotation.Column;
 import com.shanghaichuangshi.model.Model;
-import com.shanghaichuangshi.type.ColumnType;
+import com.shanghaichuangshi.type.ColumnTypeEnum;
 
 public class Cart extends Model<Cart> {
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "购物车编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "购物车编号")
     public static final String CART_ID = "cart_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "用户编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "用户编号")
     public static final String USER_ID = "user_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "SKU编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "SKU编号")
     public static final String SKU_ID = "sku_id";
 
-    @Column(type = ColumnType.INT, length = 11, comment = "购物车商品数量")
+    @Column(type = ColumnTypeEnum.INT, length = 11, comment = "购物车商品数量")
     public static final String CART_PRODUCT_QUANTITY = "cart_product_quantity";
 
     public String getCart_id() {

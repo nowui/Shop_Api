@@ -2,23 +2,23 @@ package com.shanghaichuangshi.shop.model;
 
 import com.shanghaichuangshi.annotation.Column;
 import com.shanghaichuangshi.model.Model;
-import com.shanghaichuangshi.type.ColumnType;
+import com.shanghaichuangshi.type.ColumnTypeEnum;
 
 public class Sku extends Model<Sku> {
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "SKU编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "SKU编号")
     public static final String SKU_ID = "sku_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 32, comment = "商品编号")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "商品编号")
     public static final String PRODUCT_ID = "product_id";
 
-    @Column(type = ColumnType.VARCHAR, length = 1000, comment = "商品属性")
+    @Column(type = ColumnTypeEnum.VARCHAR, length = 1000, comment = "商品属性")
     public static final String PRODUCT_ATTRIBUTE = "product_attribute";
 
-    @Column(type = ColumnType.DECIMAL, length = 0, comment = "商品价格")
+    @Column(type = ColumnTypeEnum.DECIMAL, length = 0, comment = "商品价格")
     public static final String PRODUCT_PRICE = "product_price";
 
-    @Column(type = ColumnType.INT, length = 11, comment = "商品库存")
+    @Column(type = ColumnTypeEnum.INT, length = 11, comment = "商品库存")
     public static final String PRODUCT_STOCK = "product_stock";
 
     public static final String SKU_LIST = "sku_list";
