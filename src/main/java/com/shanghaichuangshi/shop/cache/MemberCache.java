@@ -94,16 +94,6 @@ public class MemberCache extends Cache {
         return memberDao.updateByMember_idAndParent_idAndParent_pathAndMember_level_id(member_id, parent_id, parent_path, member_level_id);
     }
 
-    public void updateAmount(List<Member> memberList) {
-        for(Member member : memberList) {
-            CacheUtil.remove(MEMBER_LIST_BY_PARENT_ID_CACHE, member.getParent_id());
-
-            CacheUtil.remove(MEMBER_BY_MEMBER_ID_CACHE, member.getMember_id());
-        }
-
-        memberDao.updateAmount(memberList);
-    }
-
     public boolean updateByMember_idAndMember_name(String member_id, String member_name, String request_user_id) {
         Member member = CacheUtil.get(MEMBER_BY_MEMBER_ID_CACHE, member_id);
         if (member != null) {

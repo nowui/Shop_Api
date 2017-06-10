@@ -168,7 +168,6 @@ public class WeChatApiController extends ApiController {
             Member member = memberService.find(order.getMember_id());
 
             List<Bill> billList = new ArrayList<Bill>();
-            List<Member> memberList = new ArrayList<Member>();
             String request_user_id = "";
 
             if (WeChat.income.equals(BillTypeEnum.SALE.getKey())) {
@@ -189,16 +188,6 @@ public class WeChatApiController extends ApiController {
                     bill.setBill_flow(BillFlowEnum.WAIT.getKey());
                     bill.setBill_status(true);
                     billList.add(bill);
-
-                    BigDecimal member_total_amount = parentMember.getMember_total_amount().add(order.getOrder_amount());
-
-                    Member m = new Member();
-                    m.setMember_id(parent_member_id);
-                    m.setMember_total_amount(member_total_amount);
-                    m.setMember_withdrawal_amount(parentMember.getMember_withdrawal_amount());
-                    m.setMember_month_order_amount(parentMember.getMember_month_order_amount());
-                    m.setMember_all_order_amount(parentMember.getMember_all_order_amount());
-                    memberList.add(m);
                 }
             }
 
@@ -237,32 +226,6 @@ public class WeChatApiController extends ApiController {
                             bill.setBill_flow(BillFlowEnum.WAIT.getKey());
                             bill.setBill_status(true);
                             billList.add(bill);
-
-                            //判断是否重复
-                            Boolean is_exit = false;
-                            for (Member m : memberList) {
-                                if (m.getMember_id().equals(parent_member_id)) {
-                                    is_exit = true;
-
-                                    //增加增量
-                                    m.setMember_total_amount(m.getMember_total_amount().add(commission_amount));
-
-                                    break;
-                                }
-                            }
-
-                            if (!is_exit) {
-                                //增加存量
-                                BigDecimal member_total_amount = parentMember.getMember_total_amount().add(commission_amount);
-
-                                Member m = new Member();
-                                m.setMember_id(parent_member_id);
-                                m.setMember_total_amount(member_total_amount);
-                                m.setMember_withdrawal_amount(parentMember.getMember_withdrawal_amount());
-                                m.setMember_month_order_amount(parentMember.getMember_month_order_amount());
-                                m.setMember_all_order_amount(parentMember.getMember_all_order_amount());
-                                memberList.add(m);
-                            }
                         }
                     }
                 }
@@ -282,18 +245,7 @@ public class WeChatApiController extends ApiController {
             bill.setBill_status(true);
             billList.add(bill);
 
-            BigDecimal member_total_amount = member.getMember_total_amount().add(order.getOrder_amount());
-
-            Member m = new Member();
-            m.setMember_id(member.getMember_id());
-            m.setMember_total_amount(member.getMember_total_amount());
-            m.setMember_withdrawal_amount(member.getMember_withdrawal_amount());
-            m.setMember_month_order_amount(member.getMember_month_order_amount());
-            m.setMember_all_order_amount(member_total_amount);
-            memberList.add(m);
-
             billService.save(billList, request_user_id);
-            memberService.updateAmount(memberList);
 
             if (is_update) {
                 renderText("<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>");
@@ -324,7 +276,7 @@ public class WeChatApiController extends ApiController {
         } else {
 //            jsonResult = MenuApi.createMenu("{\"button\":[{\"name\":\"我的健康\",\"sub_button\":[{\"type\":\"click\",\"name\":\"我的积分\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"查询医生\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"我的病历\",\"key\":\"V1001_TODAY_MUSIC\"}]},{\"type\":\"view\",\"name\":\"快速购买\",\"url\":\"http://h5." + WeChat.redirect_uri + "/#/home/\"},{\"name\":\"服务中心\",\"sub_button\":[{\"type\":\"click\",\"name\":\"个人中心\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"在线咨询\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"健康服务\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"我的物流\",\"key\":\"V1001_TODAY_MUSIC\"}]}]}");
 //            jsonResult = MenuApi.createMenu("{\"button\":[{\"name\":\"我的健康\",\"sub_button\":[{\"type\":\"click\",\"name\":\"我的积分\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"查询医生\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"我的病历\",\"key\":\"V1001_TODAY_MUSIC\"}]},{\"type\":\"view\",\"name\":\"快速购买\",\"url\":\"http://h5." + WeChat.redirect_uri + "/#/home/\"},{\"name\":\"服务中心\",\"sub_button\":[{\"type\":\"click\",\"name\":\"个人中心\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"在线咨询\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"健康服务\",\"key\":\"V1001_TODAY_MUSIC\"},{\"type\":\"click\",\"name\":\"我的物流\",\"key\":\"V1001_TODAY_MUSIC\"}]}]}");
-            jsonResult = MenuApi.createMenu("{\"button\":[{\"type\":\"view\",\"name\":\"快速购买\",\"url\":\"http://h5." + WeChat.redirect_uri + "/#/home/\"},{\"type\":\"view\",\"name\":\"睡前故事\",\"url\":\"http://h5." + WeChat.redirect_uri + "/#/story/index/\"}]}");
+            jsonResult = MenuApi.createMenu("{\"button\":[{\"type\":\"view\",\"name\":\"健康推荐\",\"url\":\"http://h5." + WeChat.redirect_uri + "/#/home/\"},{\"type\":\"view\",\"name\":\"睡前故事\",\"url\":\"http://h5." + WeChat.redirect_uri + "/#/story/index/\"},{\"type\":\"view\",\"name\":\"医学科普\",\"url\":\"http://h5." + WeChat.redirect_uri + "/#/science/index/\"}]}");
         }
 
         renderText(jsonResult.getJson());

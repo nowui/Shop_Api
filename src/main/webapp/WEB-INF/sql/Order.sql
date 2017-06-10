@@ -12,10 +12,10 @@
     #end
   #end
 
-  #sql("countByMember_idAndOrder_flow")
+  #sql("countByUser_idAndOrder_flow")
     SELECT COUNT(*) FROM table_order
     WHERE system_status = 1
-    AND member_id = #p(member_id)
+    AND user_id = #p(user_id)
     AND order_flow = #p(order_flow)
   #end
 

@@ -8,6 +8,7 @@ import com.shanghaichuangshi.dao.Dao;
 import com.shanghaichuangshi.shop.model.Bill;
 import com.shanghaichuangshi.util.Util;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,6 +22,16 @@ public class BillDao extends Dao {
 
         Number count = Db.queryFirst(sqlPara.getSql(), sqlPara.getPara());
         return count.intValue();
+    }
+
+    public BigDecimal findBill_AmountByUser_idAndBill_type(String user_id, String bill_type) {
+        Kv map = Kv.create();
+        map.put(Bill.USER_ID, user_id);
+        map.put(Bill.BILL_TYPE, bill_type);
+        SqlPara sqlPara = Db.getSqlPara("bill.findBill_AmountByUser_idAndBill_type", map);
+
+        Number count = Db.queryFirst(sqlPara.getSql(), sqlPara.getPara());
+        return new BigDecimal(count.toString());
     }
 
     public List<Bill> list(String bill_name, Integer m, Integer n) {

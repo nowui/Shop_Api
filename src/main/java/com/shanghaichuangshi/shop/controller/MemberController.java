@@ -10,11 +10,14 @@ import com.shanghaichuangshi.controller.Controller;
 import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.shop.model.MemberLevel;
 import com.shanghaichuangshi.shop.model.Order;
+import com.shanghaichuangshi.shop.service.BillService;
 import com.shanghaichuangshi.shop.service.MemberLevelService;
 import com.shanghaichuangshi.shop.service.MemberService;
 import com.shanghaichuangshi.shop.service.OrderService;
+import com.shanghaichuangshi.shop.type.BillTypeEnum;
+import com.shanghaichuangshi.shop.type.OrderFlowEnum;
+import com.shanghaichuangshi.util.Util;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +28,7 @@ public class MemberController extends Controller {
     private final MemberService memberService = new MemberService();
     private final MemberLevelService memberLevelService = new MemberLevelService();
     private final OrderService orderService = new OrderService();
+    private final BillService billService = new BillService();
 
     @ActionKey(Url.MEMBER_ADMIN_LIST)
     public void adminList() {
@@ -53,6 +57,21 @@ public class MemberController extends Controller {
         String request_user_id = getRequest_user_id();
 
         List<Member> memberList = memberService.teamList(request_user_id);
+
+        for (Member item : memberList) {
+            User user = userService.find(item.getUser_id());
+            item.put(User.USER_AVATAR, user.getUser_avatar());
+
+            item.put(Member.MEMBER_TOTAL_AMOUNT, billService.findBill_AmountByUser_idAndBill_type(item.getUser_id(), BillTypeEnum.SALE.getKey()));
+            item.put(Member.MEMBER_ALL_ORDER_AMOUNT, billService.findBill_AmountByUser_idAndBill_type(item.getUser_id(), BillTypeEnum.ORDER.getKey()));
+
+            if (Util.isNullOrEmpty(item.getMember_level_id())) {
+                item.put(MemberLevel.MEMBER_LEVEL_NAME, "");
+            } else {
+                MemberLevel memberLevel = memberLevelService.find(item.getMember_level_id());
+                item.put(MemberLevel.MEMBER_LEVEL_NAME, memberLevel.getMember_level_name());
+            }
+        }
 
         renderSuccessJson(memberList);
     }
@@ -83,6 +102,11 @@ public class MemberController extends Controller {
 
         Map<String, Object> resultMap = memberService.myFind(request_user_id);
 
+        resultMap.put(Member.MEMBER_TOTAL_AMOUNT, billService.findBill_AmountByUser_idAndBill_type(request_user_id, BillTypeEnum.SALE.getKey()));
+        resultMap.put(OrderFlowEnum.WAIT_PAY.getKey(), orderService.countByUser_idAndOrder_flow(request_user_id, OrderFlowEnum.WAIT_PAY.getKey()));
+        resultMap.put(OrderFlowEnum.WAIT_SEND.getKey(), orderService.countByUser_idAndOrder_flow(request_user_id, OrderFlowEnum.WAIT_SEND.getKey()));
+        resultMap.put(OrderFlowEnum.WAIT_RECEIVE.getKey(), orderService.countByUser_idAndOrder_flow(request_user_id, OrderFlowEnum.WAIT_RECEIVE.getKey()));
+
         renderSuccessJson(resultMap);
     }
 
@@ -105,16 +129,7 @@ public class MemberController extends Controller {
             List<Order> orderList = orderService.listByUser_id(member.getUser_id());
             member.put(Order.ORDER_LIST, orderList);
 
-            BigDecimal member_month_order_amount = BigDecimal.ZERO;
-            BigDecimal member_all_order_amount = BigDecimal.ZERO;
-            for (Order order : orderList) {
-                if (order.getOrder_status() && order.getOrder_is_pay()) {
-                    member_month_order_amount = member_month_order_amount.add(order.getOrder_amount());
-                    member_all_order_amount = member_all_order_amount.add(order.getOrder_amount());
-                }
-            }
-            member.put(Member.MEMBER_MONTH_ORDER_AMOUNT, member_month_order_amount);
-            member.put(Member.MEMBER_ALL_ORDER_AMOUNT, member_all_order_amount);
+            member.put(Member.MEMBER_ALL_ORDER_AMOUNT, billService.findBill_AmountByUser_idAndBill_type(member.getUser_id(), BillTypeEnum.ORDER.getKey()));
         } else {
             member.put(MemberLevel.MEMBER_LEVEL_NAME, "");
 

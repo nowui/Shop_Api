@@ -89,15 +89,6 @@
     WHERE member_id = #p(member_id)
   #end
 
-  #sql("updateAmount")
-    UPDATE table_member SET
-    member_total_amount = ?,
-    member_withdrawal_amount = ?,
-    member_month_order_amount = ?,
-    member_all_order_amount = ?
-    WHERE member_id = ?
-  #end
-
   #sql("updateByMember_idAndMember_name")
     UPDATE table_member SET
     member_name = #p(member_name),

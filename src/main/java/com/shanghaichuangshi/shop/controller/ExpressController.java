@@ -8,7 +8,6 @@ import com.shanghaichuangshi.constant.Kdniao;
 import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.controller.Controller;
 import com.shanghaichuangshi.shop.model.Express;
-import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.shop.model.Order;
 import com.shanghaichuangshi.shop.service.ExpressService;
 import com.shanghaichuangshi.shop.service.MemberService;
@@ -178,8 +177,8 @@ public class ExpressController extends Controller {
                 updateOrderIdList.add(order_id);
 
                 Order order = orderService.find(order_id);
-                Member member = memberService.find(order.getMember_id());
-                memberService.orderFlowUpdate(member.getMember_id(), OrderFlowEnum.WAIT_SEND.getKey());
+                orderService.deleteCountByUser_idAndOrder_flow(order.getUser_id(), OrderFlowEnum.WAIT_SEND.getKey());
+                orderService.deleteCountByUser_idAndOrder_flow(order.getUser_id(), OrderFlowEnum.WAIT_RECEIVE.getKey());
             }
         }
         orderService.updateFinish(updateOrderIdList);

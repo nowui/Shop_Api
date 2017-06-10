@@ -71,10 +71,6 @@ public class MemberDao extends Dao {
         member.setFrom_scene_id(from_scene_id);
         member.setScene_id(scene_id);
         member.setScene_qrcode(scene_qrcode);
-        member.setMember_total_amount(member_total_amount);
-        member.setMember_withdrawal_amount(member_withdrawal_amount);
-        member.setMember_month_order_amount(member_month_order_amount);
-        member.setMember_all_order_amount(member_all_order_amount);
         member.setMember_level_id(member_level_id);
         member.setMember_name(user_name);
         member.setMember_phone(member_phone);
@@ -138,34 +134,6 @@ public class MemberDao extends Dao {
         SqlPara sqlPara = Db.getSqlPara("member.updateByMember_idAndParent_idAndParent_pathAndMember_level_id", map);
 
         return Db.update(sqlPara.getSql(), sqlPara.getPara()) != 0;
-    }
-
-    public void updateAmount(List<Member> memberList) {
-        if (memberList.size() == 0) {
-            return;
-        }
-
-        Kv map = Kv.create();
-        SqlPara sqlPara = Db.getSqlPara("member.updateAmount", map);
-
-        List<Object[]> parameterList = new ArrayList<Object[]>();
-        for(Member member : memberList) {
-            List<Object> objectList = new ArrayList<Object>();
-            objectList.add(member.getMember_total_amount());
-            objectList.add(member.getMember_withdrawal_amount());
-            objectList.add(member.getMember_month_order_amount());
-            objectList.add(member.getMember_all_order_amount());
-            objectList.add(member.getMember_id());
-            parameterList.add(objectList.toArray());
-        }
-
-        int[] result = Db.batch(sqlPara.getSql(), Util.getObjectArray(parameterList), Constant.BATCH_SIZE);
-
-        for (int i : result) {
-            if (i == 0) {
-                throw new RuntimeException("金额更新不成功");
-            }
-        }
     }
 
     public boolean updateByMember_idAndMember_name(String member_id, String member_name, String request_user_id) {

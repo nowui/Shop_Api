@@ -6,6 +6,7 @@ import com.shanghaichuangshi.shop.model.Bill;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.shop.model.Member;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class BillService extends Service {
@@ -33,6 +34,10 @@ public class BillService extends Service {
 
     public Bill find(String bill_id) {
         return billCache.find(bill_id);
+    }
+
+    public BigDecimal findBill_AmountByUser_idAndBill_type(String user_id, String bill_type) {
+        return billCache.findBill_AmountByUser_idAndBill_type(user_id, bill_type);
     }
 
     public void save(List<Bill> billList, String request_user_id) {

@@ -5,25 +5,17 @@ import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
 import com.jfinal.weixin.sdk.api.ApiResult;
 import com.jfinal.weixin.sdk.api.QrcodeApi;
-import com.shanghaichuangshi.cache.CountCache;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.constant.WeChat;
 import com.shanghaichuangshi.cache.AuthorizationCache;
 import com.shanghaichuangshi.cache.UserCache;
 import com.shanghaichuangshi.model.Authorization;
-import com.shanghaichuangshi.model.Count;
 import com.shanghaichuangshi.model.User;
-import com.shanghaichuangshi.shop.cache.MemberCache;
-import com.shanghaichuangshi.shop.cache.MemberLevelCache;
-import com.shanghaichuangshi.shop.cache.OrderCache;
-import com.shanghaichuangshi.shop.cache.SceneCache;
+import com.shanghaichuangshi.shop.cache.*;
 import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.shop.model.MemberLevel;
-import com.shanghaichuangshi.shop.model.Order;
-import com.shanghaichuangshi.shop.type.OrderFlowEnum;
 import com.shanghaichuangshi.shop.type.SceneTypeEnum;
-import com.shanghaichuangshi.type.CountTypeEnum;
 import com.shanghaichuangshi.type.UserTypeEnum;
 import com.shanghaichuangshi.util.Util;
 
@@ -40,8 +32,6 @@ public class MemberService extends Service {
     private final AuthorizationCache authorizationCache = new AuthorizationCache();
     private final MemberLevelCache memberLevelCache = new MemberLevelCache();
     private final SceneCache sceneCache = new SceneCache();
-    private final OrderCache orderCache = new OrderCache();
-    private CountCache countCache = new CountCache();
 
     public int count(String member_name) {
         return memberCache.count(member_name);
@@ -88,34 +78,7 @@ public class MemberService extends Service {
     }
 
     public List<Member> teamList(String user_id) {
-        List<Member> memberList = memberCache.teamList(userCache.find(user_id).getObject_id());
-
-        for (Member item : memberList) {
-            User user = userCache.find(item.getUser_id());
-            item.put(User.USER_AVATAR, user.getUser_avatar());
-
-            List<Order> orderList = orderCache.listByUser_id(item.getUser_id());
-            BigDecimal member_month_order_amount = BigDecimal.ZERO;
-            BigDecimal member_all_order_amount = BigDecimal.ZERO;
-            for (Order order : orderList) {
-                if (order.getOrder_status() && order.getOrder_is_pay()) {
-                    member_month_order_amount = member_month_order_amount.add(order.getOrder_amount());
-                    member_all_order_amount = member_all_order_amount.add(order.getOrder_amount());
-                }
-            }
-            item.put(Member.MEMBER_TOTAL_AMOUNT, item.getMember_total_amount());
-            item.put(Member.MEMBER_MONTH_ORDER_AMOUNT, member_month_order_amount);
-            item.put(Member.MEMBER_ALL_ORDER_AMOUNT, member_all_order_amount);
-
-            if (Util.isNullOrEmpty(item.getMember_level_id())) {
-                item.put(MemberLevel.MEMBER_LEVEL_NAME, "");
-            } else {
-                MemberLevel memberLevel = memberLevelCache.find(item.getMember_level_id());
-                item.put(MemberLevel.MEMBER_LEVEL_NAME, memberLevel.getMember_level_name());
-            }
-        }
-
-        return memberList;
+        return memberCache.teamList(userCache.find(user_id).getObject_id());
     }
 
     private List<Member> getChildren(List<Member> memberList, String parent_id) {
@@ -147,7 +110,7 @@ public class MemberService extends Service {
     public Member findByUser_id(String user_id) {
         User user = userCache.find(user_id);
 
-        return find(user.getObject_id());
+        return memberCache.find(user.getObject_id());
     }
 
     public String qrcodeFind(String user_id) {
@@ -185,11 +148,6 @@ public class MemberService extends Service {
 
         resultMap.putAll(getMemberLevel(member.getMember_level_id(), user.getUser_name(), user.getUser_avatar(), member.getMember_status()));
 
-        resultMap.put(Member.MEMBER_TOTAL_AMOUNT, member.getMember_total_amount());
-        resultMap.put(OrderFlowEnum.WAIT_PAY.getKey(), orderFlowFind(member.getMember_id(), OrderFlowEnum.WAIT_PAY.getKey()));
-        resultMap.put(OrderFlowEnum.WAIT_SEND.getKey(), orderFlowFind(member.getMember_id(), OrderFlowEnum.WAIT_SEND.getKey()));
-        resultMap.put(OrderFlowEnum.WAIT_RECEIVE.getKey(), orderFlowFind(member.getMember_id(), OrderFlowEnum.WAIT_RECEIVE.getKey()));
-
         return resultMap;
     }
 
@@ -219,52 +177,6 @@ public class MemberService extends Service {
 
         return resultList;
     }
-
-    public String orderFlowFind(String member_id, String order_flow) {
-        Count count = countCache.find(CountTypeEnum.MEMBER.getKey(), member_id, order_flow);
-
-        if (count == null) {
-            count = orderFlowUpdate(member_id, order_flow);
-        }
-
-        return count.getCount_value();
-    }
-
-    public Count orderFlowUpdate(String member_id, String order_flow) {
-        int total = orderCache.countByMember_idAndOrder_flow(member_id, order_flow);
-
-        return countCache.saveOrUpdate(CountTypeEnum.MEMBER.getKey(), member_id, order_flow, String.valueOf(total));
-    }
-
-//    public Member findByUser_id(String user_id) {
-//        if (Util.isNullOrEmpty(user_id)) {
-//            return null;
-//        }
-//
-//        User user = userCache.find(user_id);
-//
-//        if (user == null) {
-//            return null;
-//        }
-//
-//        return memberCache.find(user.getObject_id());
-//    }
-
-//    public Member save(Member member, User user, String request_user_id) {
-//        String user_id = Util.getRandomUUID();
-//        String member_phone = "";
-//        String member_remark = "";
-//
-//        member.setUser_id(user_id);
-//        member.setMember_phone(member_phone);
-//        member.setMember_remark(member_remark);
-//
-//        memberCache.save(member, request_user_id);
-//
-//        userService.saveByUser_idAndUser_phoneAndUser_passwordAndObject_idAndUser_type(user_id, user.getUser_phone(), user.getUser_password(), member.getMember_id(), UserTypeEnum.MEMBER.getKey(), request_user_id);
-//
-//        return member;
-//    }
 
     public Member saveByWechat_open_idAndWechat_union_idAndUser_nameAndUser_avatarAndFrom_scene_idAndMember_status(String wechat_open_id, String wechat_union_id, String user_name, String user_avatar, String from_scene_id, Boolean member_status) {
         if (Util.isNullOrEmpty(wechat_open_id)) {
@@ -322,10 +234,6 @@ public class MemberService extends Service {
 
     public boolean updateByMember_idAndParent_idAndParent_pathAndMember_level_id(String member_id, String parent_id, String parent_path, String member_level_id) {
         return memberCache.updateByMember_idAndParent_idAndParent_pathAndMember_level_id(member_id, parent_id, parent_path, member_level_id);
-    }
-
-    public void updateAmount(List<Member> memberList) {
-        memberCache.updateAmount(memberList);
     }
 
     public boolean updateByMember_idAndMember_name(String member_id, String member_name, String request_user_id) {

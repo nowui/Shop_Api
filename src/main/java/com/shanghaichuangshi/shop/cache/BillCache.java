@@ -5,10 +5,12 @@ import com.shanghaichuangshi.shop.dao.BillDao;
 import com.shanghaichuangshi.shop.model.Bill;
 import com.shanghaichuangshi.util.CacheUtil;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class BillCache extends Cache {
 
+    public static final String BILL_COUNT_BY_USER_ID_AND_BILL_TYPE_CACHE = "bill_count_by_user_id_and_bill_type_cache";
     public static final String BILL_BY_USER_ID_CACHE = "bill_by_user_id_cache";
 
     private BillDao billDao = new BillDao();
@@ -35,6 +37,18 @@ public class BillCache extends Cache {
 
     public Bill find(String bill_id) {
         return billDao.find(bill_id);
+    }
+
+    public BigDecimal findBill_AmountByUser_idAndBill_type(String user_id, String bill_type) {
+        BigDecimal bill_amount = CacheUtil.get(BILL_COUNT_BY_USER_ID_AND_BILL_TYPE_CACHE, user_id + "_" + bill_type);
+
+        if (bill_amount == null) {
+            bill_amount = billDao.findBill_AmountByUser_idAndBill_type(user_id, bill_type);
+
+            CacheUtil.put(BILL_COUNT_BY_USER_ID_AND_BILL_TYPE_CACHE, user_id + "_" + bill_type, bill_amount);
+        }
+
+        return bill_amount;
     }
 
     public void save(List<Bill> billList, String request_user_id) {

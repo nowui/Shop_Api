@@ -1,17 +1,16 @@
 package com.shanghaichuangshi.shop.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.jfinal.core.ActionKey;
 import com.shanghaichuangshi.constant.Constant;
 import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.controller.Controller;
-import com.shanghaichuangshi.shop.model.Express;
-import com.shanghaichuangshi.shop.model.Member;
-import com.shanghaichuangshi.shop.model.Order;
-import com.shanghaichuangshi.shop.model.Product;
-import com.shanghaichuangshi.shop.service.MemberService;
-import com.shanghaichuangshi.shop.service.OrderService;
-import com.shanghaichuangshi.shop.type.OrderFlowEnum;
+import com.shanghaichuangshi.shop.model.*;
+import com.shanghaichuangshi.shop.service.*;
+import com.shanghaichuangshi.util.Util;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +18,9 @@ public class OrderController extends Controller {
 
     private final OrderService orderService = new OrderService();
     private final MemberService memberService = new MemberService();
+    private final SkuService skuService = new SkuService();
+    private final MemberLevelService memberLevelService = new MemberLevelService();
+    private final OrderProductService orderProductService = new OrderProductService();
 
     @ActionKey(Url.ORDER_LIST)
     public void list() {
@@ -90,9 +92,62 @@ public class OrderController extends Controller {
 
         Member member = memberService.findByUser_id(request_user_id);
 
-        Map<String, String> result = orderService.save(member, model, getAttr(Constant.REQUEST_PARAMETER), request_user_id);
+        JSONObject jsonObject = getAttr(Constant.REQUEST_PARAMETER);
+        JSONArray productListJSONArray = jsonObject.getJSONArray(Product.PRODUCT_LIST);
 
-        memberService.orderFlowUpdate(member.getMember_id(), OrderFlowEnum.WAIT_SEND.getKey());
+        String open_id = jsonObject.getString("open_id");
+        String pay_type = jsonObject.getString("pay_type");
+
+        if (productListJSONArray.size() == 0) {
+            throw new RuntimeException("请选购商品");
+        }
+
+        Integer order_product_quantity = 0;
+        BigDecimal order_product_amount = BigDecimal.valueOf(0);
+        BigDecimal order_freight_amount = BigDecimal.valueOf(0);
+        BigDecimal order_discount_amount = BigDecimal.valueOf(0);
+
+        String order_id = Util.getRandomUUID();
+        String member_id = member.getMember_id();
+        String member_level_id = member.getMember_level_id();
+        String member_level_name = "";
+        Integer member_level_value = 0;
+        if (!Util.isNullOrEmpty(member_level_id)) {
+            MemberLevel memberLevel = memberLevelService.find(member_level_id);
+            if (memberLevel != null) {
+                member_level_name = memberLevel.getMember_level_name();
+                member_level_value = memberLevel.getMember_level_value();
+            }
+        }
+
+        for (int i = 0; i < productListJSONArray.size(); i++) {
+            JSONObject productJSONObject = productListJSONArray.getJSONObject(i);
+
+            String sku_id = productJSONObject.getString(Sku.SKU_ID);
+            Integer product_quantity = productJSONObject.getInteger(Product.PRODUCT_QUANTITY);
+
+            Sku sku = skuService.find(sku_id);
+//            Product product = productCache.find(sku.getProduct_id());
+//
+//            if (product_quantity > sku.getProduct_stock()) {
+//                throw new RuntimeException("库存不足:" + product.getProduct_name());
+//            }
+
+            //更新订单商品数量
+            order_product_quantity += product_quantity;
+
+            //更新商品应付价格
+            JSONObject productPriceJSONObject = skuService.findProduct_price(sku, member_level_id);
+            BigDecimal product_price = productPriceJSONObject.getBigDecimal(Product.PRODUCT_PRICE);
+            order_product_amount = order_product_amount.add(product_price.multiply(BigDecimal.valueOf(product_quantity)));
+        }
+
+
+        orderProductService.save(productListJSONArray, order_id, member_id, member.getParent_path(), member_level_id, request_user_id);
+
+
+        Order order = orderService.save(order_id, member_id, member_level_id, member_level_name, member_level_value, order_product_quantity, order_product_amount, order_freight_amount, order_discount_amount, request_user_id);
+        Map<String, String> result = orderService.unifiedorder(order, open_id, pay_type);
 
         renderSuccessJson(result);
     }

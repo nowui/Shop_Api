@@ -14,6 +14,7 @@ import java.util.List;
 
 public class OrderCache extends Cache {
 
+    private final String ORDER_COUNT_BY_MEMBER_ID_AND_ORDER_FLOW_CACHE = "order_count_by_member_id_and order_flow_cache";
     private final String ORDER_NUMBER_LIST_BY_DAY_CACHE = "order_number_list_by_day_cache";
     private final String ORDER_LIST_BY_USER_ID_CACHE = "order_list_by_user_id_cache";
     private final String ORDER_BY_ORDER_NUMBER_CACHE = "order_by_order_number_cache";
@@ -25,8 +26,20 @@ public class OrderCache extends Cache {
         return orderDao.count(order_number, order_flow);
     }
 
-    public int countByMember_idAndOrder_flow(String member_id, String order_flow) {
-        return orderDao.countByMember_idAndOrder_flow(member_id, order_flow);
+    public int countByUser_idAndOrder_flow(String user_id, String order_flow) {
+        Integer count = CacheUtil.get(ORDER_COUNT_BY_MEMBER_ID_AND_ORDER_FLOW_CACHE, user_id + "_" + order_flow);
+
+        if (count == null) {
+            count = orderDao.countByUser_idAndOrder_flow(user_id, order_flow);
+
+            CacheUtil.put(ORDER_COUNT_BY_MEMBER_ID_AND_ORDER_FLOW_CACHE, user_id + "_" + order_flow, count);
+        }
+
+        return count;
+    }
+
+    public void deleteCountByUser_idAndOrder_flow(String user_id, String order_flow) {
+        CacheUtil.remove(ORDER_COUNT_BY_MEMBER_ID_AND_ORDER_FLOW_CACHE, user_id + "_" + order_flow);
     }
 
     public List<Order> list(String order_number, String order_flow, Integer m, Integer n) {
@@ -92,17 +105,14 @@ public class OrderCache extends Cache {
         return order;
     }
 
-    public Order save(Order order, String request_user_id) {
-        order.setOrder_id(Util.getRandomUUID());
+    public Order save(String order_id, String member_id, String member_level_id, String member_level_name, Integer member_level_value, Integer order_product_quantity, BigDecimal order_product_amount, BigDecimal order_freight_amount, BigDecimal order_discount_amount, String request_user_id) {
+        Order order = new Order();
+        order.setOrder_id(order_id);
 
         String today = DateUtil.getDateString(new Date()).replaceAll("-", "");
-
         String order_number = getOrder_number(today);
-
         List orderNumberList = listOrderNumber(today);
-
         boolean isExit = true;
-
         while (isExit) {
             if (orderNumberList.contains(order_number)) {
                 order_number = getOrder_number(today);
@@ -113,6 +123,17 @@ public class OrderCache extends Cache {
             }
         }
         order.setOrder_number(order_number);
+        order.setMember_id(member_id);
+        order.setMember_level_id(member_level_id);
+        order.setMember_level_name(member_level_name);
+        order.setMember_level_value(member_level_value);
+        order.setOrder_product_quantity(order_product_quantity);
+        order.setOrder_product_amount(order_product_amount);
+        order.setOrder_freight_amount(order_freight_amount);
+        order.setOrder_discount_amount(order_discount_amount);
+        order.setOrder_amount(order_product_amount.subtract(order_freight_amount).subtract(order_discount_amount));
+        order.setOrder_flow(OrderFlowEnum.WAIT_PAY.getKey());
+        order.setOrder_status(false);
 
         CacheUtil.remove(ORDER_LIST_BY_USER_ID_CACHE, order.getUser_id());
 

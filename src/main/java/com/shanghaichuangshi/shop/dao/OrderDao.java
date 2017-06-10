@@ -28,11 +28,11 @@ public class OrderDao extends Dao {
         return count.intValue();
     }
 
-    public int countByMember_idAndOrder_flow(String member_id, String order_flow) {
+    public int countByUser_idAndOrder_flow(String user_id, String order_flow) {
         Kv map = Kv.create();
-        map.put(Order.MEMBER_ID, member_id);
+        map.put(Order.USER_ID, user_id);
         map.put(Order.ORDER_FLOW, order_flow);
-        SqlPara sqlPara = Db.getSqlPara("order.countByMember_idAndOrder_flow", map);
+        SqlPara sqlPara = Db.getSqlPara("order.countByUser_idAndOrder_flow", map);
 
         Number count = Db.queryFirst(sqlPara.getSql(), sqlPara.getPara());
         return count.intValue();

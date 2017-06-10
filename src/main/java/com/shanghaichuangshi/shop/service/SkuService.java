@@ -1,5 +1,6 @@
 package com.shanghaichuangshi.shop.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.shanghaichuangshi.shop.cache.SkuCache;
 import com.shanghaichuangshi.shop.model.Sku;
 import com.shanghaichuangshi.service.Service;
@@ -16,6 +17,10 @@ public class SkuService extends Service {
 
     public Sku find(String sku_id) {
         return skuCache.find(sku_id);
+    }
+
+    public JSONObject findProduct_price(Sku sku, String member_level_id) {
+        return skuCache.findProduct_price(sku, member_level_id);
     }
 
     public void save(List<Sku> skuList, String request_user_id) {

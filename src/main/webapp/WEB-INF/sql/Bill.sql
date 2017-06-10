@@ -9,6 +9,13 @@
     #end
   #end
 
+  #sql("findBill_AmountByUser_idAndBill_type")
+    SELECT SUM(bill_amount) FROM table_bill
+    WHERE system_status = 1
+    AND user_id = #p(user_id)
+    AND bill_type = #p(bill_type)
+  #end
+
   #sql("list")
     SELECT
     bill_id,
