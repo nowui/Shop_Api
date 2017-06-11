@@ -51,7 +51,13 @@ public class OrderProductService extends Service {
         }
 
         //上级信息
-        for (int i = 0; i < parentPathArray.size(); i++) {
+        int level = 1;
+        for (int i = parentPathArray.size() - 1; i > 0; i--) {
+            if (level > WeChat.commission_level) {
+                return;
+            }
+            level++;
+
             String m_id = parentPathArray.getString(i);
 
             if (!m_id.equals(Constant.PARENT_ID)) {
@@ -64,9 +70,7 @@ public class OrderProductService extends Service {
                 mObject.put(MemberLevel.MEMBER_LEVEL_ID, mLevel.getMember_level_id());
                 mObject.put(MemberLevel.MEMBER_LEVEL_NAME, mLevel.getMember_level_name());
 
-                if (WeChat.income == IncomeTypeEnum.COMMISSION.getKey() || (WeChat.income == IncomeTypeEnum.SALE.getKey() && i == parentPathArray.size() - 1)) {
-                    fatherMemberJSONArray.add(mObject);
-                }
+                fatherMemberJSONArray.add(mObject);
             }
         }
 
@@ -96,45 +100,35 @@ public class OrderProductService extends Service {
 
             //佣金
             String commission_id = "";
-            if (WeChat.income == IncomeTypeEnum.COMMISSION.getKey()) {
-                Commission commission = null;
-                List<Commission> commissionList = commissionCache.list(product.getProduct_id());
-                for (Commission c : commissionList) {
-                    if (c.getProduct_attribute().equals(sku.getProduct_attribute())) {
-                        commission_id = c.getCommission_id();
+            Commission commission = null;
+            List<Commission> commissionList = commissionCache.list(product.getProduct_id());
+            for (Commission c : commissionList) {
+                if (c.getProduct_attribute().equals(sku.getProduct_attribute())) {
+                    commission_id = c.getCommission_id();
 
-                        commission = c;
-                    }
+                    commission = c;
                 }
-                if (commission_id != "") {
-                    JSONArray productCommissionJsonArray = JSONArray.parseArray(commission.getProduct_commission());
+            }
+            if (commission_id != "") {
+                JSONArray productCommissionJsonArray = JSONArray.parseArray(commission.getProduct_commission());
 
-                    for (int j = 0; j < fatherMemberJSONArray.size(); j++) {
-                        JSONObject fatherMemberJSONObject = fatherMemberJSONArray.getJSONObject(j);
-                        String father_member_level_id = fatherMemberJSONObject.getString(MemberLevel.MEMBER_LEVEL_ID);
-
-                        for (int k = 0; k < productCommissionJsonArray.size(); k++) {
-                            JSONObject productCommissionJsonObject = productCommissionJsonArray.getJSONObject(k);
-
-                            if (father_member_level_id.equals(productCommissionJsonObject.getString(MemberLevel.MEMBER_LEVEL_ID))) {
-                                BigDecimal product_commission = productCommissionJsonObject.getBigDecimal(Commission.PRODUCT_COMMISSION);
-                                BigDecimal commission_amount = order_product_amount.multiply(product_commission).divide(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
-
-                                fatherMemberJSONObject.put(Commission.COMMISSION_AMOUNT, commission_amount);
-                                fatherMemberJSONObject.put(Commission.PRODUCT_COMMISSION, product_commission);
-
-                                break;
-                            }
-                        }
-                    }
-                }
-            } else {
                 for (int j = 0; j < fatherMemberJSONArray.size(); j++) {
                     JSONObject fatherMemberJSONObject = fatherMemberJSONArray.getJSONObject(j);
-                    BigDecimal commission_amount = order_product_amount;
+                    String father_member_level_id = fatherMemberJSONObject.getString(MemberLevel.MEMBER_LEVEL_ID);
 
-                    fatherMemberJSONObject.put(Commission.COMMISSION_AMOUNT, commission_amount);
-                    fatherMemberJSONObject.put(Commission.PRODUCT_COMMISSION, "100");
+                    for (int k = 0; k < productCommissionJsonArray.size(); k++) {
+                        JSONObject productCommissionJsonObject = productCommissionJsonArray.getJSONObject(k);
+
+                        if (father_member_level_id.equals(productCommissionJsonObject.getString(MemberLevel.MEMBER_LEVEL_ID))) {
+                            BigDecimal product_commission = productCommissionJsonObject.getBigDecimal(Commission.PRODUCT_COMMISSION);
+                            BigDecimal commission_amount = order_product_amount.multiply(product_commission).divide(BigDecimal.valueOf(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+
+                            fatherMemberJSONObject.put(Commission.COMMISSION_AMOUNT, commission_amount);
+                            fatherMemberJSONObject.put(Commission.PRODUCT_COMMISSION, product_commission);
+
+                            break;
+                        }
+                    }
                 }
             }
 

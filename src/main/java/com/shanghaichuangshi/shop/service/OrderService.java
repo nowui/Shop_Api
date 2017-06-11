@@ -32,10 +32,6 @@ public class OrderService extends Service {
         return orderCache.countByUser_idAndOrder_flow(user_id, order_flow);
     }
 
-    public void deleteCountByUser_idAndOrder_flow(String user_id, String order_flow) {
-        orderCache.deleteCountByUser_idAndOrder_flow(user_id, order_flow);
-    }
-
     public List<Order> list(String order_number, String order_flow, int m, int n) {
         return orderCache.list(order_number, order_flow, m, n);
     }
@@ -91,10 +87,14 @@ public class OrderService extends Service {
         return order;
     }
 
-    public Order save(String order_id, String member_id, String member_level_id, String member_level_name, Integer member_level_value, Integer order_product_quantity, BigDecimal order_product_amount, BigDecimal order_freight_amount, BigDecimal order_discount_amount, String request_user_id) {
+    public Map<String, String> save(String order_id, String member_id, String member_level_id, String member_level_name, Integer member_level_value, Integer order_product_quantity, BigDecimal order_product_amount, BigDecimal order_freight_amount, BigDecimal order_discount_amount, String open_id, String pay_type, String request_user_id) {
         deleteCountByUser_idAndOrder_flow(request_user_id, OrderFlowEnum.WAIT_SEND.getKey());
 
-        return orderCache.save(order_id, member_id, member_level_id, member_level_name, member_level_value, order_product_quantity, order_product_amount, order_freight_amount, order_discount_amount, request_user_id);
+        Order order = orderCache.save(order_id, member_id, member_level_id, member_level_name, member_level_value, order_product_quantity, order_product_amount, order_freight_amount, order_discount_amount, request_user_id);
+
+        deleteCountByUser_idAndOrder_flow(request_user_id, OrderFlowEnum.WAIT_PAY.getKey());
+
+        return unifiedorder(order, open_id, pay_type);
     }
 
     public Map<String, String> pay(String order_id, JSONObject jsonObject, String request_user_id) {
@@ -234,6 +234,10 @@ public class OrderService extends Service {
         }
 
         return order;
+    }
+
+    public void deleteCountByUser_idAndOrder_flow(String user_id, String order_flow) {
+        orderCache.deleteCountByUser_idAndOrder_flow(user_id, order_flow);
     }
 
 }

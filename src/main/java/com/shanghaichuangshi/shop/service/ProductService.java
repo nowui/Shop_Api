@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.shanghaichuangshi.cache.CategoryCache;
 import com.shanghaichuangshi.cache.FileCache;
 import com.shanghaichuangshi.cache.UserCache;
-import com.shanghaichuangshi.constant.WeChat;
 import com.shanghaichuangshi.model.File;
 import com.shanghaichuangshi.model.User;
 import com.shanghaichuangshi.shop.cache.CommissionCache;
@@ -137,8 +136,6 @@ public class ProductService extends Service {
 
         List<Sku> skuList = skuCache.list(product_id);
         product.put(Sku.SKU_LIST, skuList);
-
-        product.put("income", WeChat.income);
 
         List<Commission> commissionList = commissionCache.list(product.getProduct_id());
         product.put(Commission.COMMISSION_LIST, commissionList);

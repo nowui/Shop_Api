@@ -62,8 +62,8 @@ public class MemberController extends Controller {
             User user = userService.find(item.getUser_id());
             item.put(User.USER_AVATAR, user.getUser_avatar());
 
-            item.put(Member.MEMBER_TOTAL_AMOUNT, billService.findBill_AmountByUser_idAndBill_type(item.getUser_id(), BillTypeEnum.SALE.getKey()));
-            item.put(Member.MEMBER_ALL_ORDER_AMOUNT, billService.findBill_AmountByUser_idAndBill_type(item.getUser_id(), BillTypeEnum.ORDER.getKey()));
+            item.put(Member.MEMBER_COMMISSION_AMOUNT, billService.findBill_AmountByUser_idAndBill_type(item.getUser_id(), BillTypeEnum.COMMISSION.getKey()));
+            item.put(Member.MEMBER_ORDER_AMOUNT, billService.findBill_AmountByUser_idAndBill_type(item.getUser_id(), BillTypeEnum.ORDER.getKey()));
 
             if (Util.isNullOrEmpty(item.getMember_level_id())) {
                 item.put(MemberLevel.MEMBER_LEVEL_NAME, "");
@@ -102,10 +102,11 @@ public class MemberController extends Controller {
 
         Map<String, Object> resultMap = memberService.myFind(request_user_id);
 
-        resultMap.put(Member.MEMBER_TOTAL_AMOUNT, billService.findBill_AmountByUser_idAndBill_type(request_user_id, BillTypeEnum.SALE.getKey()));
-        resultMap.put(OrderFlowEnum.WAIT_PAY.getKey(), orderService.countByUser_idAndOrder_flow(request_user_id, OrderFlowEnum.WAIT_PAY.getKey()));
-        resultMap.put(OrderFlowEnum.WAIT_SEND.getKey(), orderService.countByUser_idAndOrder_flow(request_user_id, OrderFlowEnum.WAIT_SEND.getKey()));
-        resultMap.put(OrderFlowEnum.WAIT_RECEIVE.getKey(), orderService.countByUser_idAndOrder_flow(request_user_id, OrderFlowEnum.WAIT_RECEIVE.getKey()));
+        resultMap.put(Member.MEMBER_COMMISSION_AMOUNT, billService.findBill_AmountByUser_idAndBill_type(request_user_id, BillTypeEnum.COMMISSION.getKey()));
+        resultMap.put(Member.MEMBER_ORDER_AMOUNT, billService.findBill_AmountByUser_idAndBill_type(request_user_id, BillTypeEnum.ORDER.getKey()));
+        resultMap.put(Member.MEMBER_WAIT_PAY, orderService.countByUser_idAndOrder_flow(request_user_id, OrderFlowEnum.WAIT_PAY.getKey()));
+        resultMap.put(Member.MEMBER_WAIT_SEND, orderService.countByUser_idAndOrder_flow(request_user_id, OrderFlowEnum.WAIT_SEND.getKey()));
+        resultMap.put(Member.MEMBER_WAIT_RECEIVE, orderService.countByUser_idAndOrder_flow(request_user_id, OrderFlowEnum.WAIT_RECEIVE.getKey()));
 
         renderSuccessJson(resultMap);
     }
@@ -129,7 +130,8 @@ public class MemberController extends Controller {
             List<Order> orderList = orderService.listByUser_id(member.getUser_id());
             member.put(Order.ORDER_LIST, orderList);
 
-            member.put(Member.MEMBER_ALL_ORDER_AMOUNT, billService.findBill_AmountByUser_idAndBill_type(member.getUser_id(), BillTypeEnum.ORDER.getKey()));
+            member.put(Member.MEMBER_COMMISSION_AMOUNT, billService.findBill_AmountByUser_idAndBill_type(member.getUser_id(), BillTypeEnum.COMMISSION.getKey()));
+            member.put(Member.MEMBER_ORDER_AMOUNT, billService.findBill_AmountByUser_idAndBill_type(member.getUser_id(), BillTypeEnum.ORDER.getKey()));
         } else {
             member.put(MemberLevel.MEMBER_LEVEL_NAME, "");
 

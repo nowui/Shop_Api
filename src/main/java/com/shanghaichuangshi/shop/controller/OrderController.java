@@ -8,6 +8,7 @@ import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.controller.Controller;
 import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.shop.service.*;
+import com.shanghaichuangshi.shop.type.BillTypeEnum;
 import com.shanghaichuangshi.util.Util;
 
 import java.math.BigDecimal;
@@ -21,6 +22,7 @@ public class OrderController extends Controller {
     private final SkuService skuService = new SkuService();
     private final MemberLevelService memberLevelService = new MemberLevelService();
     private final OrderProductService orderProductService = new OrderProductService();
+    private final BillService billService = new BillService();
 
     @ActionKey(Url.ORDER_LIST)
     public void list() {
@@ -142,12 +144,9 @@ public class OrderController extends Controller {
             order_product_amount = order_product_amount.add(product_price.multiply(BigDecimal.valueOf(product_quantity)));
         }
 
-
         orderProductService.save(productListJSONArray, order_id, member_id, member.getParent_path(), member_level_id, request_user_id);
 
-
-        Order order = orderService.save(order_id, member_id, member_level_id, member_level_name, member_level_value, order_product_quantity, order_product_amount, order_freight_amount, order_discount_amount, request_user_id);
-        Map<String, String> result = orderService.unifiedorder(order, open_id, pay_type);
+        Map<String, String> result = orderService.save(order_id, member_id, member_level_id, member_level_name, member_level_value, order_product_quantity, order_product_amount, order_freight_amount, order_discount_amount, request_user_id, open_id, pay_type);
 
         renderSuccessJson(result);
     }

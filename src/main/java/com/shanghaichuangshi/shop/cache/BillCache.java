@@ -59,4 +59,8 @@ public class BillCache extends Cache {
         billDao.save(billList, request_user_id);
     }
 
+    public void deleteBill_AmountByUser_idAndBill_type(String user_id, String bill_type) {
+        CacheUtil.remove(BILL_COUNT_BY_USER_ID_AND_BILL_TYPE_CACHE, user_id + "_" + bill_type);
+    }
+
 }

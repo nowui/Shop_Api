@@ -27,18 +27,6 @@ public class Member extends Model<Member> {
     @Column(type = ColumnTypeEnum.VARCHAR, length = 250, comment = "二维码")
     public static final String SCENE_QRCODE = "scene_qrcode";
 
-//    @Column(type = ColumnTypeEnum.DECIMAL, length = 0, comment = "总金额")
-//    public static final String MEMBER_TOTAL_AMOUNT = "member_total_amount";
-//
-//    @Column(type = ColumnTypeEnum.DECIMAL, length = 0, comment = "可提现金额")
-//    public static final String MEMBER_WITHDRAWAL_AMOUNT = "member_withdrawal_amount";
-//
-//    @Column(type = ColumnTypeEnum.DECIMAL, length = 0, comment = "当月进货金额")
-//    public static final String MEMBER_MONTH_ORDER_AMOUNT = "member_month_order_amount";
-//
-//    @Column(type = ColumnTypeEnum.DECIMAL, length = 0, comment = "全部进货金额")
-//    public static final String MEMBER_ALL_ORDER_AMOUNT = "member_all_order_amount";
-
     @Column(type = ColumnTypeEnum.VARCHAR, length = 32, comment = "会员等级")
     public static final String MEMBER_LEVEL_ID = "member_level_id";
 
@@ -54,8 +42,11 @@ public class Member extends Model<Member> {
     @Column(type = ColumnTypeEnum.BOOLEAN, length = 1, comment = "会员状态")
     public static final String MEMBER_STATUS = "member_status";
 
-    public static final String MEMBER_TOTAL_AMOUNT = "member_total_amount";
-    public static final String MEMBER_ALL_ORDER_AMOUNT = "member_all_order_amount";
+    public static final String MEMBER_COMMISSION_AMOUNT = "member_commission_amount";
+    public static final String MEMBER_ORDER_AMOUNT = "member_order_amount";
+    public static final String MEMBER_WAIT_PAY = "member_wait_pay";
+    public static final String MEMBER_WAIT_SEND = "member_wait_send";
+    public static final String MEMBER_WAIT_RECEIVE = "member_wait_receive";
 
     public String getMember_id() {
         return getStr(MEMBER_ID);

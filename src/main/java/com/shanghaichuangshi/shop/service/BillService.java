@@ -44,12 +44,8 @@ public class BillService extends Service {
         billCache.save(billList, request_user_id);
     }
 
-//    public boolean update(Bill bill, String request_user_id) {
-//        return billCache.update(bill, request_user_id);
-//    }
-
-//    public boolean delete(Bill bill, String request_user_id) {
-//        return billCache.delete(bill.getBill_id(), request_user_id);
-//    }
+    public void deleteBill_AmountByUser_idAndBill_type(String user_id, String bill_type) {
+        billCache.deleteBill_AmountByUser_idAndBill_type(user_id, bill_type);
+    }
 
 }

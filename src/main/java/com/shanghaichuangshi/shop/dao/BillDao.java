@@ -31,7 +31,11 @@ public class BillDao extends Dao {
         SqlPara sqlPara = Db.getSqlPara("bill.findBill_AmountByUser_idAndBill_type", map);
 
         Number count = Db.queryFirst(sqlPara.getSql(), sqlPara.getPara());
-        return new BigDecimal(count.toString());
+        if (count == null) {
+            return BigDecimal.ZERO;
+        } else {
+            return new BigDecimal(count.toString());
+        }
     }
 
     public List<Bill> list(String bill_name, Integer m, Integer n) {

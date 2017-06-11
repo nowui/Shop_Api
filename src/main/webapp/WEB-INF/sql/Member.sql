@@ -32,8 +32,7 @@
     member_name,
     parent_id,
     user_id,
-    member_level_id,
-    member_total_amount
+    member_level_id
     FROM table_member
     WHERE system_status = 1
   #end
@@ -44,10 +43,6 @@
     member_name,
     user_id,
     member_level_id,
-    member_total_amount,
-    member_withdrawal_amount,
-    member_month_order_amount,
-    member_all_order_amount,
     member_status
     FROM table_member
     WHERE system_status = 1
