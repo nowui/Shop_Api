@@ -182,12 +182,7 @@ public class WeChatApiController extends ApiController {
                 if (!Util.isNullOrEmpty(commission_id)) {
                     JSONArray orderProductCommissionJSONArray = JSONArray.parseArray(orderProduct.getOrder_product_commission());
 
-                    int level = 1;
-                    for (int i = orderProductCommissionJSONArray.size() - 1; i > 0; i--) {
-                        if (level > WeChat.commission_level) {
-                            return;
-                        }
-                        level++;
+                    for (int i = 0; i < orderProductCommissionJSONArray.size(); i++) {
 
                         JSONObject orderProductCommissionJSONObject = orderProductCommissionJSONArray.getJSONObject(i);
 

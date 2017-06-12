@@ -5,6 +5,7 @@ import com.shanghaichuangshi.shop.cache.MemberCache;
 import com.shanghaichuangshi.shop.model.Bill;
 import com.shanghaichuangshi.service.Service;
 import com.shanghaichuangshi.shop.model.Member;
+import com.shanghaichuangshi.shop.type.BillTypeEnum;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -41,6 +42,11 @@ public class BillService extends Service {
     }
 
     public void save(List<Bill> billList, String request_user_id) {
+        for (Bill bill : billList) {
+            deleteBill_AmountByUser_idAndBill_type(bill.getUser_id(), BillTypeEnum.ORDER.getKey());
+            deleteBill_AmountByUser_idAndBill_type(bill.getUser_id(), BillTypeEnum.COMMISSION.getKey());
+        }
+
         billCache.save(billList, request_user_id);
     }
 

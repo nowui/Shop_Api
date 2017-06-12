@@ -164,8 +164,8 @@ public class OrderService extends Service {
     }
 
     public boolean updateSend(String order_id, String user_id, BigDecimal order_amount, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result, Boolean order_status) {
+        deleteCountByUser_idAndOrder_flow(user_id, OrderFlowEnum.WAIT_PAY.getKey());
         deleteCountByUser_idAndOrder_flow(user_id, OrderFlowEnum.WAIT_SEND.getKey());
-        deleteCountByUser_idAndOrder_flow(user_id, OrderFlowEnum.WAIT_RECEIVE.getKey());
 
         return orderCache.update(order_id, order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result, OrderFlowEnum.WAIT_SEND.getKey(), order_status);
     }
@@ -173,6 +173,9 @@ public class OrderService extends Service {
     public void updateReceive(String order_id, String request_user_id) {
         Order order = orderCache.find(order_id);
         if (order.getOrder_flow().equals(OrderFlowEnum.WAIT_SEND.getKey())) {
+            deleteCountByUser_idAndOrder_flow(order.getUser_id(), OrderFlowEnum.WAIT_SEND.getKey());
+            deleteCountByUser_idAndOrder_flow(order.getUser_id(), OrderFlowEnum.WAIT_RECEIVE.getKey());
+
             orderCache.updateReceive(order_id, request_user_id);
         }
     }
