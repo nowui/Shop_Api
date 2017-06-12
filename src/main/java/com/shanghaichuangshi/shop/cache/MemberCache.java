@@ -52,12 +52,12 @@ public class MemberCache extends Cache {
         return member;
     }
 
-    public Member save(String parent_id, String parent_path, String user_id, String from_scene_id, String scene_id, String scene_qrcode, BigDecimal member_total_amount, BigDecimal member_withdrawal_amount, BigDecimal member_month_order_amount, BigDecimal member_all_order_amount, String member_level_id, String user_name, String member_phone, String member_remark, Boolean member_status, String request_user_id) {
+    public Member save(String parent_id, String parent_path, String user_id, String from_scene_id, String scene_id, String scene_qrcode, String member_level_id, String user_name, String member_phone, String member_remark, Boolean member_status, String request_user_id) {
         if (Util.isNullOrEmpty(parent_id)) {
             CacheUtil.remove(MEMBER_LIST_BY_PARENT_ID_CACHE, parent_id);
         }
 
-        return memberDao.save(parent_id, parent_path, user_id, from_scene_id, scene_id, scene_qrcode, member_total_amount, member_withdrawal_amount, member_month_order_amount, member_all_order_amount, member_level_id, user_name, member_phone, member_remark, member_status, request_user_id);
+        return memberDao.save(parent_id, parent_path, user_id, from_scene_id, scene_id, scene_qrcode, member_level_id, user_name, member_phone, member_remark, member_status, request_user_id);
     }
 
     public boolean childrenUpdate(String member_id, String member_level_id, String request_user_id) {

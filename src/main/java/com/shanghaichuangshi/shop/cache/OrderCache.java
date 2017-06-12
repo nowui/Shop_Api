@@ -105,7 +105,7 @@ public class OrderCache extends Cache {
         return order;
     }
 
-    public Order save(String order_id, String member_id, String member_level_id, String member_level_name, Integer member_level_value, Integer order_product_quantity, BigDecimal order_product_amount, BigDecimal order_freight_amount, BigDecimal order_discount_amount, String request_user_id) {
+    public Order save(String order_id, String member_id, String member_level_id, String member_level_name, Integer member_level_value, String order_delivery_name, String order_delivery_phone, String order_delivery_address, String order_message, String order_pay_type, Integer order_product_quantity, BigDecimal order_product_amount, BigDecimal order_freight_amount, BigDecimal order_discount_amount, String request_user_id) {
         Order order = new Order();
         order.setOrder_id(order_id);
 
@@ -123,10 +123,16 @@ public class OrderCache extends Cache {
             }
         }
         order.setOrder_number(order_number);
+        order.setUser_id(request_user_id);
         order.setMember_id(member_id);
         order.setMember_level_id(member_level_id);
         order.setMember_level_name(member_level_name);
         order.setMember_level_value(member_level_value);
+        order.setOrder_delivery_name(order_delivery_name);
+        order.setOrder_delivery_phone(order_delivery_phone);
+        order.setOrder_delivery_address(order_delivery_address);
+        order.setOrder_message(order_message);
+        order.setOrder_pay_type(order_pay_type);
         order.setOrder_product_quantity(order_product_quantity);
         order.setOrder_product_amount(order_product_amount);
         order.setOrder_freight_amount(order_freight_amount);

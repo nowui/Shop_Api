@@ -193,16 +193,12 @@ public class MemberService extends Service {
             String parent_path = (new JSONArray()).toJSONString();
             String scene_id = "";
             String scene_qrcode = "";
-            BigDecimal member_total_amount = BigDecimal.valueOf(0);
-            BigDecimal member_withdrawal_amount = BigDecimal.valueOf(0);
-            BigDecimal member_month_order_amount = BigDecimal.valueOf(0);
-            BigDecimal member_all_order_amount = BigDecimal.valueOf(0);
             String member_level_id = "";
             String request_user_id = "";
             String member_phone = "";
             String member_remark = "";
 
-            Member member = memberCache.save(parent_id, parent_path, user_id, from_scene_id, scene_id, scene_qrcode, member_total_amount, member_withdrawal_amount, member_month_order_amount, member_all_order_amount, member_level_id, user_name, member_phone, member_remark, member_status, request_user_id);
+            Member member = memberCache.save(parent_id, parent_path, user_id, from_scene_id, scene_id, scene_qrcode, member_level_id, user_name, member_phone, member_remark, member_status, request_user_id);
 
             userCache.saveByUser_idAndUser_nameAndUser_avatarAndWechat_open_idAndWechat_union_idAndObject_idAndUser_type(user_id, user_name, user_avatar, wechat_open_id, wechat_union_id, member.getMember_id(), UserTypeEnum.MEMBER.getKey(), request_user_id);
 

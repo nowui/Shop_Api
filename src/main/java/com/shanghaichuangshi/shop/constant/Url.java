@@ -97,6 +97,7 @@ public class Url {
     public static final String CART_UPDATE = "/cart/update";
     public static final String CART_DELETE = "/cart/delete";
 
+    public static final String EXPRESS_LIST = "/express/list";
     public static final String EXPRESS_ADMIN_LIST = "/express/admin/list";
     public static final String EXPRESS_ADMIN_FIND = "/express/admin/find";
     public static final String EXPRESS_ADMIN_SAVE = "/express/admin/save";

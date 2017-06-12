@@ -32,7 +32,8 @@
     express_type,
     express_number,
     express_flow,
-    express_status
+    express_status,
+    express_trace
     FROM table_express
     WHERE system_status = 1
     AND order_id = #p(order_id)

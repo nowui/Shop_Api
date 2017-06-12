@@ -1,6 +1,5 @@
 package com.shanghaichuangshi.shop.service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
 import com.jfinal.weixin.sdk.kit.PaymentKit;
 import com.shanghaichuangshi.constant.WeChat;
@@ -87,20 +86,16 @@ public class OrderService extends Service {
         return order;
     }
 
-    public Map<String, String> save(String order_id, String member_id, String member_level_id, String member_level_name, Integer member_level_value, Integer order_product_quantity, BigDecimal order_product_amount, BigDecimal order_freight_amount, BigDecimal order_discount_amount, String open_id, String pay_type, String request_user_id) {
+    public Map<String, String> save(String order_id, String member_id, String member_level_id, String member_level_name, Integer member_level_value, String order_delivery_name, String order_delivery_phone, String order_delivery_address, String order_message, String order_pay_type, Integer order_product_quantity, BigDecimal order_product_amount, BigDecimal order_freight_amount, BigDecimal order_discount_amount, String open_id, String pay_type, String request_user_id) {
+        deleteCountByUser_idAndOrder_flow(request_user_id, OrderFlowEnum.WAIT_PAY.getKey());
         deleteCountByUser_idAndOrder_flow(request_user_id, OrderFlowEnum.WAIT_SEND.getKey());
 
-        Order order = orderCache.save(order_id, member_id, member_level_id, member_level_name, member_level_value, order_product_quantity, order_product_amount, order_freight_amount, order_discount_amount, request_user_id);
-
-        deleteCountByUser_idAndOrder_flow(request_user_id, OrderFlowEnum.WAIT_PAY.getKey());
+        Order order = orderCache.save(order_id, member_id, member_level_id, member_level_name, member_level_value, order_delivery_name, order_delivery_phone, order_delivery_address, order_message, order_pay_type, order_product_quantity, order_product_amount, order_freight_amount, order_discount_amount, request_user_id);
 
         return unifiedorder(order, open_id, pay_type);
     }
 
-    public Map<String, String> pay(String order_id, JSONObject jsonObject, String request_user_id) {
-        String open_id = jsonObject.getString("open_id");
-        String pay_type = jsonObject.getString("pay_type");
-
+    public Map<String, String> pay(String order_id, String open_id, String pay_type, String request_user_id) {
         Order order = orderCache.find(order_id);
 
         if (order.getOrder_is_pay() || !order.getUser_id().equals(request_user_id)) {
@@ -168,8 +163,11 @@ public class OrderService extends Service {
         return orderCache.findByOrder_number(order_number);
     }
 
-    public boolean update(String order_id, BigDecimal order_amount, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result, String order_flow, Boolean order_status) {
-        return orderCache.update(order_id, order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result, order_flow, order_status);
+    public boolean updateSend(String order_id, String user_id, BigDecimal order_amount, String order_pay_type, String order_pay_number, String order_pay_account, String order_pay_time, String order_pay_result, Boolean order_status) {
+        deleteCountByUser_idAndOrder_flow(user_id, OrderFlowEnum.WAIT_SEND.getKey());
+        deleteCountByUser_idAndOrder_flow(user_id, OrderFlowEnum.WAIT_RECEIVE.getKey());
+
+        return orderCache.update(order_id, order_amount, order_pay_type, order_pay_number, order_pay_account, order_pay_time, order_pay_result, OrderFlowEnum.WAIT_SEND.getKey(), order_status);
     }
 
     public void updateReceive(String order_id, String request_user_id) {

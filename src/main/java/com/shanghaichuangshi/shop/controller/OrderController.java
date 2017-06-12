@@ -8,7 +8,6 @@ import com.shanghaichuangshi.shop.constant.Url;
 import com.shanghaichuangshi.controller.Controller;
 import com.shanghaichuangshi.shop.model.*;
 import com.shanghaichuangshi.shop.service.*;
-import com.shanghaichuangshi.shop.type.BillTypeEnum;
 import com.shanghaichuangshi.util.Util;
 
 import java.math.BigDecimal;
@@ -22,7 +21,6 @@ public class OrderController extends Controller {
     private final SkuService skuService = new SkuService();
     private final MemberLevelService memberLevelService = new MemberLevelService();
     private final OrderProductService orderProductService = new OrderProductService();
-    private final BillService billService = new BillService();
 
     @ActionKey(Url.ORDER_LIST)
     public void list() {
@@ -146,7 +144,7 @@ public class OrderController extends Controller {
 
         orderProductService.save(productListJSONArray, order_id, member_id, member.getParent_path(), member_level_id, request_user_id);
 
-        Map<String, String> result = orderService.save(order_id, member_id, member_level_id, member_level_name, member_level_value, order_product_quantity, order_product_amount, order_freight_amount, order_discount_amount, request_user_id, open_id, pay_type);
+        Map<String, String> result = orderService.save(order_id, member_id, member_level_id, member_level_name, member_level_value, model.getOrder_delivery_name(), model.getOrder_delivery_phone(), model.getOrder_delivery_address(), model.getOrder_message(), model.getOrder_pay_type(), order_product_quantity, order_product_amount, order_freight_amount, order_discount_amount, open_id, pay_type, request_user_id);
 
         renderSuccessJson(result);
     }
@@ -196,7 +194,11 @@ public class OrderController extends Controller {
 
         validate("open_id", "pay_type");
 
-        Map<String, String> result = orderService.pay(model.getOrder_id(), getAttr(Constant.REQUEST_PARAMETER), request_user_id);
+        JSONObject jsonObject = getAttr(Constant.REQUEST_PARAMETER);
+        String open_id = jsonObject.getString("open_id");
+        String pay_type = jsonObject.getString("pay_type");
+
+        Map<String, String> result = orderService.pay(model.getOrder_id(), open_id, pay_type, request_user_id);
 
         renderSuccessJson(result);
     }

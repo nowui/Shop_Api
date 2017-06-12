@@ -21,7 +21,15 @@ public class ExpressController extends Controller {
 
     private final ExpressService expressService = new ExpressService();
     private final OrderService orderService = new OrderService();
-    private final MemberService memberService = new MemberService();
+
+    @ActionKey(Url.EXPRESS_LIST)
+    public void list() {
+        Express model = getParameter(Express.class);
+
+        List<Express> expressListvice = expressService.listByOrder_id(model.getOrder_id());
+
+        renderSuccessJson(expressListvice);
+    }
 
     @ActionKey(Url.EXPRESS_ADMIN_LIST)
     public void adminList() {
@@ -182,6 +190,8 @@ public class ExpressController extends Controller {
             }
         }
         orderService.updateFinish(updateOrderIdList);
+
+        renderJson(resultMap);
     }
 
 }
