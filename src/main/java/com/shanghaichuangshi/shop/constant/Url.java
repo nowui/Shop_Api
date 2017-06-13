@@ -104,4 +104,15 @@ public class Url {
     public static final String EXPRESSL_ADMIN_UPDATE = "/express/admin/update";
     public static final String EXPRESS_ADMIN_DELETE = "/express/admin/delete";
     public static final String EXPRESS_PUSH = "/express/push";
+
+    public static final String ARTICLE_STORY_LIST = "/article/story/list";
+    public static final String ARTICLE_SCIENCE_LIST = "/article/science/list";
+    public static final String ARTICLE_CATEGORY_LIST = "/article/category/list";
+    public static final String ARTICLE_ADMIN_LIST = "/article/admin/list";
+    public static final String ARTICLE_FIND = "/article/find";
+    public static final String ARTICLE_ADMIN_FIND = "/article/admin/find";
+    public static final String ARTICLE_SAVE = "/article/save";
+    public static final String ARTICLE_UPDATE = "/article/update";
+    public static final String ARTICLE_DELETE = "/article/delete";
+
 }

@@ -25,6 +25,7 @@ public class WebConfig {
         routes.add("/bill", BillController.class);
         routes.add("/cart", CartController.class);
         routes.add("/express", ExpressController.class);
+        routes.add("/article", ArticleController.class);
 
         return routes;
     }
@@ -46,6 +47,7 @@ public class WebConfig {
         activeRecordPlugin.addMapping("table_bill", "bill_id", Bill.class);
         activeRecordPlugin.addMapping("table_cart", "cart_id", Cart.class);
         activeRecordPlugin.addMapping("table_express", "express_id", Express.class);
+        activeRecordPlugin.addMapping("table_article", "article_id", Article.class);
 
         return activeRecordPlugin;
     }
@@ -66,6 +68,9 @@ public class WebConfig {
     public static List<String> configUncheckTokenUrlList(List<String> uncheckTokenUrlList) {
         uncheckTokenUrlList.add(Url.MEMBER_WECHAT_WX_LOGIN);
         uncheckTokenUrlList.add(Url.MEMBER_LOGIN);
+        uncheckTokenUrlList.add(Url.ARTICLE_STORY_LIST);
+        uncheckTokenUrlList.add(Url.ARTICLE_SCIENCE_LIST);
+        uncheckTokenUrlList.add(Url.ARTICLE_FIND);
 
         return uncheckTokenUrlList;
     }
