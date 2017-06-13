@@ -42,7 +42,8 @@ public class Bill extends Model<Bill> {
     @Column(type = ColumnTypeEnum.TINYINT, length = 1, comment = "账单状态")
     public static final String BILL_STATUS = "bill_status";
 
-    
+    public static final String BILL_LIST = "bill_list";
+
     public String getBill_id() {
         return getStr(BILL_ID);
     }

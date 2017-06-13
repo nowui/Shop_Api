@@ -7,8 +7,11 @@ import com.shanghaichuangshi.controller.Controller;
 import com.shanghaichuangshi.shop.model.Bill;
 import com.shanghaichuangshi.shop.model.Member;
 import com.shanghaichuangshi.shop.service.BillService;
+import com.shanghaichuangshi.shop.type.BillTypeEnum;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BillController extends Controller {
 
@@ -20,9 +23,15 @@ public class BillController extends Controller {
 
         validate(Constant.PAGE_INDEX, Constant.PAGE_SIZE);
 
-        List<Bill> billListvice = billService.listByUser_id(request_user_id, getM(), getN());
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put(Member.MEMBER_WITHDRAW_AMOUNT, billService.findBill_AmountByUser_idAndBill_type(request_user_id, BillTypeEnum.WITHDRAW.getKey()));
+        resultMap.put(Member.MEMBER_COMMISSION_AMOUNT, billService.findBill_AmountByUser_idAndBill_type(request_user_id, BillTypeEnum.COMMISSION.getKey()));
+        resultMap.put(Member.MEMBER_ORDER_AMOUNT, billService.findBill_AmountByUser_idAndBill_type(request_user_id, BillTypeEnum.ORDER.getKey()));
 
-        renderSuccessJson(billListvice);
+        List<Bill> billList = billService.listByUser_id(request_user_id, getM(), getN());
+        resultMap.put(Bill.BILL_LIST, billList);
+
+        renderSuccessJson(resultMap);
     }
 
     @ActionKey(Url.BILL_MEMBER_LIST)
